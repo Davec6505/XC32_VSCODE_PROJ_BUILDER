@@ -10,12 +10,12 @@ set "OUTPUT_DIR=."
 
 :: Check arguments
 if "%~1"=="" (
-    echo Usage: %~nx0 ^<project_name^> [device] [output_directory] [mikroc]
+    echo Usage: %~nx0 ^<project_name^> [device] [root_directory] [mikroc]
     echo.
     echo Arguments:
     echo   project_name     Name of the project to generate ^(required^)
     echo   device          PIC32MZ device ^(default: 32MZ1024EFH064^)
-    echo   output_directory Output directory ^(default: current directory^)
+    echo   root_directory  Root directory where project folder will be created ^(default: current directory^)
     echo   mikroc          Include startup files for MikroC compatibility ^(optional^)
     echo.
     echo Examples:
@@ -23,6 +23,8 @@ if "%~1"=="" (
     echo   %~nx0 MyProject 32MZ2048EFH064
     echo   %~nx0 MyProject 32MZ1024EFH064 C:\Projects
     echo   %~nx0 MyProject 32MZ1024EFH064 C:\Projects mikroc
+    echo.
+    echo The script will create: ^<root_directory^>\^<project_name^>\
     goto :eof
 )
 
@@ -34,13 +36,24 @@ if not "%~3"=="" set "OUTPUT_DIR=%~3"
 set "INCLUDE_STARTUP=false"
 if /i "%~4"=="mikroc" set "INCLUDE_STARTUP=true"
 
+:: Ensure output directory exists
+if not exist "%OUTPUT_DIR%" (
+    echo Creating root directory: %OUTPUT_DIR%
+    mkdir "%OUTPUT_DIR%" 2>nul
+    if errorlevel 1 (
+        echo Error: Could not create root directory '%OUTPUT_DIR%'
+        goto :eof
+    )
+)
+
 set "PROJECT_ROOT=%OUTPUT_DIR%\%PROJECT_NAME%"
 
 echo PIC32MZ Project Generator
 echo ==========================
 echo Project Name: %PROJECT_NAME%
 echo Device: %DEVICE%
-echo Output Directory: %PROJECT_ROOT%
+echo Root Directory: %OUTPUT_DIR%
+echo Project Location: %PROJECT_ROOT%
 if "%INCLUDE_STARTUP%"=="true" echo MikroC support: ENABLED
 echo.
 

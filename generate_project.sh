@@ -17,17 +17,20 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 print_usage() {
-    echo "Usage: $0 <project_name> [device] [output_directory]"
+    echo "Usage: $0 <project_name> [device] [root_directory]"
     echo ""
     echo "Arguments:"
     echo "  project_name     Name of the project to generate (required)"
     echo "  device          PIC32MZ device (default: 32MZ1024EFH064)"
-    echo "  output_directory Output directory (default: current directory)"
+    echo "  root_directory  Root directory where project folder will be created (default: current directory)"
     echo ""
     echo "Examples:"
     echo "  $0 MyProject"
     echo "  $0 MyProject 32MZ2048EFH064"
     echo "  $0 MyProject 32MZ1024EFH064 /home/projects"
+    echo "  $0 MyProject 32MZ1024EFH064 ~/workspace/embedded"
+    echo ""
+    echo "The script will create: <root_directory>/<project_name>/"
 }
 
 create_directories() {
@@ -496,13 +499,25 @@ main() {
     DEVICE="${2:-$DEVICE}"
     OUTPUT_DIR="${3:-$OUTPUT_DIR}"
     
+    # Expand and normalize the output directory path
+    OUTPUT_DIR=$(realpath "$OUTPUT_DIR" 2>/dev/null || echo "$OUTPUT_DIR")
     PROJECT_ROOT="$OUTPUT_DIR/$PROJECT_NAME"
+    
+    # Ensure output directory exists
+    if [ ! -d "$OUTPUT_DIR" ]; then
+        echo -e "${YELLOW}Creating output directory: $OUTPUT_DIR${NC}"
+        mkdir -p "$OUTPUT_DIR" || {
+            echo -e "${RED}Error: Could not create output directory '$OUTPUT_DIR'${NC}"
+            exit 1
+        }
+    fi
     
     echo -e "${BLUE}PIC32MZ Project Generator${NC}"
     echo "=========================="
     echo -e "${YELLOW}Project Name:${NC} $PROJECT_NAME"
     echo -e "${YELLOW}Device:${NC} $DEVICE"
-    echo -e "${YELLOW}Output Directory:${NC} $(cd "$OUTPUT_DIR" && pwd)/$PROJECT_NAME"
+    echo -e "${YELLOW}Root Directory:${NC} $OUTPUT_DIR"
+    echo -e "${YELLOW}Project Location:${NC} $PROJECT_ROOT"
     echo ""
     
     # Generate project
@@ -516,7 +531,7 @@ main() {
     echo -e "${BLUE}📁 Location:${NC} $(cd "$PROJECT_ROOT" && pwd)"
     echo ""
     echo -e "${YELLOW}Next steps:${NC}"
-    echo "  cd $PROJECT_NAME"
+    echo "  cd \"$PROJECT_ROOT\""
     echo "  make build_dir"
     echo "  make"
     echo ""

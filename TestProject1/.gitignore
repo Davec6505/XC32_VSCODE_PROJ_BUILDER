@@ -1,0 +1,32 @@
+# Build outputs
+objs/
+bins/
+other/
+*.o
+*.d
+*.hex
+*.elf
+*.map
+*.xml
+
+# IDE files
+*.mcp
+*.mcw
+*.mcs
+*.mcpar
+*.X/
+.generated_files/
+
+# System files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Python cache (for generator script)
+__pycache__/
+*.pyc
+*.pyo

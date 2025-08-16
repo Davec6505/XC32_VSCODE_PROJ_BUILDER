@@ -10,19 +10,21 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 usage() {
-    echo "Usage: $0 <project_name> [device] [output_directory] [mikroc]"
+    echo "Usage: $0 <project_name> [device] [root_directory] [mikroc]"
     echo ""
     echo "Arguments:"
     echo "  project_name     Name of the project to generate (required)"
     echo "  device          PIC32MZ device (default: 32MZ1024EFH064)"
-    echo "  output_directory Output directory (default: current directory)"
+    echo "  root_directory  Root directory where project folder will be created (default: current directory)"
     echo "  mikroc          Include startup files for MikroC compatibility (optional)"
     echo ""
     echo "Examples:"
     echo "  $0 MyProject"
     echo "  $0 MyProject 32MZ2048EFH064"
     echo "  $0 MyProject 32MZ1024EFH064 /home/projects"
-    echo "  $0 MyProject 32MZ1024EFH064 /home/projects mikroc"
+    echo "  $0 MyProject 32MZ1024EFH064 ~/workspace/embedded mikroc"
+    echo ""
+    echo "The script will create: <root_directory>/<project_name>/"
 }
 
 create_directories() {
@@ -660,6 +662,18 @@ main() {
     OUTPUT_DIR="${3:-.}"
     MIKROC="${4:-}"
     
+    # Expand and normalize the output directory path
+    OUTPUT_DIR=$(realpath "$OUTPUT_DIR" 2>/dev/null || echo "$OUTPUT_DIR")
+    
+    # Ensure output directory exists
+    if [ ! -d "$OUTPUT_DIR" ]; then
+        echo -e "${YELLOW}Creating root directory: $OUTPUT_DIR${NC}"
+        mkdir -p "$OUTPUT_DIR" || {
+            echo -e "${RED}Error: Could not create root directory '$OUTPUT_DIR'${NC}"
+            exit 1
+        }
+    fi
+    
     # Check if mikroc option is provided
     INCLUDE_STARTUP="false"
     if [ "$MIKROC" = "mikroc" ] || [ "$4" = "mikroc" ]; then
@@ -672,7 +686,8 @@ main() {
     echo "=========================="
     echo -e "${BLUE}Project Name:${NC} $PROJECT_NAME"
     echo -e "${BLUE}Device:${NC} $DEVICE"
-    echo -e "${BLUE}Output Directory:${NC} $(realpath "$PROJECT_ROOT" 2>/dev/null || echo "$PROJECT_ROOT")"
+    echo -e "${BLUE}Root Directory:${NC} $OUTPUT_DIR"
+    echo -e "${BLUE}Project Location:${NC} $PROJECT_ROOT"
     if [ "$INCLUDE_STARTUP" = "true" ]; then
         echo -e "${BLUE}MikroC support:${NC} ENABLED"
     fi
@@ -694,7 +709,7 @@ main() {
     echo -e "${BLUE}📁 Location:${NC} $(realpath "$PROJECT_ROOT" 2>/dev/null || echo "$PROJECT_ROOT")"
     echo ""
     echo -e "${YELLOW}Next steps:${NC}"
-    echo "  cd $PROJECT_NAME"
+    echo "  cd \"$PROJECT_ROOT\""
     echo "  make build_dir"
     echo "  make"
     echo ""
