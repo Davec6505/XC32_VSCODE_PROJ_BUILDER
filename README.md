@@ -1,2 +1,2 @@
-# XC32_VSCODE_PROJ_BUILDER
-An automatic xc32 project creator with eithe a ,py , .sh or .bat script
+# VSCODE_XC32_TEST
+A Gnu make build process and vscode project independant to any MPLAB type products, purely using co-pilot.
