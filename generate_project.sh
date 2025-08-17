@@ -309,11 +309,27 @@ create_template_files() {
 #include <stdbool.h>
 #include <stdint.h>
 
+// *****************************************************************************
+// *****************************************************************************
+// Section: Project Definitions
+// *****************************************************************************
+// *****************************************************************************
+
+// Add your project-specific definitions here
+// Examples:
+// #define LED_PIN     1
+// #define BUTTON_PIN  2
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Function Prototypes
+// *****************************************************************************
+// *****************************************************************************
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void SYS_Initialize( void * data );
+// Add your function prototypes here
 
 #ifdef __cplusplus
 }
@@ -353,6 +369,9 @@ EOF
 /*******************************************************************************
   Main Source File
 
+  Company:
+    Your Company Name
+
   File Name:
     main.c
 
@@ -360,58 +379,54 @@ EOF
     This file contains the "main" function for $project_name.
 
   Description:
-    Main application entry point for $project_name using $device.
+    This file contains the "main" function for the project.
+    Simple bare-metal main function without system initialization dependencies.
  *******************************************************************************/
 
-#include <stddef.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include "definitions.h"
+// *****************************************************************************
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+// *****************************************************************************
+
+#include <stddef.h>                     // Defines NULL
+#include <stdbool.h>                    // Defines true
+#include <stdlib.h>                     // Defines EXIT_FAILURE
+#include <stdint.h>                     // Defines uint32_t, uintptr_t
+
+// *****************************************************************************
+// *****************************************************************************
+// Variables 
+// *****************************************************************************
+// *****************************************************************************
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Main Entry Point
+// *****************************************************************************
+// *****************************************************************************
 
 int main ( void )
 {
-    /* Initialize all modules */
-    SYS_Initialize ( NULL );
-
+    // Initialize your hardware/peripherals here
+    // Example: GPIO configuration, clock setup, etc.
+    
     while ( true )
     {
-        /* Your application code here */
-        
-        // Add your main loop code
+        // Your main application code here
+        // Example: toggle LED, read sensors, communicate, etc.
     }
 
+    /* Execution should not come here during normal operation */
     return ( EXIT_FAILURE );
 }
+
+/*******************************************************************************
+ End of File
+*/
 EOF
 
-    # Create initialization.c
-    cat > "$project_root/srcs/initialization.c" << EOF
-/*******************************************************************************
-  System Initialization File
-
-  File Name:
-    initialization.c
-
-  Summary:
-    This file contains source code necessary to initialize the system.
-
-  Description:
-    System initialization for $project_name.
- *******************************************************************************/
-
-#include "definitions.h"
-#include "device.h"
-
-void SYS_Initialize ( void* data )
-{
-    /* Add your system initialization code here */
-    
-    // Initialize peripherals
-    // CLK_Initialize();
-    // GPIO_Initialize(); 
-    // Add other peripheral initializations as needed
-}
+    */
 EOF
 
     # Create README.md
@@ -423,7 +438,7 @@ PIC32MZ Embedded Project using XC32 Compiler
 ## Device
 - **Microcontroller**: $device
 - **Compiler**: XC32 v4.60+
-- **IDE**: MPLAB X (optional)
+- **IDE**: VS Code with Makefile support
 
 ## Building
 

@@ -417,20 +417,25 @@ clean:
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: System Service Definitions
+// Section: Project Definitions
 // *****************************************************************************
 // *****************************************************************************
 
+// Add your project-specific definitions here
+// Examples:
+// #define LED_PIN     1
+// #define BUTTON_PIN  2
+
 // *****************************************************************************
 // *****************************************************************************
-// Section: System Initialization Function
+// Section: Function Prototypes
 // *****************************************************************************
 // *****************************************************************************
 #ifdef __cplusplus  // Provide C++ Compatibility
 extern "C" {{
 #endif
 
-void SYS_Initialize( void * data );
+// Add your function prototypes here
 
 #ifdef __cplusplus
 }}
@@ -455,9 +460,8 @@ void SYS_Initialize( void * data );
     This file contains the "main" function for {self.project_name}.
 
   Description:
-    This file contains the "main" function for the project. The
-    "main" function calls the "SYS_Initialize" function to initialize the state
-    machines of all modules in the system
+    This file contains the "main" function for the project.
+    Simple bare-metal main function without system initialization dependencies.
  *******************************************************************************/
 
 // *****************************************************************************
@@ -470,7 +474,6 @@ void SYS_Initialize( void * data );
 #include <stdbool.h>                    // Defines true
 #include <stdlib.h>                     // Defines EXIT_FAILURE
 #include <stdint.h>                     // Defines uint32_t, uintptr_t
-#include "definitions.h"                // SYS function prototypes
 
 // *****************************************************************************
 // *****************************************************************************
@@ -486,15 +489,13 @@ void SYS_Initialize( void * data );
 
 int main ( void )
 {{
-    /* Initialize all modules */
-    SYS_Initialize ( NULL );
-
+    // Initialize your hardware/peripherals here
+    // Example: GPIO configuration, clock setup, etc.
+    
     while ( true )
     {{
-        /* Maintain state machines of all polled MPLAB Harmony modules. */
-        //SYS_Tasks ( );
-        
-        // Your application code here
+        // Your main application code here
+        // Example: toggle LED, read sensors, communicate, etc.
     }}
 
     /* Execution should not come here during normal operation */
@@ -506,59 +507,6 @@ int main ( void )
 */
 '''
 
-        # Create initialization.c in srcs
-        init_content = f'''/*******************************************************************************
-  System Initialization File
-
-  File Name:
-    initialization.c
-
-  Summary:
-    This file contains source code necessary to initialize the system.
-
-  Description:
-    This file contains source code necessary to initialize the system for {self.project_name}.
- *******************************************************************************/
-
-#include "definitions.h"
-#include "device.h"
-
-void SYS_Initialize ( void* data )
-{{
-    /* Add your system initialization code here */
-    
-    // Initialize peripherals
-    // CLK_Initialize();
-    // GPIO_Initialize();
-    // Add other peripheral initializations as needed
-}}
-'''
-
-        # Create device.h
-        device_content = f'''/*******************************************************************************
-  Device Configuration Header
-
-  File Name:
-    device.h
-
-  Summary:
-    Device specific definitions for {self.project_name}
-
-  Description:
-    This file contains device specific definitions and includes.
-*******************************************************************************/
-
-#ifndef DEVICE_H
-#define DEVICE_H
-
-#include <xc.h>
-#include <sys/attribs.h>
-
-// Device specific configurations can be added here
-
-#endif /* DEVICE_H */
-'''
-
         # Create README.md
         readme_content = f'''# {self.project_name}
 
@@ -567,7 +515,7 @@ PIC32MZ Embedded Project using XC32 Compiler
 ## Device
 - **Microcontroller**: {self.device}
 - **Compiler**: XC32 v4.60+
-- **IDE**: MPLAB X (optional)
+- **IDE**: VS Code with Makefile support
 
 ## Project Structure
 
@@ -578,21 +526,13 @@ PIC32MZ Embedded Project using XC32 Compiler
 ├── srcs/                # Source files
 │   ├── Makefile         # Source build configuration
 │   └── main.c           # Main application
-├── incs/                # Header files (MCC Harmony generated)
+├── incs/                # Header files
+│   └── definitions.h    # Project definitions
 ├── objs/                # Object files (generated)
 ├── bins/                # Binary outputs (generated)
 ├── other/               # Maps, XML files (generated)
 └── docs/                # Documentation
 ```
-
-**Note**: The following files are generated by MCC Harmony and not included in the initial template:
-- `incs/definitions.h` - System definitions
-- `incs/device.h` - Device configuration  
-- `incs/interrupts.h` - Interrupt definitions
-- `incs/toolchain_specifics.h` - Toolchain specific definitions
-- `srcs/initialization.c` - System initialization
-- `srcs/interrupts.c` - Interrupt handlers
-- `srcs/exceptions.c` - Exception handlers
 
 ## Building
 
@@ -629,6 +569,7 @@ Generated on: {sys.platform}
         # Write files (excluding MCC Harmony generated files)
         files_to_create = [
             ("srcs/main.c", main_content),
+            ("incs/definitions.h", definitions_content),
             ("README.md", readme_content)
         ]
 

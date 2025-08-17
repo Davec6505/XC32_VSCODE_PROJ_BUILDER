@@ -1,108 +1,190 @@
- # XC32_VSCODE_PROJ_BUILDER
-A GNU make build process and VS Code project generator independent of any MPLAB products, purely using copilot.
+# PIC32MZ VS Code Project Generator
 
-## Project Generation Scripts
+This repository contains cross-platform scripts to generate PIC32MZ embedded projects compatible with the XC32 compiler toolchain and VS Code development environment.
 
-This repository contains several scripts to automatically generate PIC32MZ embedded project structures with cross-platform Makefiles:
+## Features
 
-### Available Scripts
+- **Smart Generator Selection**: Automatically chooses the best available generator
+- **Cross-Platform Support**: C#, Python, Shell script, and Windows Batch implementations
+- **XC32 Integration**: Configured for Microchip's PIC32MZ toolchain v4.60+
+- **VS Code Ready**: Includes `.vscode` configuration for debugging and building
+- **GNU Make Build System**: Cross-platform Makefiles with proper dependency handling
+- **Device Support**: Configurable for different PIC32MZ variants
+- **Debug Configuration**: Pre-configured for PICkit 4, Snap, and ICD4 debuggers
 
-1. **`generate_project.py`** - Python version (most feature-complete)
-2. **`generate_project.sh`** - Bash shell script (Linux/macOS/WSL)
-3. **`generate_project_simple.sh`** - Simplified bash version with MikroC support
-4. **`generate_project.bat`** - Windows batch script
+## Quick Start
 
-### Usage Examples
+Simply run the main generator with your project name:
 
-#### Python Script
-```bash
-# Create project in current directory
-python generate_project.py MyProject
-
-# Create project with specific device
-python generate_project.py MyProject --device 32MZ2048EFH064
-
-# Create project in specific root directory
-python generate_project.py MyProject --output /home/projects
-python generate_project.py MyProject --output ~/workspace/embedded
-
-# Create project with MikroC startup support
-python generate_project.py MyProject --mikroc --output /home/projects
-
-# Full example
-python generate_project.py MyEmbeddedApp --device 32MZ1024EFH064 --output ~/projects/embedded --mikroc
-```
-
-#### Shell Scripts
-```bash
-# Create project in current directory
-./generate_project.sh MyProject
-
-# Create project with specific device and root directory
-./generate_project.sh MyProject 32MZ2048EFH064 ~/projects/embedded
-
-# With MikroC support (simple version)
-./generate_project_simple.sh MyProject 32MZ1024EFH064 ~/projects/embedded mikroc
-```
-
-#### Windows Batch Script
 ```cmd
-REM Create project in current directory
-generate_project.bat MyProject
-
-REM Create project with specific device and root directory
-generate_project.bat MyProject 32MZ2048EFH064 C:\Projects\Embedded
-
-REM With MikroC support
-generate_project.bat MyProject 32MZ1024EFH064 C:\Projects\Embedded mikroc
+generate_project.cmd MyProject
 ```
 
-### What Gets Created
+The script will automatically detect and use the best available generator on your system.
 
-All scripts will create the following structure at `<root_directory>/<project_name>/`:
+## Requirements
+
+### XC32 Compiler Toolchain
+- XC32 Compiler v4.60 or later
+- GNU Make utility
+- Microchip debugger (PICkit 4, Snap, or ICD4)
+
+### Generator Runtime (Auto-detected)
+- **Preferred**: .NET SDK 6.0+ (for C# generator)
+- **Fallback**: Python 3.6+ (for Python generator)
+- **Alternative**: Bash environment (for shell script)
+
+## Usage
+
+### Main Generator (Recommended)
+```cmd
+# Basic usage - creates project in current directory
+generate_project.cmd MyProject
+
+# With custom device
+generate_project.cmd MyProject 32MZ2048EFH064
+
+# With custom root directory
+generate_project.cmd MyProject 32MZ1024EFH064 C:\Projects
+
+# With MikroC compatibility
+generate_project.cmd MyProject 32MZ1024EFH064 C:\Projects mikroc
+```
+
+### Direct Generator Usage
+You can also run the generators directly if needed:
+
+#### C# Generator (Preferred)
+```cmd
+# Requires .NET SDK 6.0+
+dotnet run --project csharp\generate_project.csproj -- MyProject [device] [root_dir] [mikroc]
+```
+
+#### Python Generator
+```bash
+# Requires Python 3.6+
+python generate_project.py MyProject [device] [root_dir] [mikroc]
+```
+
+#### Shell Script Generator
+```bash
+# Linux/macOS/WSL
+./generate_project.sh MyProject [device] [root_dir] [mikroc]
+```
+
+#### Windows Batch Generator
+```cmd
+# Windows Command Prompt
+generate_project.bat MyProject [device] [root_dir] [mikroc]
+```
+
+## Generated Project Structure
+
+All generators create the same professional project structure:
 
 ```
 MyProject/
-├── Makefile                 # Root build file
-├── .gitignore              # Git ignore file
+├── Makefile                 # Root build configuration
+├── .gitignore              # Git ignore rules
+├── .vscode/
+│   ├── tasks.json          # VS Code build tasks
+│   ├── launch.json         # Debug configuration
+│   └── c_cpp_properties.json # IntelliSense settings
 ├── srcs/
-│   ├── Makefile            # Source build configuration
-│   ├── main.c              # Template main file
+│   ├── Makefile            # Source build rules
+│   ├── main.c              # Application entry point
 │   └── startup/            # (MikroC option only)
 │       ├── crt0.c          # C runtime startup
 │       └── startup.S       # Assembly startup
-├── incs/                   # Header files
+├── incs/                   # Header files directory
 ├── objs/                   # Object files (build artifacts)
 ├── bins/                   # Binary outputs
 ├── other/                  # Other build artifacts
 └── docs/                   # Documentation
 ```
 
-### Building Projects
+## Building Projects
 
-After generation, navigate to your project and build:
+After project generation:
 
+### VS Code Integration
+1. Open the project folder in VS Code
+2. Use **Ctrl+Shift+P** → "Tasks: Run Task"
+3. Select from available tasks:
+   - **makemake**: Build the project
+   - **makeclean**: Clean build artifacts
+   - **Flash**: Program device
+   - **Test**: Run tests
+
+### Command Line
 ```bash
-cd path/to/your/project
-make build_dir          # Create build directories
+cd path/to/MyProject
 make                    # Build the project
 make clean              # Clean build artifacts
-make flash              # Flash to device (if configured)
+make flash              # Flash to device
+make test               # Run tests
 ```
 
-### Features
+## Device Support
 
-- **Cross-platform**: Works on Windows, Linux, and macOS
-- **Automatic path handling**: Creates root directories if they don't exist  
-- **Device flexibility**: Support for various PIC32MZ devices
-- **MikroC compatibility**: Optional startup files for bootloader compatibility
-- **Template files**: Includes working main.c template and build configuration
-- **Git ready**: Includes appropriate .gitignore file
+Supported PIC32MZ devices (default: 32MZ1024EFH064):
+- 32MZ1024EFH064
+- 32MZ2048EFH064  
+- 32MZ1024EFG064
+- 32MZ2048EFG064
+- And other PIC32MZ-EF family devices
 
-### Requirements
+## VS Code Features
 
-- **XC32 Compiler**: Must be installed in standard locations
-  - Windows: `C:/Program Files/Microchip/xc32/v4.60/`
-  - Linux/macOS: `/opt/microchip/xc32/v4.60/`
-- **DFP (Device Family Pack)**: PIC32MZ-EF family pack
-- **Make**: GNU Make build system
+Generated projects include:
+- **IntelliSense**: Full code completion and syntax highlighting
+- **Debugging**: Hardware debugger integration (PICkit 4, Snap, ICD4)
+- **Build Integration**: One-click building via tasks
+- **Error Navigation**: Click to jump to compiler errors
+- **Git Integration**: Pre-configured .gitignore
+
+## Installation
+
+1. **Clone this repository**:
+   ```bash
+   git clone <repository-url>
+   cd XC32_VSCODE_PROJ_BUILDER
+   ```
+
+2. **Install Prerequisites**:
+   - Install XC32 Compiler v4.60+
+   - Install .NET SDK 6.0+ (recommended) or Python 3.6+
+   - Ensure `make` is available in PATH
+
+3. **Generate your first project**:
+   ```cmd
+   generate_project.cmd MyFirstProject
+   ```
+
+## Troubleshooting
+
+### Generator Not Found
+If `generate_project.cmd` reports no suitable generator:
+- Install .NET SDK from https://dotnet.microsoft.com/download
+- Or install Python from https://www.python.org/downloads/
+
+### Build Errors
+- Verify XC32 compiler installation path
+- Check that device family pack (DFP) is installed
+- Ensure Make utility is in PATH
+
+### VS Code Issues
+- Install C/C++ extension pack
+- Verify XC32 paths in `c_cpp_properties.json`
+- Check debugger configuration in `launch.json`
+
+## Contributing
+
+All generators produce identical project structures. When adding features:
+1. Update all generator implementations (C#, Python, Shell, Batch)
+2. Test cross-platform compatibility
+3. Update documentation
+
+## License
+
+This project is designed for use with Microchip's XC32 toolchain and PIC32MZ microcontrollers.
