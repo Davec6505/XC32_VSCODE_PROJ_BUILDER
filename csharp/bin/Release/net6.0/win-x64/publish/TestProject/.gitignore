@@ -1,0 +1,18 @@
+# Build outputs
+objs/
+bins/
+other/
+*.o
+*.d
+*.hex
+*.elf
+*.map
+*.xml
+
+# IDE files
+*.X/
+.generated_files/
+
+# System files
+.DS_Store
+Thumbs.db
