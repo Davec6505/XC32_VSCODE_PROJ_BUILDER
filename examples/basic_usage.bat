@@ -27,6 +27,10 @@ echo Command: generate_project.cmd MyProject 32MZ1024EFH064 C:\Projects mikroc
 echo.
 pause
 
+echo Example 5: Run csharp example
+echo Command: generate_cs_project.cmd MyCSharpProject 32MZ1024EFH064 C:\Temp mikroc csharp
+echo.
+
 echo ==============================================
 echo Choose an example to run:
 echo ==============================================
