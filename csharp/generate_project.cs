@@ -1,11 +1,17 @@
+using generate_project;
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace PIC32MZProjectGenerator
 {
+  
     class Program
     {
+       static MAKE_Strings makeStrings;
+        static startup startup;
+
         // Default values
         private static string device = "32MZ1024EFH064";
         private static string outputDir = ".";
@@ -21,13 +27,53 @@ namespace PIC32MZProjectGenerator
                 return;
             }
 
-            // Parse arguments
+            // Parse arguments for options
             projectName = args[0];
+
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (args[i] == "-d" || args[i] == "--device")
+                {
+                    if (i + 1 < args.Length)
+                    {
+                        device = args[i + 1];
+                        i++; // skip value
+                    }
+                }
+                else if (args[i] == "-o" || args[i] == "--output")
+                {
+                    if (i + 1 < args.Length)
+                    {
+                        outputDir = args[i + 1];
+                        i++; // skip value
+                    }
+                }
+                else if (args[i].ToLower() == "--mikroc")
+                {
+                    includeStartup = true;
+                }
+               
+            }
+
+            // Check for required project name
+            if (string.IsNullOrEmpty(projectName))
+            {
+                ShowUsage();
+                return;
+            }
+
+            // Parse arguments        
+
+           /*
             if (args.Length > 1) device = args[1];
             if (args.Length > 2) outputDir = args[2];
             if (args.Length > 3 && args[3].ToLower() == "mikroc") includeStartup = true;
+          */
 
             // Ensure output directory exists
+            makeStrings = new MAKE_Strings(projectName, device);
+            startup = new startup();
+
             if (!Directory.Exists(outputDir))
             {
                 Console.WriteLine($"Creating root directory: {outputDir}");
@@ -132,62 +178,7 @@ namespace PIC32MZProjectGenerator
         {
             Console.WriteLine("Creating root Makefile...");
 
-            var makefile = new StringBuilder();
-            makefile.AppendLine("# Name of the project binary");
-            makefile.AppendLine($"MODULE    \t:= {projectName}");
-            makefile.AppendLine();
-            makefile.AppendLine("# Device configuration");
-            makefile.AppendLine($"DEVICE \t\t:= {device}");
-            makefile.AppendLine();
-            makefile.AppendLine("# Cross-platform compiler and DFP paths");
-            makefile.AppendLine("ifeq ($(OS),Windows_NT)");
-            makefile.AppendLine("    COMPILER_LOCATION := C:/Program Files/Microchip/xc32/v4.60/bin");
-            makefile.AppendLine("    DFP_LOCATION := C:/Program Files/Microchip/MPLABX/v6.25/packs");
-            makefile.AppendLine("else");
-            makefile.AppendLine("    COMPILER_LOCATION := /opt/microchip/xc32/v4.60/bin");
-            makefile.AppendLine("    DFP_LOCATION := /opt/microchip/mplabx/v6.25/packs");
-            makefile.AppendLine("endif");
-            makefile.AppendLine("DFP := $(DFP_LOCATION)/Microchip/PIC32MZ-EF_DFP/1.4.168");
-            makefile.AppendLine();
-            makefile.AppendLine("# Build system");
-            makefile.AppendLine("BUILD=make");
-            makefile.AppendLine("CLEAN=make clean");
-            makefile.AppendLine("BUILD_DIR=make build_dir");
-            makefile.AppendLine();
-            makefile.AppendLine("all:");
-            makefile.AppendLine("\t@echo \"######  BUILDING   ########\"");
-            makefile.AppendLine("\tcd srcs && $(BUILD) COMPILER_LOCATION=\"$(COMPILER_LOCATION)\" DFP_LOCATION=\"$(DFP_LOCATION)\" DFP=\"$(DFP)\" DEVICE=$(DEVICE) MODULE=$(MODULE)");
-            makefile.AppendLine("\t@echo \"###### BIN TO HEX ########\"");
-            makefile.AppendLine("\tcd bins && \"$(COMPILER_LOCATION)/xc32-bin2hex\" $(MODULE)");
-            makefile.AppendLine("\t@echo \"######  BUILD COMPLETE   ########\"");
-            makefile.AppendLine();
-            makefile.AppendLine("build_dir:");
-            makefile.AppendLine("\t@echo \"#######BUILDING DIRECTORIES FOR OUTPUT BINARIES#######\"");
-            makefile.AppendLine("\tcd srcs && $(BUILD_DIR)");
-            makefile.AppendLine();
-            makefile.AppendLine("debug:");
-            makefile.AppendLine("\t@echo \"#######DEBUGGING OUTPUTS#######\"");
-            makefile.AppendLine("\tcd srcs && $(BUILD) debug COMPILER_LOCATION=\"$(COMPILER_LOCATION)\" DFP_LOCATION=\"$(DFP_LOCATION)\" DFP=\"$(DFP)\" DEVICE=$(DEVICE) MODULE=$(MODULE)");
-            makefile.AppendLine();
-            makefile.AppendLine("platform:");
-            makefile.AppendLine("\t@echo \"#######PLATFORM INFO#######\"");
-            makefile.AppendLine("\tcd srcs && $(BUILD) platform COMPILER_LOCATION=\"$(COMPILER_LOCATION)\" DFP_LOCATION=\"$(DFP_LOCATION)\" DFP=\"$(DFP)\" DEVICE=$(DEVICE) MODULE=$(MODULE)");
-            makefile.AppendLine();
-            makefile.AppendLine("clean:");
-            makefile.AppendLine("\t@echo \"####### CLEANING OUTPUTS #######\"");
-            makefile.AppendLine("\tcd srcs && $(CLEAN)");
-            makefile.AppendLine("\t@echo \"####### REMOVING BUILD ARTIFACTS #######\"");
-            makefile.AppendLine("ifeq ($(OS),Windows_NT)");
-            makefile.AppendLine("\t@if exist \"bins\\\\*\" del /q \"bins\\\\*\" >nul 2>&1");
-            makefile.AppendLine("\t@if exist \"objs\\\\*\" rmdir /s /q \"objs\" >nul 2>&1 && mkdir \"objs\" >nul 2>&1");
-            makefile.AppendLine("\t@if exist \"other\\\\*\" del /q \"other\\\\*\" >nul 2>&1");
-            makefile.AppendLine("else");
-            makefile.AppendLine("\t@rm -rf bins/* objs/* other/* 2>/dev/null || true");
-            makefile.AppendLine("endif");
-            makefile.AppendLine();
-            makefile.AppendLine(".PHONY: all build_dir clean debug platform");
-
-            File.WriteAllText(Path.Combine(projectRoot, "Makefile"), makefile.ToString());
+            File.WriteAllText(Path.Combine(projectRoot, "Makefile"), makeStrings.Get_RootMakefileContent()); //makefile.ToString());
             Console.WriteLine("✓ Root Makefile created");
         }
 
@@ -195,85 +186,7 @@ namespace PIC32MZProjectGenerator
         {
             Console.WriteLine("Creating srcs Makefile...");
 
-            var makefile = new StringBuilder();
-            makefile.AppendLine("# Simple Makefile for PIC32MZ project");
-            makefile.AppendLine("# DFP configuration");
-            makefile.AppendLine("DFP_DIR := $(DFP)");
-            makefile.AppendLine("DFP_INCLUDE := $(DFP)/include");
-            makefile.AppendLine();
-            makefile.AppendLine("# Cross-platform support");
-            makefile.AppendLine("ifeq ($(OS),Windows_NT)");
-            makefile.AppendLine("    detected_OS := Windows");
-            makefile.AppendLine("    MKDIR = if not exist \"$(subst /,\\\\,$(1))\" mkdir \"$(subst /,\\\\,$(1))\"");
-            makefile.AppendLine("else");
-            makefile.AppendLine("    detected_OS := Unix");
-            makefile.AppendLine("    MKDIR = mkdir -p $(1)");
-            makefile.AppendLine("endif");
-            makefile.AppendLine();
-            makefile.AppendLine("# Project directories");
-            makefile.AppendLine("ROOT     := ..");
-            makefile.AppendLine("OBJ_DIR  := $(ROOT)/objs");
-            makefile.AppendLine("INC_DIR  := $(ROOT)/incs");
-            makefile.AppendLine("BIN_DIR  := $(ROOT)/bins");
-            makefile.AppendLine("OUT_DIR  := $(ROOT)/other");
-            makefile.AppendLine();
-            makefile.AppendLine("# Source files");
-            makefile.AppendLine("SRCS := $(wildcard *.c)");
-            makefile.AppendLine("OBJS := $(SRCS:%.c=$(OBJ_DIR)/%.o)");
-            makefile.AppendLine();
-            makefile.AppendLine("# Compiler and flags");
-            makefile.AppendLine("CC := \"$(COMPILER_LOCATION)/xc32-gcc\"");
-            makefile.AppendLine("MCU := -mprocessor=$(DEVICE)");
-            makefile.AppendLine("FLAGS := -Werror -Wall -MP -MMD -g -O1 -ffunction-sections -fdata-sections -fno-common");
-            makefile.AppendLine("INCS := -I\"$(INC_DIR)\" -I\"$(DFP_INCLUDE)\"");
-            makefile.AppendLine();
-            makefile.AppendLine("# Build target");
-            makefile.AppendLine("$(BIN_DIR)/$(MODULE): $(OBJS)");
-            makefile.AppendLine("\t@echo \"Linking $(MODULE) for $(DEVICE)\"");
-            makefile.AppendLine("\t$(CC) $(MCU) -nostartfiles -mdfp=\"$(DFP)\" -Wl,--script=\"$(DFP)/xc32/$(DEVICE)/p32MZ1024EFH064.ld\" -Wl,-Map=\"$(OUT_DIR)/production.map\" -o $@ $^");
-            makefile.AppendLine("\t@echo \"Build complete: $@\"");
-            makefile.AppendLine();
-            makefile.AppendLine("# Compile rule");
-            makefile.AppendLine("$(OBJ_DIR)/%.o: %.c");
-            makefile.AppendLine("\t@echo \"Compiling $< to $@\"");
-            makefile.AppendLine("\t@$(call MKDIR,$(dir $@))");
-            makefile.AppendLine("\t$(CC) -x c -c $(MCU) $(FLAGS) $(INCS) -mdfp=\"$(DFP)\" -MF $(@:%.o=%.d) $< -o $@");
-            makefile.AppendLine();
-            makefile.AppendLine("# Targets");
-            makefile.AppendLine(".PHONY: all build_dir clean debug platform");
-            makefile.AppendLine();
-            makefile.AppendLine("all: $(BIN_DIR)/$(MODULE)");
-            makefile.AppendLine();
-            makefile.AppendLine("build_dir:");
-            makefile.AppendLine("\t@echo \"Creating build directories ($(detected_OS))\"");
-            makefile.AppendLine("\t@$(call MKDIR,$(OBJ_DIR))");
-            makefile.AppendLine("\t@$(call MKDIR,$(BIN_DIR))");
-            makefile.AppendLine("\t@$(call MKDIR,$(OUT_DIR))");
-            makefile.AppendLine("\t@echo \"Build directories created\"");
-            makefile.AppendLine();
-            makefile.AppendLine("clean:");
-            makefile.AppendLine("\t@echo \"Cleaning build artifacts\"");
-            makefile.AppendLine("ifeq ($(OS),Windows_NT)");
-            makefile.AppendLine("\t@if exist \"$(OBJ_DIR)\\\\*\" rmdir /s /q \"$(OBJ_DIR)\" >nul 2>&1 && mkdir \"$(OBJ_DIR)\" >nul 2>&1");
-            makefile.AppendLine("\t@if exist \"$(BIN_DIR)\\\\*\" del /q \"$(BIN_DIR)\\\\*\" >nul 2>&1");
-            makefile.AppendLine("\t@if exist \"$(OUT_DIR)\\\\*\" del /q \"$(OUT_DIR)\\\\*\" >nul 2>&1");
-            makefile.AppendLine("else");
-            makefile.AppendLine("\t@rm -rf $(OBJ_DIR)/* $(BIN_DIR)/* $(OUT_DIR)/* 2>/dev/null || true");
-            makefile.AppendLine("\t@mkdir -p $(OBJ_DIR)");
-            makefile.AppendLine("endif");
-            makefile.AppendLine("\t@echo \"Clean complete\"");
-            makefile.AppendLine();
-            makefile.AppendLine("debug:");
-            makefile.AppendLine("\t@echo \"Build system debug info:\"");
-            makefile.AppendLine("\t@echo \"Source files: $(SRCS)\"");
-            makefile.AppendLine("\t@echo \"Object files: $(OBJS)\"");
-            makefile.AppendLine();
-            makefile.AppendLine("platform:");
-            makefile.AppendLine("\t@echo \"Platform: $(detected_OS)\"");
-            makefile.AppendLine("\t@echo \"Compiler: $(CC)\"");
-            makefile.AppendLine("\t@echo \"Device: $(DEVICE)\"");
-
-            File.WriteAllText(Path.Combine(projectRoot, "srcs", "Makefile"), makefile.ToString());
+            File.WriteAllText(Path.Combine(projectRoot, "srcs", "Makefile"), makeStrings.Get_SRCMakefileContent());//.Get_SrcsMakefileContent());//makefile.ToString());
             Console.WriteLine("✓ Srcs Makefile created");
         }
 
@@ -463,40 +376,9 @@ namespace PIC32MZProjectGenerator
 
             if (!File.Exists(startupPath))
             {
-                var startup = new StringBuilder();
-                startup.AppendLine("/*******************************************************************************");
-                startup.AppendLine("  System Startup File");
-                startup.AppendLine(" *******************************************************************************/");
-                startup.AppendLine("");
-                startup.AppendLine("#include <xc.h>");
-                startup.AppendLine("");
-                startup.AppendLine("    .section .vector_0,code, keep");
-                startup.AppendLine("    .equ __vector_spacing_0, 0x00000001");
-                startup.AppendLine("    .align 4");
-                startup.AppendLine("    .set nomips16");
-                startup.AppendLine("    .set noreorder");
-                startup.AppendLine("    .ent __vector_0");
-                startup.AppendLine("__vector_0:");
-                startup.AppendLine("    j  _startup");
-                startup.AppendLine("    nop");
-                startup.AppendLine("    .end __vector_0");
-                startup.AppendLine("    .size __vector_0, .-__vector_0");
-                startup.AppendLine("");
-                startup.AppendLine("    .section .startup,code, keep");
-                startup.AppendLine("    .align 4");
-                startup.AppendLine("    .set nomips16");
-                startup.AppendLine("    .set noreorder");
-                startup.AppendLine("    .ent _startup");
-                startup.AppendLine("_startup:");
-                startup.AppendLine("    # Add your startup code here");
-                startup.AppendLine("    # Jump to main");
-                startup.AppendLine("    la   $t0, main");
-                startup.AppendLine("    jr   $t0");
-                startup.AppendLine("    nop");
-                startup.AppendLine("    .end _startup");
-                startup.AppendLine("    .size _startup, .-_startup");
+               
 
-                File.WriteAllText(startupPath, startup.ToString());
+                File.WriteAllText(startupPath, startup.GetStartupCode());
                 Console.WriteLine($"✓ Created startup file: {startupPath}");
             }
             else
