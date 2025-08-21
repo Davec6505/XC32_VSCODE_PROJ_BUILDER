@@ -4,6 +4,9 @@
 
 set -e
 
+echo "PIC32MZ Project Generator - Shell Script Version"
+echo "==============================================="
+
 # Default values
 PROJECT_NAME=""
 DEVICE="32MZ1024EFH064"
