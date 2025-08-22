@@ -1,13 +1,23 @@
 {
   "version": 2,
-  "dgSpecHash": "5koLoSYHYA0=",
+  "dgSpecHash": "RmrM/38sUDU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj",
+  "projectFilePath": "c:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Automation\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.36\\microsoft.netcore.app.ref.6.0.36.nupkg.sha512",
     "C:\\Users\\Automation\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.36\\microsoft.windowsdesktop.app.ref.6.0.36.nupkg.sha512",
     "C:\\Users\\Automation\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.36\\microsoft.aspnetcore.app.ref.6.0.36.nupkg.sha512",
     "C:\\Users\\Automation\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.36\\microsoft.netcore.app.host.win-x64.6.0.36.nupkg.sha512"
   ],
-  "logs": []
+  "logs": [
+    {
+      "code": "NU1900",
+      "level": "Warning",
+      "message": "Error occurred while getting package vulnerability data: Unable to load the service index for source https://api.nuget.org/v3/index.json.",
+      "projectPath": "c:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj",
+      "warningLevel": 1,
+      "filePath": "c:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj",
+      "targetGraphs": []
+    }
+  ]
 }

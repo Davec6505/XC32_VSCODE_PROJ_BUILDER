@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj": {}
+    "c:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj": {
+    "c:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj",
+        "projectUniqueName": "c:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj",
         "projectName": "generate_project",
-        "projectPath": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj",
+        "projectPath": "c:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\generate_project.csproj",
         "packagesPath": "C:\\Users\\Automation\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\obj\\",
+        "outputPath": "c:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\csharp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
