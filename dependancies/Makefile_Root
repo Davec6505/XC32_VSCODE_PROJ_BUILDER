@@ -28,7 +28,7 @@ DFP := $(DFP_LOCATION)/Microchip/PIC32MZ-EF_DFP/1.5.173
 
 # Simple Unix-style build system
 BUILD=make
-CLEAN=make clean
+CLEAN=make clean DRY_RUN=$(DRY_RUN)
 BUILD_DIR=make build_dir
 
 all:
@@ -39,26 +39,30 @@ all:
 	@echo "######  BUILD COMPLETE   ########"
 
 build_dir:
-	@echo "#######BUILDING DIRECTORIES FOR OUTPUT BINARIES#######"
+	@echo "###### BUILDING DIRECTORIES FOR OUTPUT BINARIES #######"
 	cd srcs && $(BUILD_DIR)
+	@echo "############ BUILDING DIRECTORIES COMPLETED ###########"
 
 debug:
-	@echo "#######DEBUGGING OUTPUTS#######"
+	@echo "####### DEBUGGING OUTPUTS #######"
 	cd srcs && $(BUILD) debug COMPILER_LOCATION="$(COMPILER_LOCATION)" DFP_LOCATION="$(DFP_LOCATION)" DFP="$(DFP)" DEVICE=$(DEVICE) MODULE=$(MODULE)
 
 platform:
-	@echo "#######PLATFORM INFO#######"
+	@echo "####### PLATFORM INFO #######"
 	cd srcs && $(BUILD) platform COMPILER_LOCATION="$(COMPILER_LOCATION)" DFP_LOCATION="$(DFP_LOCATION)" DFP="$(DFP)" DEVICE=$(DEVICE) MODULE=$(MODULE)
 
 clean:
 	@echo "####### CLEANING OUTPUTS #######"
 	cd srcs && $(CLEAN)
-	@echo "####### REMOVING BUILD ARTIFACTS #######"
-ifeq ($(OS), Windows_NT)
-	@"C:\Program Files\Git\bin\bash.exe" -c "rm -rf bins/* objs/* other/* 2>/dev/null || true"
-else
-	@rm -rf bins/* objs/* other/* 2>/dev/null || true
-endif
+
+
+rem_dir:
+	@echo "####### REMOVING BUILD DIRECTORIES #######"
+	cd srcs && $(BUILD) rem_dir DRY_RUN=$(DRY_RUN) DEL_PATH=$(DIR_PATH)
+
+mk_dir:
+	@echo "####### CREATING BUILD DIRECTORIES #######"
+	cd srcs && $(BUILD) mk_dir DIR_PATH=$(DIR_PATH)
 
 install:
 	cd srcs && $(BUILD) install
@@ -71,6 +75,10 @@ flash:
 dfp_dir:
 	@echo "####### DFP DIRECTORY #######"
 	@echo $(DFP)
+
+debug_path:
+	@echo "####### DEBUGGING PATHS #######"
+	cd srcs && $(BUILD) debug_path $(DIR_PATH)
 
 help:
 	@echo "####### HELP #######"

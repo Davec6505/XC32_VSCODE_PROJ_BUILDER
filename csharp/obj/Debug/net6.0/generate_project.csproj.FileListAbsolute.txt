@@ -13,3 +13,5 @@ C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net6.0\refint\
 C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net6.0\generate_project.pdb
 C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net6.0\generate_project.genruntimeconfig.cache
 C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net6.0\ref\generate_project.dll
+C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net6.0\generate_project.Properties.Resources.resources
+C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net6.0\generate_project.csproj.GenerateResource.cache

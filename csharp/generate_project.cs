@@ -71,8 +71,8 @@ namespace PIC32MZProjectGenerator
           */
 
             // Ensure output directory exists
-            makeStrings = new MAKE_Strings(projectName, device);
-            startup = new startup();
+          //  makeStrings = new MAKE_Strings(projectName, device);
+          //  startup = new startup();
 
             if (!Directory.Exists(outputDir))
             {
@@ -103,11 +103,14 @@ namespace PIC32MZProjectGenerator
             try
             {
                 CreateProjectStructure(projectRoot);
-                CreateRootMakefile(projectRoot);
-                CreateSrcsMakefile(projectRoot);
+                //CreateRootMakefile(projectRoot);
+                CopyRootMakefile(projectRoot);
+                //CreateSrcsMakefile(projectRoot);
+                CopySrcMakefile(projectRoot);
                 CreateTemplateFiles(projectRoot);
                 CreateVSCodeConfiguration(projectRoot);
-                if (includeStartup) CreateStartupFiles(projectRoot);
+                //if (includeStartup) CreateStartupFiles(projectRoot);
+                if (includeStartup) CopyStartupFiles(projectRoot);
 
                 Console.WriteLine();
                 Console.WriteLine($"✅ Project '{projectName}' generated successfully!");
@@ -182,12 +185,46 @@ namespace PIC32MZProjectGenerator
             Console.WriteLine("✓ Root Makefile created");
         }
 
+        static void CopyRootMakefile(string projectRoot)
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            string project_root = Directory.GetParent(currentDir).Parent.FullName;
+            string sourcePath = Path.Combine(project_root, "..\\..\\dependancies\\Makefile_Root");
+            string destPath = Path.Combine(projectRoot, "Makefile");
+            if (File.Exists(sourcePath))
+            {
+                File.Copy(sourcePath, destPath);
+                Console.WriteLine("✓ Copied root Makefile to root directory");
+            }
+            else
+            {
+                Console.WriteLine("✗ Root Makefile not found to copy @ " + sourcePath);
+            }
+        }
+
         static void CreateSrcsMakefile(string projectRoot)
         {
             Console.WriteLine("Creating srcs Makefile...");
 
             File.WriteAllText(Path.Combine(projectRoot, "srcs", "Makefile"), makeStrings.Get_SRCMakefileContent());//.Get_SrcsMakefileContent());//makefile.ToString());
             Console.WriteLine("✓ Srcs Makefile created");
+        }
+
+        static void CopySrcMakefile(string projectRoot)
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            string project_root = Directory.GetParent(currentDir).Parent.FullName;
+            string sourcePath = Path.Combine(project_root, "..\\..\\dependancies\\Makefile_Srcs");
+            string destPath = Path.Combine(projectRoot, "srcs", "Makefile");
+            if (File.Exists(sourcePath))
+            {
+                File.Copy(sourcePath, destPath);
+                Console.WriteLine("✓ Copied srcs Makefile to srcs directory");
+            }
+            else
+            {
+                Console.WriteLine("✗ Srcs Makefile not found to copy @ " + sourcePath);
+            }
         }
 
         static void CreateTemplateFiles(string projectRoot)
@@ -387,6 +424,28 @@ namespace PIC32MZProjectGenerator
             }
 
             Console.WriteLine("✓ Startup files processed");
+        }
+
+        static void CopyStartupFiles(string projectRoot)
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            string project_root = Directory.GetParent(currentDir).Parent.FullName;
+            string sourcePath = Path.Combine(project_root, "..\\..\\dependancies\\startup.S");
+            string destDir = Path.Combine(projectRoot, "srcs", "startup");
+            string destPath = Path.Combine(destDir, "startup.S");
+            if (!Directory.Exists(destDir))
+            {
+                Directory.CreateDirectory(destDir);
+            }
+            if (File.Exists(sourcePath))
+            {
+                File.Copy(sourcePath, destPath, true);
+                Console.WriteLine("✓ Copied startup file to startup directory");
+            }
+            else
+            {
+                Console.WriteLine("✗ Startup file not found to copy @ " + sourcePath);
+            }
         }
 
         static void CreateVSCodeConfiguration(string projectRoot)

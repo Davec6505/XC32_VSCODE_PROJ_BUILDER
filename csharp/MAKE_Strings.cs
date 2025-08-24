@@ -13,15 +13,15 @@ namespace generate_project
     {
 
 
-            public static string Module { get; set; }
-            public static string Device { get; set; }
+        public static string Module { get; set; }
+        public static string Device { get; set; }
 
-            //constructor
-            public MAKE_Strings(string? module, string? device)
-            {
-                Module = module ?? "MyPIC32MZProject";
-                Device = device ?? "32MZ1024EFH064";
-            }
+        //constructor
+        public MAKE_Strings(string? module, string? device)
+        {
+            Module = module ?? "MyPIC32MZProject";
+            Device = device ?? "32MZ1024EFH064";
+        }
         public string Get_SRCMakefileContent()
         {
             var sb = new StringBuilder();
@@ -120,10 +120,10 @@ namespace generate_project
             sb.AppendLine("INCS := -I\"$(INC_DIR)\" $(INC_FLAGS) -I\"$(DFP_INCLUDE)\"");
             sb.AppendLine();
             sb.AppendLine("# Direct the compiler outputs for .o files from .c or .cpp code");
-            sb.AppendLine("DIRECT_OBJ := $(CC) -g -x c -c $(MCU) -ffunction-sections -fdata-sections -O1 -fno-common $(INCS) $(FLAGS) -MF $(@:.o=.d) -DXPRJ_default=default -mdfp=\"$(DFP)\"");
+            sb.AppendLine("DIRECT_OBJ := $(CC) -g -c $(MCU) -ffunction-sections -fdata-sections -O1 -fno-common $(INCS) $(FLAGS) -MF $(@:.o=.d) -DXPRJ_default=default -mdfp=\"$(DFP)\"");
             sb.AppendLine();
             sb.AppendLine("# Direct compiler output for linker");
-            sb.AppendLine("LINKER_SCRIPT := $(DFP)/xc32/$(DEVICE)/p32MZ1024EFH064.ld");
+            sb.AppendLine("LINKER_SCRIPT := $(DFP)/xc32/$(DEVICE)/p$(DEVICE).ld");
             sb.AppendLine("DIRECT_LINK := $(CC) $(MCU) -nostartfiles -DXPRJ_default=default -mdfp=\"$(DFP)\" -Wl,--defsym=__MPLAB_BUILD=1,--script=\"$(LINKER_SCRIPT)\",--defsym=_min_heap_size=512,--gc-sections,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map=\"$(OUT_DIR)/production.map\",--memorysummary,$(OUT_DIR)/memoryfile.xml");
             sb.AppendLine();
             sb.AppendLine("DIRECT_ASM :=   -c  -DXPRJ_default=default    -Wa,--defsym=__MPLAB_BUILD=1,-MD=$(OBJ_DIR)/startup/startup.o.asm.d,--gdwarf-2 -mdfp=\"$(DFP)\" -MMD -MF $(OBJ_DIR)/startup/startup.o.d");
@@ -139,13 +139,13 @@ namespace generate_project
             sb.AppendLine("$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c");
             sb.AppendLine("\t@echo \"Compiling $< to $@\"");
             sb.AppendLine("\t@$(call MKDIR,$(dir $@))");
-	        sb.AppendLine("\t$(DIRECT_OBJ) $< -o $@");
+            sb.AppendLine("\t$(DIRECT_OBJ) $< -o $@");
             sb.AppendLine("\t@echo \"Object file created: $@\"");
             sb.AppendLine();
             sb.AppendLine("$(OBJ_DIR)/%.o: $(SRC_DIR)/%.S");
             sb.AppendLine("\t@echo \"Compiling assembly file $< to object file $@\"");
             sb.AppendLine("\t@$(call MKDIR,$(dir $@))");
-	        sb.AppendLine("\t$(CC) $(MCU) $(DIRECT_ASM) -o $@ $<");
+            sb.AppendLine("\t$(CC) $(MCU) $(DIRECT_ASM) -o $@ $<");
             sb.AppendLine("\t@echo \"Object file created: $@\"");
             sb.AppendLine();
             sb.AppendLine(".PHONY: clean build_dir debug help platform");
@@ -249,7 +249,7 @@ namespace generate_project
 
         public string Get_RootMakefileContent()
         {
-           var sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.AppendLine("# Simple Makefile for PIC32MZ project");
             sb.AppendLine("# Name of the project binary");
@@ -269,12 +269,14 @@ namespace generate_project
             sb.AppendLine("# Cross-platform compiler and DFP paths");
             sb.AppendLine("ifeq ($(OS),Windows_NT)");
             sb.AppendLine("    COMPILER_LOCATION := C:/Program Files/Microchip/xc32/v4.60/bin");
-            sb.AppendLine("    DFP_LOCATION := C:/Program Files/Microchip/MPLABX/v6.25/packs");
+            sb.AppendLine("#    DFP_LOCATION := C:/Program Files/Microchip/MPLABX/v6.25/packs");
+            sb.AppendLine("    DFP_LOCATION := C:/Users/Automation/.mchp_packs");
             sb.AppendLine("else");
             sb.AppendLine("    COMPILER_LOCATION := /opt/microchip/xc32/v4.60/bin");
             sb.AppendLine("    DFP_LOCATION := /opt/microchip/mplabx/v6.25/packs");
             sb.AppendLine("endif");
-            sb.AppendLine("DFP := $(DFP_LOCATION)/Microchip/PIC32MZ-EF_DFP/1.4.168");
+            sb.AppendLine("#DFP := $(DFP_LOCATION)/Microchip/PIC32MZ-EF_DFP/1.4.168");
+            sb.AppendLine("DFP := $(DFP_LOCATION)/Microchip/PIC32MZ-EF_DFP/1.5.173");
             sb.AppendLine();
             sb.AppendLine("# Simple Unix-style build system");
             sb.AppendLine("BUILD=make");
@@ -305,7 +307,9 @@ namespace generate_project
             sb.AppendLine("\tcd srcs && $(CLEAN)");
             sb.AppendLine("\t@echo \"####### REMOVING BUILD ARTIFACTS #######\"");
             sb.AppendLine("ifeq ($(OS), Windows_NT)");
-            sb.AppendLine("\t@\"C:\\Program Files\\Git\\bin\\bash.exe\" - c \"rm -rf bins/* objs/* other/* 2>/dev/null || true\"");
+            sb.AppendLine("\t@if exist bins del /q bins\\*.* >nul 2>&1");
+            sb.AppendLine("\t@if exist objs del /q objs\\*.* >nul 2>&1");
+            sb.AppendLine("\t@if exist other del /q other\\*.* >nul 2>&1");
             sb.AppendLine("else");
             sb.AppendLine("\t@rm -rf bins/* objs/* other/* 2>/dev/null || true");
             sb.AppendLine("endif");
@@ -360,5 +364,5 @@ namespace generate_project
         }
     }
 
-    }
+}
 
