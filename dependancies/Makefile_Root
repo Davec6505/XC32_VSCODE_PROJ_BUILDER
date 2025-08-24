@@ -110,5 +110,35 @@ else
 	@ls -la
 endif
 
-.PHONY: all build_dir clean install find-source grep-pattern list-files debug platform
 
+build_commands:
+ifeq ($(OS),Windows_NT)
+
+	@powershell -Command "Write-Host '######################################## BUILD COMMANDS ############################################' -ForegroundColor Green"
+	@powershell -Command "Write-Host 'make build_dir           - Start by testing build directories output (DRY_RUN=1 default).'"
+	@powershell -Command "Write-Host 'make build_dir DRY_RUN=0 - Create build directories (set DRY_RUN=1 to simulate).'"
+	@powershell -Command "Write-Host 'make all                 - Build the project.'"
+	@powershell -Command "Write-Host 'make clean               - Clean build outputs.'"
+	@powershell -Command "Write-Host 'make platform            - Show platform information.'"
+	@powershell -Command "Write-Host 'make rem_dir DIR_PATH=   - Remove specified directory (DIR_PATH=\"\").'"
+	@powershell -Command "Write-Host 'make mk_dir DIR_PATH=    - Create specified directory (DIR_PATH=\"\").'"
+	@powershell -Command "Write-Host 'make dfp_dir             - Show the DFP directory.'"
+	@powershell -Command "Write-Host 'make debug_path DIR_PATH= - Debug specified path (DIR_PATH=\"\").'"
+	@powershell -Command "Write-Host 'make help                - Show this help message.'"
+	@powershell -Command "Write-Host '#####################################################################################################' -ForegroundColor Green"
+else
+	@echo -e "$(GREEN)######################################## BUILD COMMANDS ############################################$(NC)"
+	@echo "make build_dir          			- Start by testing build directories output (DRY_RUN=1 default)."
+	@echo "make build_dir DRY_RUN=0			- Create build directories (set DRY_RUN=1 to simulate)."
+	@echo "make all                			- Build the project."
+	@echo "make clean              			- Clean build outputs."
+	@echo "make platform           			- Show platform information."
+	@echo "make rem_dir DIR_PATH=  			- Remove specified directory (DIR_PATH=\"\")."
+	@echo "make mk_dir DIR_PATH=   			- Create specified directory (DIR_PATH=\"\")."
+	@echo "make dfp_dir            			- Show the DFP directory."
+	@echo "make debug_path DIR_PATH			= - Debug specified path (DIR_PATH=\"\")."
+	@echo "make help               			- Show this help message."
+	@echo -e "$(GREEN)#####################################################################################################$(NC)"
+endif
+
+.PHONY: all build_dir clean install find-source grep-pattern list-files debug platform build_commands
