@@ -6,10 +6,10 @@ using System.Text;
 
 namespace PIC32MZProjectGenerator
 {
-  
+
     class Program
     {
-       static MAKE_Strings makeStrings;
+        static MAKE_Strings makeStrings;
         static startup startup;
 
         // Default values
@@ -17,7 +17,7 @@ namespace PIC32MZProjectGenerator
         private static string outputDir = ".";
         private static string projectName = "";
         private static bool includeStartup = false;
-
+        private static bool includeDefinitions = false;
         static void Main(string[] args)
         {
             // Check arguments
@@ -51,8 +51,17 @@ namespace PIC32MZProjectGenerator
                 else if (args[i].ToLower() == "--mikroc")
                 {
                     includeStartup = true;
+                    if(i + 1 < args.Length)
+                    { 
+                        i++; // skip value
+                    }
                 }
-               
+                else if (args[i].ToLower() == "--definitions" || args[i] == "-h")
+                {           
+                    includeDefinitions = true;
+                }
+
+
             }
 
             // Check for required project name
@@ -64,15 +73,15 @@ namespace PIC32MZProjectGenerator
 
             // Parse arguments        
 
-           /*
-            if (args.Length > 1) device = args[1];
-            if (args.Length > 2) outputDir = args[2];
-            if (args.Length > 3 && args[3].ToLower() == "mikroc") includeStartup = true;
-          */
+            /*
+             if (args.Length > 1) device = args[1];
+             if (args.Length > 2) outputDir = args[2];
+             if (args.Length > 3 && args[3].ToLower() == "mikroc") includeStartup = true;
+           */
 
             // Ensure output directory exists
-          //  makeStrings = new MAKE_Strings(projectName, device);
-          //  startup = new startup();
+            //  makeStrings = new MAKE_Strings(projectName, device);
+            //  startup = new startup();
 
             if (!Directory.Exists(outputDir))
             {
@@ -111,15 +120,19 @@ namespace PIC32MZProjectGenerator
                 CreateVSCodeConfiguration(projectRoot);
                 //if (includeStartup) CreateStartupFiles(projectRoot);
                 if (includeStartup) CopyStartupFiles(projectRoot);
+                if (includeDefinitions) CopyDefinitionsfile(projectRoot);
 
                 Console.WriteLine();
                 Console.WriteLine($"✅ Project '{projectName}' generated successfully!");
+                Console.WriteLine($"?  Ensure that xc32 Compiler is installed on your pc and its PATH is set");
                 Console.WriteLine($"📁 Location: {projectRoot}");
                 Console.WriteLine();
                 Console.WriteLine("Next steps:");
-                Console.WriteLine($"  cd {projectName}");
-                Console.WriteLine("  make build_dir");
-                Console.WriteLine("  make");
+                Console.WriteLine($"  cd {projectRoot}\\{projectName}");
+                Console.WriteLine("   make cmdlet               #- A detailed view of all make commands.");
+                Console.WriteLine("   make build_dir  DRY_RUN=1 #- Test folder and file manipulation.");
+                Console.WriteLine("   make build_dir  DRY_RUN=0 #- Run folder and file manipulation.");
+                Console.WriteLine("   make                      #- Build the project");
                 Console.WriteLine();
                 if (includeStartup)
                 {
@@ -177,14 +190,9 @@ namespace PIC32MZProjectGenerator
             Console.WriteLine("✓ Directory structure created");
         }
 
-        static void CreateRootMakefile(string projectRoot)
-        {
-            Console.WriteLine("Creating root Makefile...");
 
-            File.WriteAllText(Path.Combine(projectRoot, "Makefile"), makeStrings.Get_RootMakefileContent()); //makefile.ToString());
-            Console.WriteLine("✓ Root Makefile created");
-        }
-
+        #region Copy files from dependancies folder
+        // Copy the Makefile_Root to root directory
         static void CopyRootMakefile(string projectRoot)
         {
             string currentDir = Directory.GetCurrentDirectory();
@@ -202,14 +210,8 @@ namespace PIC32MZProjectGenerator
             }
         }
 
-        static void CreateSrcsMakefile(string projectRoot)
-        {
-            Console.WriteLine("Creating srcs Makefile...");
 
-            File.WriteAllText(Path.Combine(projectRoot, "srcs", "Makefile"), makeStrings.Get_SRCMakefileContent());//.Get_SrcsMakefileContent());//makefile.ToString());
-            Console.WriteLine("✓ Srcs Makefile created");
-        }
-
+        // Copy the Makefile_SRC to srcs directory
         static void CopySrcMakefile(string projectRoot)
         {
             string currentDir = Directory.GetCurrentDirectory();
@@ -226,6 +228,51 @@ namespace PIC32MZProjectGenerator
                 Console.WriteLine("✗ Srcs Makefile not found to copy @ " + sourcePath);
             }
         }
+
+        // Copy the startup.S file to srcs/startup directory
+        static void CopyStartupFiles(string projectRoot)
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            string project_root = Directory.GetParent(currentDir).Parent.FullName;
+            string sourcePath = Path.Combine(project_root, "..\\..\\dependancies\\startup.S");
+            string destDir = Path.Combine(projectRoot, "srcs", "startup");
+            string destPath = Path.Combine(destDir, "startup.S");
+            if (!Directory.Exists(destDir))
+            {
+                Directory.CreateDirectory(destDir);
+            }
+            if (File.Exists(sourcePath))
+            {
+                File.Copy(sourcePath, destPath, true);
+                Console.WriteLine("✓ Copied startup file to startup directory");
+            }
+            else
+            {
+                Console.WriteLine("✗ Startup file not found to copy @ " + sourcePath);
+            }
+        }
+
+
+        // Copy the PIC32MZ_EF_Dev_Board_Definitions.h file to incs directory
+        static void CopyDefinitionsfile(string projectRoot)
+        {
+            string currentDir = Directory.GetCurrentDirectory();
+            string project_root = Directory.GetParent(currentDir).Parent.FullName;
+            string sourcePath = Path.Combine(project_root, "..\\..\\dependancies\\PIC32MZ_EF_Dev_Board_Definitions.h");
+            string destPath = Path.Combine(projectRoot, "incs", "PIC32MZ_EF_Dev_Board_Definitions.h");
+            if (File.Exists(sourcePath))
+            {
+                File.Copy(sourcePath, destPath);
+                Console.WriteLine("✓ Copied PIC32MZ_EF_Dev_Board_Definitions.h to incs directory");
+            }
+            else
+            {
+                Console.WriteLine("✗ PIC32MZ_EF_Dev_Board_Definitions.h not found to copy @ " + sourcePath);
+            }
+        }
+        #endregion Copy files from dependancies folder
+
+    
 
         static void CreateTemplateFiles(string projectRoot)
         {
@@ -294,64 +341,7 @@ namespace PIC32MZProjectGenerator
 
             File.WriteAllText(Path.Combine(projectRoot, "srcs", "main.c"), mainC.ToString());
 
-            // definitions.h in incs
-            var definitionsH = new StringBuilder();
-            definitionsH.AppendLine("/*******************************************************************************");
-            definitionsH.AppendLine("  System Definitions");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("  File Name:");
-            definitionsH.AppendLine("    definitions.h");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("  Summary:");
-            definitionsH.AppendLine($"    {projectName} system definitions.");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("  Description:");
-            definitionsH.AppendLine($"    This file contains the system-wide prototypes and definitions for {projectName}.");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine(" *******************************************************************************/");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("#ifndef DEFINITIONS_H");
-            definitionsH.AppendLine("#define DEFINITIONS_H");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// Section: Included Files");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("#include <stddef.h>");
-            definitionsH.AppendLine("#include <stdbool.h>");
-            definitionsH.AppendLine("#include <stdint.h>");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// Section: Project Definitions");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("// Add your project-specific definitions here");
-            definitionsH.AppendLine("// Examples:");
-            definitionsH.AppendLine("// #define LED_PIN     1");
-            definitionsH.AppendLine("// #define BUTTON_PIN  2");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// Section: Function Prototypes");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("// *****************************************************************************");
-            definitionsH.AppendLine("#ifdef __cplusplus  // Provide C++ Compatibility");
-            definitionsH.AppendLine("extern \"C\" {");
-            definitionsH.AppendLine("#endif");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("// Add your function prototypes here");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("#ifdef __cplusplus");
-            definitionsH.AppendLine("}");
-            definitionsH.AppendLine("#endif");
-            definitionsH.AppendLine("");
-            definitionsH.AppendLine("#endif /* DEFINITIONS_H */");
-
-            File.WriteAllText(Path.Combine(projectRoot, "incs", "definitions.h"), definitionsH.ToString());
-
+        
             // README.md
             var readme = new StringBuilder();
             readme.AppendLine($"# {projectName}");
@@ -405,48 +395,6 @@ namespace PIC32MZProjectGenerator
             Console.WriteLine("✓ Template files created");
         }
 
-        static void CreateStartupFiles(string projectRoot)
-        {
-            Console.WriteLine("Creating startup files for MikroC support...");
-
-            string startupPath = Path.Combine(projectRoot, "srcs", "startup", "startup.S");
-
-            if (!File.Exists(startupPath))
-            {
-               
-
-                File.WriteAllText(startupPath, startup.GetStartupCode());
-                Console.WriteLine($"✓ Created startup file: {startupPath}");
-            }
-            else
-            {
-                Console.WriteLine($"✓ Startup file already exists: {startupPath}");
-            }
-
-            Console.WriteLine("✓ Startup files processed");
-        }
-
-        static void CopyStartupFiles(string projectRoot)
-        {
-            string currentDir = Directory.GetCurrentDirectory();
-            string project_root = Directory.GetParent(currentDir).Parent.FullName;
-            string sourcePath = Path.Combine(project_root, "..\\..\\dependancies\\startup.S");
-            string destDir = Path.Combine(projectRoot, "srcs", "startup");
-            string destPath = Path.Combine(destDir, "startup.S");
-            if (!Directory.Exists(destDir))
-            {
-                Directory.CreateDirectory(destDir);
-            }
-            if (File.Exists(sourcePath))
-            {
-                File.Copy(sourcePath, destPath, true);
-                Console.WriteLine("✓ Copied startup file to startup directory");
-            }
-            else
-            {
-                Console.WriteLine("✗ Startup file not found to copy @ " + sourcePath);
-            }
-        }
 
         static void CreateVSCodeConfiguration(string projectRoot)
         {
@@ -463,6 +411,9 @@ namespace PIC32MZProjectGenerator
             ""label"": ""makemake"",
             ""type"": ""shell"",
             ""command"": ""make"",
+            ""options"": {
+                ""cwd"": ""${workspaceFolder}""
+            },
             ""group"": {
                 ""kind"": ""build"",
                 ""isDefault"": true
@@ -598,5 +549,46 @@ namespace PIC32MZProjectGenerator
 
             Console.WriteLine("✓ VS Code configuration created");
         }
+
+
+            #region un-used functions
+        static void CreateRootMakefile(string projectRoot)
+        {
+            Console.WriteLine("Creating root Makefile...");
+
+            File.WriteAllText(Path.Combine(projectRoot, "Makefile"), makeStrings.Get_RootMakefileContent()); //makefile.ToString());
+            Console.WriteLine("✓ Root Makefile created");
+        }
+
+        static void CreateSrcsMakefile(string projectRoot)
+        {
+            Console.WriteLine("Creating srcs Makefile...");
+
+            File.WriteAllText(Path.Combine(projectRoot, "srcs", "Makefile"), makeStrings.Get_SRCMakefileContent());//.Get_SrcsMakefileContent());//makefile.ToString());
+            Console.WriteLine("✓ Srcs Makefile created");
+        }
+
+
+        static void CreateStartupFiles(string projectRoot)
+        {
+            Console.WriteLine("Creating startup files for MikroC support...");
+
+            string startupPath = Path.Combine(projectRoot, "srcs", "startup", "startup.S");
+
+            if (!File.Exists(startupPath))
+            {
+
+
+                File.WriteAllText(startupPath, startup.GetStartupCode());
+                Console.WriteLine($"✓ Created startup file: {startupPath}");
+            }
+            else
+            {
+                Console.WriteLine($"✓ Startup file already exists: {startupPath}");
+            }
+
+            Console.WriteLine("✓ Startup files processed");
+        }
+        #endregion un-used functions
     }
 }

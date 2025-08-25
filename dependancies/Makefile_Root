@@ -80,10 +80,7 @@ debug_path:
 	@echo "####### DEBUGGING PATHS #######"
 	cd srcs && $(BUILD) debug_path $(DIR_PATH)
 
-help:
-	@echo "####### HELP #######"
-	cd srcs && $(BUILD) help
-	@echo "#####################"
+
 
 # Unix-style utility targets (cross-platform)
 find-source:
@@ -110,35 +107,48 @@ else
 	@ls -la
 endif
 
+help: cmdlets
+
+
+HELP_ENTRIES = \
+    make build_dir            | Start by testing build directories output (DRY_RUN=1 default). ; \
+    make build_dir DRY_RUN=0  | Create build directories (set DRY_RUN=1 to simulate). ; \
+    make all                  | Build the project. ; \
+    make clean                | Clean build outputs. ; \
+    make platform             | Show platform information. ; \
+    make rem_dir DIR_PATH=    | Remove specified directory (DIR_PATH=""). ; \
+    make mk_dir DIR_PATH=     | Create specified directory (DIR_PATH=""). ; \
+    make dfp_dir              | Show the DFP directory. ; \
+    make debug_path DIR_PATH= | Debug specified path (DIR_PATH=""). ; \
+    make help                 | Show this help message.
 
 cmdlets:
 ifeq ($(OS),Windows_NT)
-	@powershell -Command "Write-Host '######################################## BUILD COMMANDS ############################################' -ForegroundColor Green"
-	@powershell -Command "Write-Host 'make build_dir            '-ForegroundColor Yellow -NoNewline; Write-Host '- Start by testing build directories output (DRY_RUN=1 default).' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make build_dir DRY_RUN=0  '-ForegroundColor Yellow -NoNewline; Write-Host '- Create build directories (set DRY_RUN=1 to simulate).' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make all                  '-ForegroundColor Yellow -NoNewline; Write-Host '- Build the project.' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make clean                '-ForegroundColor Yellow -NoNewline; Write-Host '- Clean build outputs.' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make platform             '-ForegroundColor Yellow -NoNewline; Write-Host '- Show platform information.' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make rem_dir DIR_PATH=    '-ForegroundColor Yellow -NoNewline; Write-Host '- Remove specified directory (DIR_PATH=\"\").' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make mk_dir DIR_PATH=     '-ForegroundColor Yellow -NoNewline; Write-Host '- Create specified directory (DIR_PATH=\"\").' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make dfp_dir              '-ForegroundColor Yellow -NoNewline; Write-Host '- Show the DFP directory.' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make debug_path DIR_PATH= '-ForegroundColor Yellow -NoNewline; Write-Host '- Debug specified path (DIR_PATH=\"\").' -ForegroundColor White"
-	@powershell -Command "Write-Host 'make help                 '-ForegroundColor Yellow -NoNewline; Write-Host '- Show this help message.' -ForegroundColor White"
-	@powershell -Command "Write-Host '#####################################################################################################' -ForegroundColor Green"
+	@powershell -NoProfile -Command "$$raw = '$(HELP_ENTRIES)'; \
+	$$entries = $$raw -split ';'; \
+	Write-Host '######################################## BUILD COMMANDS ############################################' -ForegroundColor Green; \
+	foreach ($$entry in $$entries) { \
+        if ($$entry.Trim() -ne '') { \
+            $$parts = $$entry -split '\|'; \
+            $$cmd = $$parts[0].Trim(); \
+            $$desc = $$parts[1].Trim(); \
+            $$cmdPadded = $$cmd.PadRight(30); \
+            Write-Host $$cmdPadded -ForegroundColor Yellow -NoNewline; \
+            Write-Host ' - ' $$desc -ForegroundColor White; \
+        } \
+	}; \
+	Write-Host '#####################################################################################################' -ForegroundColor Green"
 else
 	@echo -e "$(GREEN)######################################## BUILD COMMANDS ############################################$(NC)"
-	@echo "make build_dir          			- Start by testing build directories output (DRY_RUN=1 default)."
-	@echo "make build_dir DRY_RUN=0			- Create build directories (set DRY_RUN=1 to simulate)."
-	@echo "make all                			- Build the project."
-	@echo "make clean              			- Clean build outputs."
-	@echo "make platform           			- Show platform information."
-	@echo "make rem_dir DIR_PATH=  			- Remove specified directory (DIR_PATH=\"\")."
-	@echo "make mk_dir DIR_PATH=   			- Create specified directory (DIR_PATH=\"\")."
-	@echo "make dfp_dir            			- Show the DFP directory."
-	@echo "make debug_path DIR_PATH			= - Debug specified path (DIR_PATH=\"\")."
-	@echo "make help               			- Show this help message."
+	@for entry in $(HELP_ENTRIES); do \
+        cmd=$$(echo $$entry | cut -d'|' -f1 | xargs); \
+        desc=$$(echo $$entry | cut -d'|' -f2- | xargs); \
+        printf "$(Yellow)%-30s$(NC) - %s\n" "$$cmd" "$$desc"; \
+	done
 	@echo -e "$(GREEN)#####################################################################################################$(NC)"
 endif
 
-.PHONY: all build_dir clean install find-source grep-pattern list-files debug platform cmdlets
+
+
+.PHONY: all build_dir clean install find-source grep-pattern list-files debug platform cmdlets 
 
