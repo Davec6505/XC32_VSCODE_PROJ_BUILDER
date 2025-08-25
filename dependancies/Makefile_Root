@@ -111,20 +111,19 @@ else
 endif
 
 
-build_commands:
+cmdlets:
 ifeq ($(OS),Windows_NT)
-
 	@powershell -Command "Write-Host '######################################## BUILD COMMANDS ############################################' -ForegroundColor Green"
-	@powershell -Command "Write-Host 'make build_dir           - Start by testing build directories output (DRY_RUN=1 default).'"
-	@powershell -Command "Write-Host 'make build_dir DRY_RUN=0 - Create build directories (set DRY_RUN=1 to simulate).'"
-	@powershell -Command "Write-Host 'make all                 - Build the project.'"
-	@powershell -Command "Write-Host 'make clean               - Clean build outputs.'"
-	@powershell -Command "Write-Host 'make platform            - Show platform information.'"
-	@powershell -Command "Write-Host 'make rem_dir DIR_PATH=   - Remove specified directory (DIR_PATH=\"\").'"
-	@powershell -Command "Write-Host 'make mk_dir DIR_PATH=    - Create specified directory (DIR_PATH=\"\").'"
-	@powershell -Command "Write-Host 'make dfp_dir             - Show the DFP directory.'"
-	@powershell -Command "Write-Host 'make debug_path DIR_PATH= - Debug specified path (DIR_PATH=\"\").'"
-	@powershell -Command "Write-Host 'make help                - Show this help message.'"
+	@powershell -Command "Write-Host 'make build_dir            '-ForegroundColor Yellow -NoNewline; Write-Host '- Start by testing build directories output (DRY_RUN=1 default).' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make build_dir DRY_RUN=0  '-ForegroundColor Yellow -NoNewline; Write-Host '- Create build directories (set DRY_RUN=1 to simulate).' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make all                  '-ForegroundColor Yellow -NoNewline; Write-Host '- Build the project.' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make clean                '-ForegroundColor Yellow -NoNewline; Write-Host '- Clean build outputs.' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make platform             '-ForegroundColor Yellow -NoNewline; Write-Host '- Show platform information.' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make rem_dir DIR_PATH=    '-ForegroundColor Yellow -NoNewline; Write-Host '- Remove specified directory (DIR_PATH=\"\").' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make mk_dir DIR_PATH=     '-ForegroundColor Yellow -NoNewline; Write-Host '- Create specified directory (DIR_PATH=\"\").' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make dfp_dir              '-ForegroundColor Yellow -NoNewline; Write-Host '- Show the DFP directory.' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make debug_path DIR_PATH= '-ForegroundColor Yellow -NoNewline; Write-Host '- Debug specified path (DIR_PATH=\"\").' -ForegroundColor White"
+	@powershell -Command "Write-Host 'make help                 '-ForegroundColor Yellow -NoNewline; Write-Host '- Show this help message.' -ForegroundColor White"
 	@powershell -Command "Write-Host '#####################################################################################################' -ForegroundColor Green"
 else
 	@echo -e "$(GREEN)######################################## BUILD COMMANDS ############################################$(NC)"
@@ -141,4 +140,5 @@ else
 	@echo -e "$(GREEN)#####################################################################################################$(NC)"
 endif
 
-.PHONY: all build_dir clean install find-source grep-pattern list-files debug platform build_commands
+.PHONY: all build_dir clean install find-source grep-pattern list-files debug platform cmdlets
+
