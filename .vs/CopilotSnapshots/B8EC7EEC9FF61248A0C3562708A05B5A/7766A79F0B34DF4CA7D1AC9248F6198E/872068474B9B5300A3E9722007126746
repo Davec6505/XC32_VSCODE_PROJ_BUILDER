@@ -1,0 +1,76 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using csharp;
+
+namespace Setup
+{
+    public partial class Form1 : Form
+    {
+        private List<ConfigWordDefinition> configWords;
+        private Dictionary<string, ComboBox> comboBoxes = new();
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Hide the taskbar icon and set the form as a tool window
+            this.ShowInTaskbar = false;
+            this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            // Do not load configWords or call CreateConfigUI on startup
+        }
+
+        private void CreateConfigUI()
+        {
+            int y = 10;
+            foreach (var word in configWords)
+            {
+                var label = new Label { Text = word.Name, Left = 10, Top = y, Width = 120 };
+                var combo = new ComboBox { Left = 140, Top = y, Width = 150, DropDownStyle = ComboBoxStyle.DropDownList };
+                combo.DataSource = word.Options;
+                combo.DisplayMember = "Name";
+                combo.ValueMember = "Name";
+                comboBoxes[word.Name] = combo;
+                this.Controls.Add(label);
+                this.Controls.Add(combo);
+                y += 30;
+            }
+            var btn = new Button { Text = "Generate", Left = 10, Top = y, Width = 100 };
+            btn.Click += Btn_Click;
+            this.Controls.Add(btn);
+        }
+
+        private void Btn_Click(object sender, EventArgs e)
+        {
+            // Example: Use the config dictionary to fill your template
+            var config = new Dictionary<string, string>();
+            foreach (var kvp in comboBoxes)
+                config[kvp.Key] = kvp.Value.SelectedValue.ToString();
+
+            // Use config["FPLLIDIV"], config["FMIIEN"], etc. in your template
+            MessageBox.Show("Config generated:\n" + string.Join("\n", config));
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (var openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Data files (*.data)|*.data|All files (*.*)|*.*";
+                openFileDialog.Title = "Select a .data file";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = openFileDialog.FileName;
+                    configWords = csharp.DaytonaConfigParser.Parse(filePath);
+                    CreateConfigUI();
+
+                }
+            }
+    // To fix CS0103, you need to ensure that DaytonaConfigParser is defined and accessible.
+    // If you have a class that parses the config file, you should either implement it or reference it.
+    // If you do not have such a class, you need to provide its implementation or ask for its code.
+
+    // Removed duplicate DaytonaConfigParser, ConfigWordOption, and ConfigWordDefinition classes
+}}

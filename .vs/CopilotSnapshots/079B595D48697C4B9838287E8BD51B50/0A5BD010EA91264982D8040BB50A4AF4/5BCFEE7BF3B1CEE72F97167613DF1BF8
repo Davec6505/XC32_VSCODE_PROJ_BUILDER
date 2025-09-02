@@ -1,0 +1,154 @@
+﻿File: csharp\Templates\config_bits.c.tt
+````````
+<#@ template language="C#" debug="false" hostspecific="true" #>
+<#@ output extension=".c" #>
+<#
+    // Choose variant: "MX" or "MZ"
+    var variant = "MZ"; // Change to "MX" for MX series
+
+    // Config bits for each variant
+    var configBits = new Dictionary<string, List<(string, string)>>();
+    configBits["MZ"] = new List<(string, string)>
+    {
+        ("DEBUG", "OFF"), ("JTAGEN", "OFF"), ("ICESEL", "ICS_PGx1"), ("TRCEN", "OFF"), ("BOOTISA", "MIPS32"), ("FECCCON", "OFF_UNLOCKED"), ("FSLEEP", "OFF"), ("DBGPER", "PG_ALL"), ("SMCLR", "MCLR_NORM"), ("SOSCGAIN", "GAIN_LEVEL_3"), ("SOSCBOOST", "ON"), ("POSCGAIN", "GAIN_LEVEL_3"), ("POSCBOOST", "ON"), ("EJTAGBEN", "NORMAL"), ("CP", "OFF"),
+        ("FNOSC", "SPLL"), ("DMTINTV", "WIN_127_128"), ("FSOSCEN", "OFF"), ("IESO", "OFF"), ("POSCMOD", "HS"), ("OSCIOFNC", "OFF"), ("FCKSM", "CSECME"), ("WDTPS", "PS1048576"), ("WDTSPGM", "STOP"), ("FWDTEN", "OFF"), ("WINDIS", "NORMAL"), ("FWDTWINSZ", "WINSZ_25"), ("DMTCNT", "DMT31"), ("FDMTEN", "OFF"),
+        ("FPLLIDIV", "DIV_3"), ("FPLLRNG", "RANGE_8_16_MHZ"), ("FPLLICLK", "PLL_POSC"), ("FPLLMULT", "MUL_50"), ("FPLLODIV", "DIV_2"), ("UPLLFSEL", "FREQ_24MHZ"),
+        ("USERID", "0xffff"), ("FMIIEN", "ON"), ("FETHIO", "ON"), ("PGL1WAY", "ON"), ("PMDL1WAY", "ON"), ("IOL1WAY", "ON"), ("FUSBIDIO", "ON"),
+        ("TSEQ", "0xffff"), ("CSEQ", "0x0")
+    };
+    configBits["MX"] = new List<(string, string)>
+    {
+        ("DEBUG", "OFF"), ("JTAGEN", "OFF"), ("ICESEL", "ICS_PGx2"), ("TRCEN", "OFF"), ("BOOTISA", "MIPS32"), ("FECCCON", "OFF_UNLOCKED"), ("FSLEEP", "OFF"), ("DBGPER", "PG_ALL"), ("SMCLR", "MCLR_NORM"), ("SOSCGAIN", "GAIN_LEVEL_2"), ("SOSCBOOST", "OFF"), ("POSCGAIN", "GAIN_LEVEL_2"), ("POSCBOOST", "OFF"), ("EJTAGBEN", "NORMAL"), ("CP", "OFF"),
+        ("FNOSC", "FRC"), ("DMTINTV", "WIN_63_64"), ("FSOSCEN", "ON"), ("IESO", "ON"), ("POSCMOD", "XT"), ("OSCIOFNC", "ON"), ("FCKSM", "CSDCMD"), ("WDTPS", "PS32768"), ("WDTSPGM", "RUN"), ("FWDTEN", "ON"), ("WINDIS", "NORMAL"), ("FWDTWINSZ", "WINSZ_50"), ("DMTCNT", "DMT15"), ("FDMTEN", "ON"),
+        ("FPLLIDIV", "DIV_2"), ("FPLLRNG", "RANGE_4_8_MHZ"), ("FPLLICLK", "PLL_FRC"), ("FPLLMULT", "MUL_20"), ("FPLLODIV", "DIV_1"), ("UPLLFSEL", "FREQ_48MHZ"),
+        ("USERID", "0x1234"), ("FMIIEN", "OFF"), ("FETHIO", "OFF"), ("PGL1WAY", "OFF"), ("PMDL1WAY", "OFF"), ("IOL1WAY", "OFF"), ("FUSBIDIO", "OFF"),
+        ("TSEQ", "0x1234"), ("CSEQ", "0x1")
+    };
+
+    // PRECONbits for each variant
+    var preconBits = new Dictionary<string, List<(string, string)>>();
+    preconBits["MZ"] = new List<(string, string)> {
+        ("PREFEN", "3"), ("PFMWS", "5"), ("ECCCON", "3")
+    };
+    preconBits["MX"] = new List<(string, string)> {
+        ("PREFEN", "2"), ("PFMWS", "2"), ("ECCCON", "1")
+    };
+#>
+// ****************************************************************************
+// ****************************************************************************
+// Section: Configuration Bits
+// ****************************************************************************
+// ****************************************************************************
+
+<#
+    var sectionHeaders = new Dictionary<string, string> {
+        {"DEVCFG0", "/*** DEVCFG0 ***/"},
+        {"DEVCFG1", "/*** DEVCFG1 ***/"},
+        {"DEVCFG2", "/*** DEVCFG2 ***/"},
+        {"DEVCFG3", "/*** DEVCFG3 ***/"},
+        {"BF1SEQ0", "/*** BF1SEQ0 ***/"}
+    };
+    var sectionOrder = new[] { "DEVCFG0", "DEVCFG1", "DEVCFG2", "DEVCFG3", "BF1SEQ0" };
+    var sectionMap = new Dictionary<string, List<string>> {
+        {"DEVCFG0", new List<string>{"DEBUG","JTAGEN","ICESEL","TRCEN","BOOTISA","FECCCON","FSLEEP","DBGPER","SMCLR","SOSCGAIN","SOSCBOOST","POSCGAIN","POSCBOOST","EJTAGBEN","CP"}},
+        {"DEVCFG1", new List<string>{"FNOSC","DMTINTV","FSOSCEN","IESO","POSCMOD","OSCIOFNC","FCKSM","WDTPS","WDTSPGM","FWDTEN","WINDIS","FWDTWINSZ","DMTCNT","FDMTEN"}},
+        {"DEVCFG2", new List<string>{"FPLLIDIV","FPLLRNG","FPLLICLK","FPLLMULT","FPLLODIV","UPLLFSEL"}},
+        {"DEVCFG3", new List<string>{"USERID","FMIIEN","FETHIO","PGL1WAY","PMDL1WAY","IOL1WAY","FUSBIDIO"}},
+        {"BF1SEQ0", new List<string>{"TSEQ","CSEQ"}}
+    };
+    var bits = configBits[variant];
+    foreach (var section in sectionOrder) {
+        #>
+<#= sectionHeaders[section] #>
+<#
+        foreach (var bitName in sectionMap[section]) {
+            var bit = bits.FirstOrDefault(b => b.Item1 == bitName);
+            if (bit != default((string, string))) {
+#>
+#pragma config <#= bit.Item1 #> =      <#= bit.Item2 #>
+<#         }
+        }
+    }
+#>
+// *****************************************************************************
+// *****************************************************************************
+// Section: Local initialization functions
+// *****************************************************************************
+// *****************************************************************************
+
+/* MISRAC 2012 deviation block end */
+
+/*******************************************************************************
+  Function:
+    void SYS_Initialize ( void *data )
+
+  Summary:
+    Initializes the board, services, drivers, application and other modules.
+
+  Remarks:
+ */
+
+void SYS_Initialize ( void* data )
+{
+    /* Start out with interrupts disabled before configuring any modules */
+    __builtin_disable_interrupts();
+
+    CLK_Initialize();
+    /* Configure Prefetch, Wait States and ECC */
+<#
+    foreach (var precon in preconBits[variant]) {
+#>
+    PRECONbits.<#= precon.Item1 #> = <#= precon.Item2 #>;
+<#     }
+#>
+
+    /* Enable global interrupts */
+    __builtin_enable_interrupts();
+}
+
+// *****************************************************************************
+/* Function:
+    void CLK_Initialize( void )
+
+  Summary:
+    Initializes hardware and internal data structure of the System Clock.
+
+  Description:
+    This function initializes the hardware and internal data structure of System
+    Clock Service.
+
+  Remarks:
+    This is configuration values for the static version of the Clock System
+    Service module is determined by the user via the MHC GUI.
+
+    The objective is to eliminate the user's need to be knowledgeable in the
+    function of the 'configuration bits' to configure the system oscillators.
+*/
+
+void CLK_Initialize( void )
+{
+    /* unlock system for clock configuration */
+    SYSKEY = 0x00000000U;
+    SYSKEY = 0xAA996655U;
+    SYSKEY = 0x556699AAU;
+
+    /* Peripheral Module Disable Configuration */
+
+    CFGCONbits.PMDLOCK = 0;
+
+    PMD1 = 0x1001U;
+    PMD2 = 0x3U;
+    PMD3 = 0x1f701ffU;
+    PMD4 = 0x1fdU;
+    PMD5 = 0x301f3f3fU;
+    PMD6 = 0x10830001U;
+    PMD7 = 0x500000U;
+
+    CFGCONbits.PMDLOCK = 1;
+
+    /* Peripheral Bus 3 is by default enabled, set its divisor */
+    PB3DIVbits.PBDIV = 3;
+
+    /* Lock system since done with clock configuration */
+    SYSKEY = 0x33333333U;
+}
