@@ -7,16 +7,12 @@
       "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\deviceconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\deviceconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\device_config.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\device_config.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
-      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
   "DocumentGroupContainers": [
@@ -25,18 +21,18 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 275,
+          "DockedWidth": 299,
           "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "DeviceConfig.cs",
               "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\DeviceConfig.cs",
               "RelativeDocumentMoniker": "Setup\\DeviceConfig.cs",
               "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\DeviceConfig.cs",
               "RelativeToolTip": "Setup\\DeviceConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAADoAAAAAAAAAAAAtwEwAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-03T08:35:52.349Z",
               "EditorCaption": ""
@@ -49,14 +45,14 @@
               "RelativeDocumentMoniker": "Setup\\Form1.cs",
               "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeToolTip": "Setup\\Form1.cs",
-              "ViewState": "AgIAAGIAAAAAAAAAAAAqwHwAAAAVAAAAAAAAAA==",
+              "ViewState": "AgIAABcAAAAAAAAAAAAQwGkAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-03T08:35:36.927Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeDocumentMoniker": "Setup\\Form1.cs",
@@ -65,25 +61,6 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-03T08:03:46.554Z",
               "EditorCaption": " [Design]"
-            }
-          ]
-        },
-        {
-          "DockedWidth": 125,
-          "SelectedChildIndex": 0,
-          "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "device_config.json",
-              "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\device_config.json",
-              "RelativeDocumentMoniker": "Setup\\device_config.json",
-              "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\device_config.json",
-              "RelativeToolTip": "Setup\\device_config.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-03T08:38:49.921Z",
-              "EditorCaption": ""
             }
           ]
         }

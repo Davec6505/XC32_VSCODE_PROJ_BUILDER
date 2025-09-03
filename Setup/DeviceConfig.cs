@@ -69,7 +69,8 @@ namespace Setup
 
         public void Save(string path)
         {
-            var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+            var toSave = new { Sections = this.Sections };
+            var json = JsonSerializer.Serialize(toSave, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(path, json);
         }
     }
