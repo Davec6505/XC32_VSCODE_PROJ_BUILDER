@@ -12,6 +12,31 @@
     <None Update="device_config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Templates\config_bits.c.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>config_bits.c.cs</LastGenOutput>
+    </None>
+    <None Update="Templates\config_bits.h.h">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>config_bits.h.tt</DependentUpon>
+    </None>
+    <None Update="Templates\config_bits.h.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>config_bits.h.h</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Templates\config_bits.c.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>config_bits.c.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <PropertyGroup>

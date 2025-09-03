@@ -29,24 +29,22 @@ namespace Setup
                 {
                     PropertyNameCaseInsensitive = true
                 });
-                if (config == null)
+    
+                // If ConfigBits and PreconBits are empty, try to populate them from Sections
+                if (config != null)
                 {
-                    MessageBox.Show("Deserialization returned null. Check JSON format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    // Debug: Show loaded values
-                    MessageBox.Show($"Loaded Variant: {config.Variant}\nConfigBits: {config.ConfigBits.Count}\nPreconBits: {config.PreconBits.Count}\nSections: {config.Sections.Count}", "Debug", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    foreach (var section in config.Sections)
+                    if (config.ConfigBits.Count == 0 && config.Sections != null && config.Sections.Count > 0)
                     {
-                        foreach (var bit in section.Value)
+                        foreach (var section in config.Sections)
                         {
-                            if (!config.ConfigBits.ContainsKey(bit.Key))
-                                config.ConfigBits[bit.Key] = bit.Value;
+                            foreach (var bit in section.Value)
+                            {
+                                if (!config.ConfigBits.ContainsKey(bit.Key))
+                                    config.ConfigBits[bit.Key] = bit.Value;
+                            }
                         }
                     }
-                    if (config.Sections.TryGetValue("PreconBits", out var precon))
+                    if (config.PreconBits.Count == 0 && config.Sections != null && config.Sections.TryGetValue("PreconBits", out var precon))
                     {
                         foreach (var kvp in precon)
                         {
@@ -71,8 +69,10 @@ namespace Setup
 
         public void Save(string path)
         {
-            var json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
+            var toSave = new { Sections = this.Sections };
+            var json = JsonSerializer.Serialize(toSave, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(path, json);
         }
     }
 }
+
