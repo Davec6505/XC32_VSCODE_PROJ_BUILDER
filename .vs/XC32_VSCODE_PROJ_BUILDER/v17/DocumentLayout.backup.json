@@ -13,6 +13,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\deviceconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\deviceconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\templates\\config_bits.c.tt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\templates\\config_bits.c.tt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\templates\\config_bits.c.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\templates\\config_bits.c.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,8 +30,38 @@
       "DocumentGroups": [
         {
           "DockedWidth": 299,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 4,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "config_bits.c.cs",
+              "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\config_bits.c.cs",
+              "RelativeDocumentMoniker": "Setup\\Templates\\config_bits.c.cs",
+              "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\config_bits.c.cs",
+              "RelativeToolTip": "Setup\\Templates\\config_bits.c.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-03T15:31:18.796Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "config_bits.c.tt",
+              "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\config_bits.c.tt",
+              "RelativeDocumentMoniker": "Setup\\Templates\\config_bits.c.tt",
+              "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\config_bits.c.tt",
+              "RelativeToolTip": "Setup\\Templates\\config_bits.c.tt",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-09-03T15:13:36.264Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -32,7 +70,7 @@
               "RelativeDocumentMoniker": "Setup\\DeviceConfig.cs",
               "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\DeviceConfig.cs",
               "RelativeToolTip": "Setup\\DeviceConfig.cs",
-              "ViewState": "AgIAADoAAAAAAAAAAAAtwEwAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAACUAAAAAAAAAAAAtwEYAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-03T08:35:52.349Z",
               "EditorCaption": ""
@@ -45,7 +83,7 @@
               "RelativeDocumentMoniker": "Setup\\Form1.cs",
               "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeToolTip": "Setup\\Form1.cs",
-              "ViewState": "AgIAABcAAAAAAAAAAAAQwGkAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAC0BAAAAAAAAAAAAADEBAADNAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-03T08:35:36.927Z",
               "EditorCaption": ""

@@ -50,3 +50,4 @@ C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\obj\Debug\net8.0-windows8
 C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\obj\Debug\net8.0-windows8.0\Setup.pdb
 C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\obj\Debug\net8.0-windows8.0\Setup.genruntimeconfig.cache
 C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\obj\Debug\net8.0-windows8.0\ref\Setup.dll
+C:\Users\Automation\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\bin\Debug\net8.0-windows8.0\Mono.TextTemplating.dll

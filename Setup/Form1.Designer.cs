@@ -140,6 +140,8 @@
             label1 = new Label();
             comboBoxVariant = new ComboBox();
             tabPins = new TabPage();
+            actionsToolStripMenuItem = new ToolStripMenuItem();
+            generateToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabClock.SuspendLayout();
@@ -162,11 +164,11 @@
             // 
             menuStrip1.BackColor = SystemColors.Control;
             menuStrip1.ImageScalingSize = new Size(20, 20);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, actionsToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(5, 2, 0, 2);
-            menuStrip1.Size = new Size(1050, 24);
+            menuStrip1.Size = new Size(1115, 24);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -180,28 +182,28 @@
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(114, 22);
+            openToolStripMenuItem.Size = new Size(180, 22);
             openToolStripMenuItem.Text = "Open";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // saveToolStripMenuItem
             // 
             saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            saveToolStripMenuItem.Size = new Size(114, 22);
+            saveToolStripMenuItem.Size = new Size(180, 22);
             saveToolStripMenuItem.Text = "Save";
             saveToolStripMenuItem.Click += saveToolStripMenuItem_Click;
             // 
             // saveAsToolStripMenuItem
             // 
             saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            saveAsToolStripMenuItem.Size = new Size(114, 22);
+            saveAsToolStripMenuItem.Size = new Size(180, 22);
             saveAsToolStripMenuItem.Text = "Save As";
             saveAsToolStripMenuItem.Click += saveAsToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(114, 22);
+            exitToolStripMenuItem.Size = new Size(180, 22);
             exitToolStripMenuItem.Text = "Exit";
             // 
             // tabControl1
@@ -213,7 +215,7 @@
             tabControl1.Margin = new Padding(3, 2, 3, 2);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(1050, 552);
+            tabControl1.Size = new Size(1115, 577);
             tabControl1.TabIndex = 1;
             // 
             // tabClock
@@ -231,7 +233,7 @@
             tabClock.Margin = new Padding(3, 2, 3, 2);
             tabClock.Name = "tabClock";
             tabClock.Padding = new Padding(3, 2, 3, 2);
-            tabClock.Size = new Size(1042, 524);
+            tabClock.Size = new Size(1107, 549);
             tabClock.TabIndex = 0;
             tabClock.Text = "Clock";
             tabClock.UseVisualStyleBackColor = true;
@@ -1325,19 +1327,34 @@
             tabPins.Margin = new Padding(3, 2, 3, 2);
             tabPins.Name = "tabPins";
             tabPins.Padding = new Padding(3, 2, 3, 2);
-            tabPins.Size = new Size(1042, 524);
+            tabPins.Size = new Size(1107, 549);
             tabPins.TabIndex = 1;
             tabPins.Text = "Pins";
             tabPins.UseVisualStyleBackColor = true;
+            // 
+            // actionsToolStripMenuItem
+            // 
+            actionsToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { generateToolStripMenuItem });
+            actionsToolStripMenuItem.Name = "actionsToolStripMenuItem";
+            actionsToolStripMenuItem.Size = new Size(59, 20);
+            actionsToolStripMenuItem.Text = "Actions";
+            // 
+            // generateToolStripMenuItem
+            // 
+            generateToolStripMenuItem.Name = "generateToolStripMenuItem";
+            generateToolStripMenuItem.Size = new Size(180, 22);
+            generateToolStripMenuItem.Text = "Generate";
+            generateToolStripMenuItem.Click += generateToolStripMenuItem_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.AppWorkspace;
-            ClientSize = new Size(1050, 576);
+            ClientSize = new Size(1115, 601);
             Controls.Add(tabControl1);
             Controls.Add(menuStrip1);
+            FormBorderStyle = FormBorderStyle.Fixed3D;
             MainMenuStrip = menuStrip1;
             Margin = new Padding(3, 2, 3, 2);
             Name = "Form1";
@@ -1487,5 +1504,7 @@
         private NumericUpDown numericUpDown_PREFEN;
         private ToolStripMenuItem saveAsToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripMenuItem actionsToolStripMenuItem;
+        private ToolStripMenuItem generateToolStripMenuItem;
     }
 }
