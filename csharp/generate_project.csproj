@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AssemblyName>generate_project</AssemblyName>
@@ -21,6 +21,31 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Templates\config_bits.c.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>config_bits.c.txt</LastGenOutput>
+    </None>
+    <None Update="Templates\config_bits.c.txt">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>config_bits.c.tt</DependentUpon>
+    </None>
+    <None Update="Templates\config_bits.h.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>config_bits.h.h</LastGenOutput>
+    </None>
+    <None Update="Templates\config_bits.h.h">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>config_bits.h.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 
 </Project>

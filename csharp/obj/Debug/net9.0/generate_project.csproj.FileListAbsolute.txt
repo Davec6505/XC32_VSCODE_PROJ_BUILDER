@@ -1,0 +1,17 @@
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\bin\Debug\net9.0\generate_project.exe
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\bin\Debug\net9.0\generate_project.deps.json
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\bin\Debug\net9.0\generate_project.runtimeconfig.json
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\bin\Debug\net9.0\generate_project.dll
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\bin\Debug\net9.0\generate_project.pdb
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.Properties.Resources.resources
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.csproj.GenerateResource.cache
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.AssemblyInfoInputs.cache
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.AssemblyInfo.cs
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.csproj.CoreCompileInputs.cache
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.sourcelink.json
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.dll
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\refint\generate_project.dll
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.pdb
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\generate_project.genruntimeconfig.cache
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\csharp\obj\Debug\net9.0\ref\generate_project.dll

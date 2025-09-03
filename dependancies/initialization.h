@@ -1,0 +1,108 @@
+#ifndef INITIALIZATION_
+#define INITIALIZATION_
+
+/* Device Information */
+#define DEVICE_NAME          "PIC32MZ2048EFH064"
+#define DEVICE_ARCH          "MIPS"
+#define DEVICE_FAMILY        "PIC32MZEF"
+#define DEVICE_SERIES        "PIC32MZ"
+
+/* CPU clock frequency */
+#define CPU_CLOCK_FREQUENCY 200000000U
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: System Functions
+// *****************************************************************************
+// *****************************************************************************
+
+// *****************************************************************************
+/* System Initialization Function
+
+  Function:
+    void SYS_Initialize( void *data )
+
+  Summary:
+    Function that initializes all modules in the system.
+
+  Description:
+    This function initializes all modules in the system, including any drivers,
+    services, middleware, and applications.
+
+  Precondition:
+    None.
+
+  Parameters:
+    data            - Pointer to the data structure containing any data
+                      necessary to initialize the module. This pointer may
+                      be null if no data is required and default initialization
+                      is to be used.
+
+  Returns:
+    None.
+
+  Example:
+    <code>
+    SYS_Initialize ( NULL );
+
+    while ( true )
+    {
+        SYS_Tasks ( );
+    }
+    </code>
+
+  Remarks:
+    This function will only be called once, after system reset.
+*/
+
+void SYS_Initialize( void *data );
+
+// *****************************************************************************
+/* Function:
+    void CLK_Initialize( void )
+
+  Summary:
+    Initializes hardware of the System Clock and Peripheral Clock.
+    
+  Description:
+    This function initializes the hardware of System Clock and Peripheral Clocks.
+
+  Precondition:
+    None.
+
+  Parameters:
+    None.
+
+  Returns:
+    None.
+
+  Example:
+    <code>
+    Example 1: Do not alter the configuration bit settings
+    CLK_Initialize ( );
+
+    </code>
+
+  Remarks:
+    None.
+*/
+
+void CLK_Initialize( void );
+
+/* Nullify SYS_Tasks() if only PLIBs are used. */
+#define     SYS_Tasks()
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: extern declarations
+// *****************************************************************************
+// *****************************************************************************
+
+
+
+
+
+
+
+
+#endif

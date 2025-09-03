@@ -1,0 +1,58 @@
+{
+  "DEVCFG0": {
+    "DEBUG": "OFF",
+    "JTAGEN": "OFF",
+    "ICESEL": "ICS_PGx1",
+    "TRCEN": "OFF",
+    "BOOTISA": "MIPS32",
+    "FECCCON": "OFF_UNLOCKED",
+    "FSLEEP": "OFF",
+    "DBGPER": "PG_ALL",
+    "SMCLR": "MCLR_NORM",
+    "SOSCGAIN": "GAIN_LEVEL_3",
+    "SOSCBOOST": "ON",
+    "POSCGAIN": "GAIN_LEVEL_3",
+    "POSCBOOST": "ON",
+    "EJTAGBEN": "NORMAL"
+  },
+  "DEVCFG1": {
+    "FNOSC": "SPLL",
+    "DMTINTV": "WIN_127_128",   
+    "FSOSCEN": "OFF",
+    "IESO": "OFF",
+    "POSCMOD": "HS",
+    "OSCIOFNC": "OFF",
+    "FCKSM": "CSECME",
+    "WDTPS": "PS1048576",
+    "WDTSPGM": "STOP",
+    "FWDTEN": "OFF",
+    "WINDIS": "NORMAL",
+    "FWDTWINSZ": "WINSZ_25",
+    "DMTCNT": "DMT31",
+    "FDMTEN": "OFF"
+  },
+  "DEVCFG2": {
+    "FPLLIDIV": "DIV_3",
+    "FPLLRNG": "RANGE_8_16_MHZ",
+    "FPLLICLK": "PLL_POSC",
+    "FPLLMULT": "MUL_50",
+    "FPLLODIV": "DIV_2",
+    "UPLLFSEL": "FREQ_24MHZ"
+  },
+  "DEVCFG3": {
+    "USERID": "0xffff",
+    "FMIIEN": "ON",
+    "FETHIO": "ON",
+    "PGL1WAY": "ON",
+    "PMDL1WAY": "ON",
+    "IOL1WAY": "ON",
+    "FUSBIDIO": "ON"
+  },
+  "DEVCP0": {
+    "CP": "OFF"
+  },
+  "BF1SEQ3": {
+    "TSEQ": "0xffff",
+    "CSEQ": "0x0"
+  }
+}
