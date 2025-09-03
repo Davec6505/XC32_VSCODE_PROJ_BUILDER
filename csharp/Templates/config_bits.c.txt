@@ -19,7 +19,6 @@
 #pragma config POSCGAIN     =   GAIN_LEVEL_3
 #pragma config POSCBOOST    =   ON
 #pragma config EJTAGBEN     =   NORMAL
-#pragma config CP           =   OFF
 
 /*** DEVCFG1 ***/
 #pragma config FNOSC =      SPLL
@@ -54,8 +53,10 @@
 #pragma config IOL1WAY =    ON
 #pragma config FUSBIDIO =   ON
 
-/*** BF1SEQ0 ***/
+/+*** DEVCP0 ***/
+#pragma config CP           =   OFF
 
+/*** BF1SEQ0 ***/
 #pragma config TSEQ =       0xffff
 #pragma config CSEQ =       0x0
 	

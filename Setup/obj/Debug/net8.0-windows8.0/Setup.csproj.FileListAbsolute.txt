@@ -23,3 +23,4 @@ C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\obj\Debug\net8.0-windows8.0\Se
 C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\obj\Debug\net8.0-windows8.0\Setup.genruntimeconfig.cache
 C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\obj\Debug\net8.0-windows8.0\ref\Setup.dll
 C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\bin\Debug\net8.0-windows8.0\Newtonsoft.Json.dll
+C:\Users\davec\GIT\XC32_VSCODE_PROJ_BUILDER\Setup\bin\Debug\net8.0-windows8.0\device_config.json

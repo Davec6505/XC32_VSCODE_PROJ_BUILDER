@@ -35,6 +35,14 @@
             closeToolStripMenuItem = new ToolStripMenuItem();
             tabControl1 = new TabControl();
             tabClock = new TabPage();
+            groupBox_BF1SEQ3 = new GroupBox();
+            numericUpDown_CSEQ = new NumericUpDown();
+            numericUpDown_TSEQ = new NumericUpDown();
+            label42 = new Label();
+            label49 = new Label();
+            groupBox1 = new GroupBox();
+            label20 = new Label();
+            comboBox_CP = new ComboBox();
             groupBox_DEVCFG2 = new GroupBox();
             label43 = new Label();
             comboBox_UPLLFSEL = new ComboBox();
@@ -101,8 +109,6 @@
             comboBox_FMIIEN = new ComboBox();
             label5 = new Label();
             groupBox_DEVCFG0 = new GroupBox();
-            label20 = new Label();
-            comboBox_CP = new ComboBox();
             label19 = new Label();
             comboBox_EJTAGBEN = new ComboBox();
             label18 = new Label();
@@ -130,21 +136,23 @@
             label3 = new Label();
             comboBox_JTAGEN = new ComboBox();
             label2 = new Label();
-            comboBox_Debug = new ComboBox();
+            comboBox_DEBUG = new ComboBox();
             label1 = new Label();
             comboBoxVariant = new ComboBox();
             tabPins = new TabPage();
-            groupBox1 = new GroupBox();
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabClock.SuspendLayout();
+            groupBox_BF1SEQ3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_CSEQ).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_TSEQ).BeginInit();
+            groupBox1.SuspendLayout();
             groupBox_DEVCFG2.SuspendLayout();
             groupBox_DEVCFG1.SuspendLayout();
             groupBox2.SuspendLayout();
             groupBox_DEVCFG3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_USERID).BeginInit();
             groupBox_DEVCFG0.SuspendLayout();
-            groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -196,6 +204,7 @@
             // 
             // tabClock
             // 
+            tabClock.Controls.Add(groupBox_BF1SEQ3);
             tabClock.Controls.Add(groupBox1);
             tabClock.Controls.Add(groupBox_DEVCFG2);
             tabClock.Controls.Add(groupBox_DEVCFG1);
@@ -212,6 +221,82 @@
             tabClock.TabIndex = 0;
             tabClock.Text = "Clock";
             tabClock.UseVisualStyleBackColor = true;
+            // 
+            // groupBox_BF1SEQ3
+            // 
+            groupBox_BF1SEQ3.Controls.Add(numericUpDown_CSEQ);
+            groupBox_BF1SEQ3.Controls.Add(numericUpDown_TSEQ);
+            groupBox_BF1SEQ3.Controls.Add(label42);
+            groupBox_BF1SEQ3.Controls.Add(label49);
+            groupBox_BF1SEQ3.Location = new Point(483, 459);
+            groupBox_BF1SEQ3.Name = "groupBox_BF1SEQ3";
+            groupBox_BF1SEQ3.Size = new Size(225, 125);
+            groupBox_BF1SEQ3.TabIndex = 9;
+            groupBox_BF1SEQ3.TabStop = false;
+            groupBox_BF1SEQ3.Text = "BF1SEQ3";
+            // 
+            // numericUpDown_CSEQ
+            // 
+            numericUpDown_CSEQ.Hexadecimal = true;
+            numericUpDown_CSEQ.Location = new Point(80, 64);
+            numericUpDown_CSEQ.Name = "numericUpDown_CSEQ";
+            numericUpDown_CSEQ.Size = new Size(113, 27);
+            numericUpDown_CSEQ.TabIndex = 27;
+            // 
+            // numericUpDown_TSEQ
+            // 
+            numericUpDown_TSEQ.Hexadecimal = true;
+            numericUpDown_TSEQ.Location = new Point(80, 31);
+            numericUpDown_TSEQ.Name = "numericUpDown_TSEQ";
+            numericUpDown_TSEQ.Size = new Size(113, 27);
+            numericUpDown_TSEQ.TabIndex = 27;
+            // 
+            // label42
+            // 
+            label42.AutoSize = true;
+            label42.Location = new Point(29, 66);
+            label42.Name = "label42";
+            label42.Size = new Size(48, 20);
+            label42.TabIndex = 9;
+            label42.Text = "CSEQ:";
+            // 
+            // label49
+            // 
+            label49.AutoSize = true;
+            label49.Location = new Point(30, 33);
+            label49.Name = "label49";
+            label49.Size = new Size(47, 20);
+            label49.TabIndex = 7;
+            label49.Text = "TSEQ:";
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(label20);
+            groupBox1.Controls.Add(comboBox_CP);
+            groupBox1.Location = new Point(483, 355);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(225, 77);
+            groupBox1.TabIndex = 8;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "DEVCP0";
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Location = new Point(48, 30);
+            label20.Name = "label20";
+            label20.Size = new Size(29, 20);
+            label20.TabIndex = 31;
+            label20.Text = "CP:";
+            // 
+            // comboBox_CP
+            // 
+            comboBox_CP.FormattingEnabled = true;
+            comboBox_CP.Items.AddRange(new object[] { "OFF", "OFF" });
+            comboBox_CP.Location = new Point(80, 26);
+            comboBox_CP.Name = "comboBox_CP";
+            comboBox_CP.Size = new Size(61, 28);
+            comboBox_CP.TabIndex = 30;
             // 
             // groupBox_DEVCFG2
             // 
@@ -237,7 +322,7 @@
             // label43
             // 
             label43.AutoSize = true;
-            label43.Location = new Point(18, 212);
+            label43.Location = new Point(3, 212);
             label43.Name = "label43";
             label43.Size = new Size(74, 20);
             label43.TabIndex = 13;
@@ -247,7 +332,7 @@
             // 
             comboBox_UPLLFSEL.FormattingEnabled = true;
             comboBox_UPLLFSEL.Items.AddRange(new object[] { "FREQ_12MHZ", "FREQ_24MHZ" });
-            comboBox_UPLLFSEL.Location = new Point(95, 208);
+            comboBox_UPLLFSEL.Location = new Point(80, 208);
             comboBox_UPLLFSEL.Name = "comboBox_UPLLFSEL";
             comboBox_UPLLFSEL.Size = new Size(61, 28);
             comboBox_UPLLFSEL.TabIndex = 12;
@@ -255,7 +340,7 @@
             // label44
             // 
             label44.AutoSize = true;
-            label44.Location = new Point(17, 178);
+            label44.Location = new Point(2, 178);
             label44.Name = "label44";
             label44.Size = new Size(75, 20);
             label44.TabIndex = 11;
@@ -265,7 +350,7 @@
             // 
             comboBox_FPLLODIV.FormattingEnabled = true;
             comboBox_FPLLODIV.Items.AddRange(new object[] { "DIV_2", "DIV_4", "DIV_8", "DIV_16", "DIV_32" });
-            comboBox_FPLLODIV.Location = new Point(96, 174);
+            comboBox_FPLLODIV.Location = new Point(81, 174);
             comboBox_FPLLODIV.Name = "comboBox_FPLLODIV";
             comboBox_FPLLODIV.Size = new Size(61, 28);
             comboBox_FPLLODIV.TabIndex = 10;
@@ -273,7 +358,7 @@
             // label45
             // 
             label45.AutoSize = true;
-            label45.Location = new Point(14, 144);
+            label45.Location = new Point(-1, 144);
             label45.Name = "label45";
             label45.Size = new Size(78, 20);
             label45.TabIndex = 9;
@@ -283,7 +368,7 @@
             // 
             comboBox_FPLLMULT.FormattingEnabled = true;
             comboBox_FPLLMULT.Items.AddRange(new object[] { "MUL_1", "MUL_2", "MUL_3", "MUL_4", "MUL_5", "MUL_6", "MUL_7", "MUL_8", "MUL_9", "MUL_10", "MUL_11", "MUL_12", "MUL_13", "MUL_14", "MUL_15", "MUL_16", "MUL_17", "MUL_18", "MUL_19", "MUL_20", "MUL_21", "MUL_22", "MUL_23", "MUL_24", "MUL_25", "MUL_26", "MUL_27", "MUL_28", "MUL_29", "MUL_30", "MUL_31", "MUL_32", "MUL_33", "MUL_34", "MUL_35", "MUL_36", "MUL_37", "MUL_38", "MUL_39", "MUL_40", "MUL_41", "MUL_42", "MUL_43", "MUL_44", "MUL_45", "MUL_46", "MUL_47", "MUL_48", "MUL_49", "MUL_50", "MUL_51", "MUL_52", "MUL_53", "MUL_54", "MUL_55", "MUL_56", "MUL_57", "MUL_58", "MUL_59", "MUL_60", "MUL_61", "MUL_62", "MUL_63", "MUL_64", "MUL_65", "MUL_66", "MUL_67", "MUL_68", "MUL_69", "MUL_70" });
-            comboBox_FPLLMULT.Location = new Point(96, 140);
+            comboBox_FPLLMULT.Location = new Point(81, 140);
             comboBox_FPLLMULT.Name = "comboBox_FPLLMULT";
             comboBox_FPLLMULT.Size = new Size(61, 28);
             comboBox_FPLLMULT.TabIndex = 8;
@@ -291,7 +376,7 @@
             // label46
             // 
             label46.AutoSize = true;
-            label46.Location = new Point(22, 110);
+            label46.Location = new Point(7, 110);
             label46.Name = "label46";
             label46.Size = new Size(70, 20);
             label46.TabIndex = 7;
@@ -301,7 +386,7 @@
             // 
             comboBox_FPLLICLK.FormattingEnabled = true;
             comboBox_FPLLICLK.Items.AddRange(new object[] { "PLL_FRC", "PLL_POSC" });
-            comboBox_FPLLICLK.Location = new Point(96, 106);
+            comboBox_FPLLICLK.Location = new Point(81, 106);
             comboBox_FPLLICLK.Name = "comboBox_FPLLICLK";
             comboBox_FPLLICLK.Size = new Size(61, 28);
             comboBox_FPLLICLK.TabIndex = 6;
@@ -309,7 +394,7 @@
             // label47
             // 
             label47.AutoSize = true;
-            label47.Location = new Point(21, 75);
+            label47.Location = new Point(6, 75);
             label47.Name = "label47";
             label47.Size = new Size(71, 20);
             label47.TabIndex = 5;
@@ -319,15 +404,15 @@
             // 
             comboBox_FPLLRNG.FormattingEnabled = true;
             comboBox_FPLLRNG.Items.AddRange(new object[] { "RANGE_5_10_MHZ", "RANGE_8_16_MHZ", "RANGE_13_26_MHZ", "RANGE_21_42_MHZ", "RANGE_34_68_MHZ", "RANGE_BYPASS" });
-            comboBox_FPLLRNG.Location = new Point(96, 71);
+            comboBox_FPLLRNG.Location = new Point(81, 71);
             comboBox_FPLLRNG.Name = "comboBox_FPLLRNG";
-            comboBox_FPLLRNG.Size = new Size(123, 28);
+            comboBox_FPLLRNG.Size = new Size(138, 28);
             comboBox_FPLLRNG.TabIndex = 4;
             // 
             // label48
             // 
             label48.AutoSize = true;
-            label48.Location = new Point(23, 40);
+            label48.Location = new Point(8, 40);
             label48.Name = "label48";
             label48.Size = new Size(69, 20);
             label48.TabIndex = 3;
@@ -337,7 +422,7 @@
             // 
             comboBox_FPLLIDIV.FormattingEnabled = true;
             comboBox_FPLLIDIV.Items.AddRange(new object[] { "DIV_1", "DIV_2", "DIV_3", "DIV_4", "DIV_5", "DIV_6", "DIV_7", "DIV_8" });
-            comboBox_FPLLIDIV.Location = new Point(96, 36);
+            comboBox_FPLLIDIV.Location = new Point(81, 36);
             comboBox_FPLLIDIV.Name = "comboBox_FPLLIDIV";
             comboBox_FPLLIDIV.Size = new Size(79, 28);
             comboBox_FPLLIDIV.TabIndex = 2;
@@ -553,7 +638,7 @@
             // comboBox_POSCMOD
             // 
             comboBox_POSCMOD.FormattingEnabled = true;
-            comboBox_POSCMOD.Items.AddRange(new object[] { "EC", "HF", "OFF" });
+            comboBox_POSCMOD.Items.AddRange(new object[] { "EC", "HS", "OFF" });
             comboBox_POSCMOD.Location = new Point(96, 174);
             comboBox_POSCMOD.Name = "comboBox_POSCMOD";
             comboBox_POSCMOD.Size = new Size(61, 28);
@@ -649,7 +734,7 @@
             groupBox2.Controls.Add(label7);
             groupBox2.Controls.Add(textBoxPREFEN);
             groupBox2.Controls.Add(label6);
-            groupBox2.Location = new Point(483, 459);
+            groupBox2.Location = new Point(714, 356);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(225, 125);
             groupBox2.TabIndex = 4;
@@ -884,31 +969,13 @@
             groupBox_DEVCFG0.Controls.Add(label3);
             groupBox_DEVCFG0.Controls.Add(comboBox_JTAGEN);
             groupBox_DEVCFG0.Controls.Add(label2);
-            groupBox_DEVCFG0.Controls.Add(comboBox_Debug);
+            groupBox_DEVCFG0.Controls.Add(comboBox_DEBUG);
             groupBox_DEVCFG0.Location = new Point(21, 64);
             groupBox_DEVCFG0.Name = "groupBox_DEVCFG0";
             groupBox_DEVCFG0.Size = new Size(225, 551);
             groupBox_DEVCFG0.TabIndex = 2;
             groupBox_DEVCFG0.TabStop = false;
             groupBox_DEVCFG0.Text = "DEVCFG0";
-            // 
-            // label20
-            // 
-            label20.AutoSize = true;
-            label20.Location = new Point(63, 30);
-            label20.Name = "label20";
-            label20.Size = new Size(29, 20);
-            label20.TabIndex = 31;
-            label20.Text = "CP:";
-            // 
-            // comboBox_CP
-            // 
-            comboBox_CP.FormattingEnabled = true;
-            comboBox_CP.Items.AddRange(new object[] { "OFF", "OFF" });
-            comboBox_CP.Location = new Point(95, 26);
-            comboBox_CP.Name = "comboBox_CP";
-            comboBox_CP.Size = new Size(61, 28);
-            comboBox_CP.TabIndex = 30;
             // 
             // label19
             // 
@@ -1149,18 +1216,18 @@
             label2.AutoSize = true;
             label2.Location = new Point(36, 40);
             label2.Name = "label2";
-            label2.Size = new Size(57, 20);
+            label2.Size = new Size(60, 20);
             label2.TabIndex = 3;
-            label2.Text = "Debug:";
+            label2.Text = "DEBUG:";
             // 
-            // comboBox_Debug
+            // comboBox_DEBUG
             // 
-            comboBox_Debug.FormattingEnabled = true;
-            comboBox_Debug.Items.AddRange(new object[] { "OFF", "ON" });
-            comboBox_Debug.Location = new Point(96, 36);
-            comboBox_Debug.Name = "comboBox_Debug";
-            comboBox_Debug.Size = new Size(61, 28);
-            comboBox_Debug.TabIndex = 2;
+            comboBox_DEBUG.FormattingEnabled = true;
+            comboBox_DEBUG.Items.AddRange(new object[] { "OFF", "ON" });
+            comboBox_DEBUG.Location = new Point(96, 36);
+            comboBox_DEBUG.Name = "comboBox_DEBUG";
+            comboBox_DEBUG.Size = new Size(61, 28);
+            comboBox_DEBUG.TabIndex = 2;
             // 
             // label1
             // 
@@ -1190,17 +1257,6 @@
             tabPins.Text = "Pins";
             tabPins.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
-            // 
-            groupBox1.Controls.Add(label20);
-            groupBox1.Controls.Add(comboBox_CP);
-            groupBox1.Location = new Point(483, 355);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(225, 77);
-            groupBox1.TabIndex = 8;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "DEVCP0";
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -1217,6 +1273,12 @@
             tabControl1.ResumeLayout(false);
             tabClock.ResumeLayout(false);
             tabClock.PerformLayout();
+            groupBox_BF1SEQ3.ResumeLayout(false);
+            groupBox_BF1SEQ3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_CSEQ).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown_TSEQ).EndInit();
+            groupBox1.ResumeLayout(false);
+            groupBox1.PerformLayout();
             groupBox_DEVCFG2.ResumeLayout(false);
             groupBox_DEVCFG2.PerformLayout();
             groupBox_DEVCFG1.ResumeLayout(false);
@@ -1228,8 +1290,6 @@
             ((System.ComponentModel.ISupportInitialize)numericUpDown_USERID).EndInit();
             groupBox_DEVCFG0.ResumeLayout(false);
             groupBox_DEVCFG0.PerformLayout();
-            groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1274,7 +1334,7 @@
         private Label label3;
         private ComboBox comboBox_JTAGEN;
         private Label label2;
-        private ComboBox comboBox_Debug;
+        private ComboBox comboBox_DEBUG;
         private Label label15;
         private ComboBox comboBox_SOSCGAIN;
         private Label label16;
@@ -1343,5 +1403,10 @@
         private ComboBox comboBox_FMIIEN;
         private NumericUpDown numericUpDown_USERID;
         private GroupBox groupBox1;
+        private GroupBox groupBox_BF1SEQ3;
+        private Label label42;
+        private Label label49;
+        private NumericUpDown numericUpDown_CSEQ;
+        private NumericUpDown numericUpDown_TSEQ;
     }
 }

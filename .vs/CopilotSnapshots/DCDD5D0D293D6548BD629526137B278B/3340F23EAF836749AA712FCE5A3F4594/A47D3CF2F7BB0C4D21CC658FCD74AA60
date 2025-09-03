@@ -1,0 +1,13 @@
+﻿{
+  "Variant": "MZ",
+  "ConfigBits": {
+    "DEBUG": "OFF",
+    "JTAGEN": "OFF",
+    "USERID": "0x64"
+  },
+  "PreconBits": {
+    "PREFEN": "2",
+    "PFMWS": "2",
+    "ECCCON": "2"
+  }
+}
