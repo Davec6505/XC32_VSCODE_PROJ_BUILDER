@@ -12,9 +12,15 @@
     <None Update="device_config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Templates\config_bits.c">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>config_bits.c.tt</DependentUpon>
+    </None>
     <None Update="Templates\config_bits.c.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>config_bits.c.cs</LastGenOutput>
+      <LastGenOutput>config_bits.c.</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Templates\config_bits.h.h">
       <DesignTime>True</DesignTime>
@@ -24,19 +30,16 @@
     <None Update="Templates\config_bits.h.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>config_bits.h.h</LastGenOutput>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Templates\config_bits.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Templates\config_bits.c.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>config_bits.c.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <PropertyGroup>

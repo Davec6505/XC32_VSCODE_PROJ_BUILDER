@@ -1,0 +1,89 @@
+﻿#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
+
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <xc.h>
+#include <sys/attribs.h>
+#include "toolchain_specifics.h"
+
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
+// DOM-IGNORE-END
+
+/* Device Information */
+#define DEVICE_NAME          "<#= deviceName #>"
+#define DEVICE_ARCH          "<#= deviceArch #>"
+#define DEVICE_FAMILY        "<#= deviceFamily #>"
+#define DEVICE_SERIES        "<#= deviceSeries #>"
+
+/* CPU clock frequency */
+#define CPU_CLOCK_FREQUENCY <#= cpuClockFrequency #>U
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: System Service Definitions
+// *****************************************************************************
+// *****************************************************************************
+void SYS_Initialize(void *data);
+void CLK_Initialize(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Library/Stack Definitions
+// *****************************************************************************
+// *****************************************************************************
+void STACK_Init(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Driver Definitions
+// *****************************************************************************
+// *****************************************************************************
+void DRV_TimerInitialize(void);
+void DRV_USARTInitialize(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: System Data Types
+// *****************************************************************************
+// *****************************************************************************
+typedef struct
+{
+    uint32_t baudRate;
+    uint8_t  dataBits;
+    uint8_t  stopBits;
+    uint8_t  parity;
+} USART_CONFIG;
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Configuration System Service Definitions
+// *****************************************************************************
+// *****************************************************************************
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus
+}
+#endif
+// DOM-IGNORE-END
+
+#endif /* DEFINITIONS_H */
+
+<#+
+    public class DeviceConfig
+    {
+        public string Variant { get; set; }
+        public Dictionary<string, Dictionary<string, string>> Sections { get; set; }
+        public string DeviceName { get; set; }
+        public string DeviceArch { get; set; }
+        public string DeviceFamily { get; set; }
+        public string DeviceSeries { get; set; }
+        public uint CpuClockFrequency { get; set; }
+    }
+#>

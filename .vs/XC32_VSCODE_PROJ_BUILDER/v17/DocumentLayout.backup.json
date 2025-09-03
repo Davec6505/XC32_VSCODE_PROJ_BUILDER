@@ -7,12 +7,20 @@
       "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\davec\\git\\xc32_vscode_proj_builder\\setup\\deviceconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\deviceconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\davec\\git\\xc32_vscode_proj_builder\\setup\\templates\\config_bits.h.tt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\templates\\config_bits.h.tt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\davec\\git\\xc32_vscode_proj_builder\\setup\\templates\\config_bits.c.tt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\templates\\config_bits.c.tt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\davec\\git\\xc32_vscode_proj_builder\\setup\\deviceconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\deviceconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 404,
-          "SelectedChildIndex": 5,
+          "SelectedChildIndex": 7,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,15 +50,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "DeviceConfig.cs",
               "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\DeviceConfig.cs",
               "RelativeDocumentMoniker": "Setup\\DeviceConfig.cs",
               "ToolTip": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\DeviceConfig.cs",
               "RelativeToolTip": "Setup\\DeviceConfig.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAowCAAAAASAAAAAAAAAA==",
+              "ViewState": "AgIAAEIAAAAAAAAAAAD4vwAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-03T06:20:37.089Z",
+              "WhenOpened": "2025-09-03T21:44:50.687Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "config_bits.c.tt",
+              "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\config_bits.c.tt",
+              "RelativeDocumentMoniker": "Setup\\Templates\\config_bits.c.tt",
+              "ToolTip": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\config_bits.c.tt",
+              "RelativeToolTip": "Setup\\Templates\\config_bits.c.tt",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-09-03T21:35:30.733Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "config_bits.h.tt",
+              "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\config_bits.h.tt",
+              "RelativeDocumentMoniker": "Setup\\Templates\\config_bits.h.tt",
+              "ToolTip": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\config_bits.h.tt",
+              "RelativeToolTip": "Setup\\Templates\\config_bits.h.tt",
+              "ViewState": "AgIAADcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-09-03T20:40:26.761Z",
               "EditorCaption": ""
             },
             {
@@ -59,23 +93,24 @@
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeDocumentMoniker": "Setup\\Form1.cs",
-              "ToolTip": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
-              "RelativeToolTip": "Setup\\Form1.cs",
-              "ViewState": "AgIAACcBAAAAAAAAAAAowC4BAAAtAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs*",
+              "RelativeToolTip": "Setup\\Form1.cs*",
+              "ViewState": "AgIAAAgDAAAAAAAAAAAkwP0CAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-03T04:40:48.613Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeDocumentMoniker": "Setup\\Form1.cs",
-              "ToolTip": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs [Design]",
-              "RelativeToolTip": "Setup\\Form1.cs [Design]",
+              "ToolTip": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs [Design]*",
+              "RelativeToolTip": "Setup\\Form1.cs [Design]*",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-03T05:11:32.706Z"
+              "WhenOpened": "2025-09-03T05:11:32.706Z",
+              "EditorCaption": " [Design]"
             }
           ]
         }

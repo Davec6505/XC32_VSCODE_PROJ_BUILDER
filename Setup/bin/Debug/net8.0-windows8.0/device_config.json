@@ -41,7 +41,7 @@
       "UPLLFSEL": "FREQ_24MHZ"
     },
     "DEVCFG3": {
-      "USERID": "0xFFFF",
+      "USERID": "0xFFFB",
       "FMIIEN": "ON",
       "FETHIO": "ON",
       "PGL1WAY": "ON",

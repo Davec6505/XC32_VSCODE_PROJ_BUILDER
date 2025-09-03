@@ -1,0 +1,56 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true" #>
+<#@ output extension=".h" #>
+<#
+    // Choose variant: "MX" or "MZ"
+    var variant = "MZ"; // Change to "MX" for MX series
+
+    string deviceName, deviceArch, deviceFamily, deviceSeries;
+    uint cpuClockFrequency;
+
+    if (variant == "MZ")
+    {
+        deviceName = "PIC32MZ2048EFH064";
+        deviceArch = "MIPS";
+        deviceFamily = "PIC32MZEF";
+        deviceSeries = "PIC32MZ";
+        cpuClockFrequency = 200000000U;
+    }
+    else // MX
+    {
+        deviceName = "PIC32MX795F512L";
+        deviceArch = "MIPS";
+        deviceFamily = "PIC32MX";
+        deviceSeries = "PIC32MX";
+        cpuClockFrequency = 80000000U;
+    }
+#>
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
+
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <xc.h>
+#include <sys/attribs.h>
+#include "toolchain_specifics.h"
+
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
+// DOM-IGNORE-END
+
+/* Device Information */
+#define DEVICE_NAME          "<#= deviceName #>"
+#define DEVICE_ARCH          "<#= deviceArch #>"
+#define DEVICE_FAMILY        "<#= deviceFamily #>"
+#define DEVICE_SERIES        "<#= deviceSeries #>"
+
+/* CPU clock frequency */
+#define CPU_CLOCK_FREQUENCY <#= cpuClockFrequency #>U
+
+// ... rest of your header file ...
+#endif /* DEFINITIONS_H */
