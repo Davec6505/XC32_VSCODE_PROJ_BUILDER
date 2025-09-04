@@ -1,0 +1,174 @@
+﻿<#+
+    var configPath = ConfigPath;
+    var configJson = File.ReadAllText(configPath);
+    
+    // Default values
+    var variant = "MZ";
+    string deviceName = "PIC32MZ2048EFH064";
+    string deviceArch = "MIPS";
+    string deviceFamily = "PIC32MZEF";
+    string deviceSeries = "PIC32MZ";
+    uint cpuClockFrequency = 200000000U;
+
+    try 
+    {
+        var config = JsonSerializer.Deserialize<DeviceConfig>(configJson, new JsonSerializerOptions 
+        { 
+            PropertyNameCaseInsensitive = true 
+        });
+        
+        if (config != null)
+        {
+            // Get variant
+            if (!string.IsNullOrEmpty(config.Variant))
+            {
+                variant = config.Variant;
+            }
+            
+            // Get device properties if they exist
+            if (!string.IsNullOrEmpty(config.DeviceName))
+            {
+                deviceName = config.DeviceName;
+            }
+            if (!string.IsNullOrEmpty(config.DeviceArch))
+            {
+                deviceArch = config.DeviceArch;
+            }
+            if (!string.IsNullOrEmpty(config.DeviceFamily))
+            {
+                deviceFamily = config.DeviceFamily;
+            }
+            if (!string.IsNullOrEmpty(config.DeviceSeries))
+            {
+                deviceSeries = config.DeviceSeries;
+            }
+            if (config.CpuClockFrequency > 0)
+            {
+                cpuClockFrequency = config.CpuClockFrequency;
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        // If deserialization fails, use defaults based on variant detection from raw JSON
+        if (configJson.Contains("\"MX\""))
+        {
+            variant = "MX";
+            deviceName = "PIC32MX795F512L";
+            deviceFamily = "PIC32MX";
+            deviceSeries = "PIC32MX";
+            cpuClockFrequency = 80000000U;
+        }
+        // Otherwise keep MZ defaults
+    }
+
+    // Final validation and defaults based on variant
+    if (variant == "MX")
+    {
+        if (deviceName.StartsWith("PIC32MZ") || deviceName == "PIC32MZ2048EFH064")
+        {
+            deviceName = "PIC32MX795F512L";
+        }
+        if (deviceFamily == "PIC32MZEF" || string.IsNullOrEmpty(deviceFamily))
+        {
+            deviceFamily = "PIC32MX";
+        }
+        if (deviceSeries == "PIC32MZ" || string.IsNullOrEmpty(deviceSeries))
+        {
+            deviceSeries = "PIC32MX";
+        }
+        if (cpuClockFrequency == 200000000U || cpuClockFrequency == 0)
+        {
+            cpuClockFrequency = 80000000U;
+        }
+    }
+#>
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
+
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <xc.h>
+#include <sys/attribs.h>
+#include "toolchain_specifics.h"
+
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
+// DOM-IGNORE-END
+
+/* Device Information */
+#define DEVICE_NAME          "<#= deviceName #>"
+#define DEVICE_ARCH          "<#= deviceArch #>"
+#define DEVICE_FAMILY        "<#= deviceFamily #>"
+#define DEVICE_SERIES        "<#= deviceSeries #>"
+
+/* CPU clock frequency */
+#define CPU_CLOCK_FREQUENCY <#= cpuClockFrequency #>U
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: System Service Definitions
+// *****************************************************************************
+// *****************************************************************************
+void SYS_Initialize(void *data);
+void CLK_Initialize(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Library/Stack Definitions
+// *****************************************************************************
+// *****************************************************************************
+void STACK_Init(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Driver Definitions
+// *****************************************************************************
+// *****************************************************************************
+void DRV_TimerInitialize(void);
+void DRV_USARTInitialize(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: System Data Types
+// *****************************************************************************
+// *****************************************************************************
+typedef struct
+{
+    uint32_t baudRate;
+    uint8_t  dataBits;
+    uint8_t  stopBits;
+    uint8_t  parity;
+} USART_CONFIG;
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Configuration System Service Definitions
+// *****************************************************************************
+// *****************************************************************************
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus
+}
+#endif
+// DOM-IGNORE-END
+
+#endif /* DEFINITIONS_H */
+
+<#+
+    public class DeviceConfig
+    {
+        public string Variant { get; set; }
+        public Dictionary<string, Dictionary<string, string>> Sections { get; set; }
+        public string DeviceName { get; set; }
+        public string DeviceArch { get; set; }
+        public string DeviceFamily { get; set; }
+        public string DeviceSeries { get; set; }
+        public uint CpuClockFrequency { get; set; }
+    }
+#>

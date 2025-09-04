@@ -1,0 +1,466 @@
+﻿using csharp;
+using Microsoft.VisualBasic.ApplicationServices;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+
+
+namespace Setup
+{
+
+
+
+    public partial class Form1 : Form
+    {
+        // Move the initialization of configBitComboBoxes from field initializer to the constructor
+
+        private Dictionary<string, ComboBox> configBitComboBoxes;
+        //
+        //private string path = String.Empty;//"C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\device_config.json";
+        private string path = System.IO.Path.Combine(Application.StartupPath, "device_config.json");
+
+        // Add this mapping in your Form1 class
+        private Dictionary<string, string> configBitSections = new Dictionary<string, string>
+        {
+            // DEVCFG0
+            { "DEBUG", "DEVCFG0" }, { "JTAGEN", "DEVCFG0" }, { "ICESEL", "DEVCFG0" }, { "TRCEN", "DEVCFG0" }, { "BOOTISA", "DEVCFG0" }, { "FECCCON", "DEVCFG0" }, { "FSLEEP", "DEVCFG0" }, { "DBGPER", "DEVCFG0" }, { "SMCLR", "DEVCFG0" }, { "SOSCGAIN", "DEVCFG0" }, { "SOSCBOOST", "DEVCFG0" }, { "POSCGAIN", "DEVCFG0" }, { "POSCBOOST", "DEVCFG0" }, { "EJTAGBEN", "DEVCFG0" },
+            // DEVCFG1
+            { "FNOSC", "DEVCFG1" }, { "DMTINTV", "DEVCFG1" }, { "FSOSCEN", "DEVCFG1" }, { "IESO", "DEVCFG1" }, { "POSCMOD", "DEVCFG1" }, { "OSCIOFNC", "DEVCFG1" }, { "FCKSM", "DEVCFG1" }, { "WDTPS", "DEVCFG1" }, { "WDTSPGM", "DEVCFG1" }, { "FWDTEN", "DEVCFG1" }, { "WINDIS", "DEVCFG1" }, { "FWDTWINSZ", "DEVCFG1" }, { "DMTCNT", "DEVCFG1" }, { "FDMTEN", "DEVCFG1" },
+            // DEVCFG2
+            { "FPLLIDIV", "DEVCFG2" }, { "FPLLRNG", "DEVCFG2" }, { "FPLLICLK", "DEVCFG2" }, { "FPLLMULT", "DEVCFG2" }, { "FPLLODIV", "DEVCFG2" }, { "UPLLFSEL", "DEVCFG2" },
+            // DEVCFG3
+            { "FMIIEN", "DEVCFG3" }, { "FETHIO", "DEVCFG3" }, { "PGL1WAY", "DEVCFG3" }, { "PMDL1WAY", "DEVCFG3" }, { "IOL1WAY", "DEVCFG3" }, { "FUSBIDIO", "DEVCFG3" },
+            // DEVCP0
+            { "CP", "DEVCP0" }
+        };
+
+
+        public Form1()
+        {
+            InitializeComponent();
+            this.AutoScaleMode = AutoScaleMode.Font; // or AutoScaleMode.Dpi
+            // Initialize the dictionary mapping config bits to their respective ComboBoxes
+            configBitComboBoxes = new Dictionary<string, ComboBox>
+            {
+                // DEVCFG0
+                { "DEBUG", comboBox_DEBUG },
+                { "JTAGEN", comboBox_JTAGEN },
+                { "ICESEL", comboBox_ICESEL },
+                { "TRCEN", comboBox_TRCEN },
+                { "BOOTISA", comboBox_BOOTISA },
+                { "FECCCON", comboBox_FECCCON },
+                { "FSLEEP", comboBox_FSLEEP },
+                { "DBGPER", comboBox_DBGPER },
+                { "SMCLR", comboBox_SMCLR },
+                { "SOSCGAIN", comboBox_SOSCGAIN },
+                { "SOSCBOOST", comboBox_SOSCBOOST },
+                { "POSCGAIN", comboBox_POSCGAIN },
+                { "POSCBOOST", comboBox_POSCBOOST },
+                { "EJTAGBEN", comboBox_EJTAGBEN },
+
+                // DEVCFG1
+                { "FNOSC", comboBox_FNOSC },
+                { "DMTINTV", comboBox_DMTINTV },
+                { "FSOSCEN", comboBox_FSOSCEN },
+                { "IESO", comboBox_IESO },
+                { "POSCMOD", comboBox_POSCMOD },
+                { "OSCIOFNC", comboBox_OSCIOFNC },
+                { "FCKSM", comboBox_FCKSM },
+                { "WDTPS", comboBox_WDTPS },
+                { "WDTSPGM", comboBox_WDTSPGM },
+                { "FWDTEN", comboBox_FWDTEN },
+                { "WINDIS", comboBox_WINDIS },
+                { "FWDTWINSZ", comboBox_FWDTWINSZ },
+                { "DMTCNT", comboBox_DMTCNT },
+                { "FDMTEN", comboBox_FDMTEN },
+
+                // DEVCFG2
+                { "FPLLIDIV", comboBox_FPLLIDIV },
+                { "FPLLRNG", comboBox_FPLLRNG },
+                { "FPLLICLK", comboBox_FPLLICLK },
+                { "FPLLMULT", comboBox_FPLLMULT },
+                { "FPLLODIV", comboBox_FPLLODIV },
+                { "UPLLFSEL", comboBox_UPLLFSEL },
+
+                // DEVCFG3
+               // { "USERID", comboBox_USERID }, // If you use NumericUpDown, handle separately
+
+                { "FMIIEN", comboBox_FMIIEN },
+                { "FETHIO", comboBox_FETHIO },
+                { "PGL1WAY", comboBox_PGL1WAY },
+                { "PMDL1WAY", comboBox_PMDL1WAY },
+                { "IOL1WAY", comboBox_IOL1WAY },
+                { "FUSBIDIO", comboBox_FUSBIDIO },
+
+                // DEVCP0
+                { "CP", comboBox_CP },
+
+                // BF1SEQ0
+               // { "TSEQ", comboBox_TSEQ },
+               // { "CSEQ", comboBox_CSEQ }
+            };
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            this.TopMost = true;
+            // Hide the taskbar icon and set the form as a tool window
+            this.ShowInTaskbar = false;
+            // this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            // Do not load configWords or call CreateConfigUI on startup
+            LoadConfigToForm(path);
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!String.IsNullOrEmpty(path))
+            {
+                saveConfig_ToJson(path);
+            }
+            else
+            {
+                // MessageBox.Show("No file path specified. Use 'Save As' to specify a file.","Closing Application!",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
+                if (DialogResult.Cancel == MessageBox.Show("No file path specified. Use 'Save As' to specify a file. click 'OK' to continue or 'Cancel' to abort.", "Closing Application!", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
+                {
+                    e.Cancel = true; // Prevent closing if no path
+                    return; // Allow closing
+                }
+
+                return;
+            }
+        }
+
+
+
+        #region LOAD/GET CONFIG
+
+        private void LoadConfigToForm(string path_)
+        {
+            var config = DeviceConfig.Load(path_);
+            if (config == null) return;
+
+            // Load from Sections if present
+            if (config.Sections != null)
+            {
+                foreach (var section in config.Sections)
+                {
+                    foreach (var bit in section.Value)
+                    {
+                        if (bit.Key == "USERID" && numericUpDown_USERID != null)
+                        {
+                            if (int.TryParse(bit.Value.Replace("0x", ""), System.Globalization.NumberStyles.HexNumber, null, out int userIdValue))
+                            {
+                                userIdValue = Math.Max((int)numericUpDown_USERID.Minimum, Math.Min(userIdValue, (int)numericUpDown_USERID.Maximum));
+                                numericUpDown_USERID.Value = userIdValue;
+                            }
+                            else
+                            {
+                                numericUpDown_USERID.Value = 0;
+                            }
+                        }
+                        else if (configBitComboBoxes.TryGetValue(bit.Key, out var comboBox) && comboBox != null)
+                        {
+                            comboBox.SelectedItem = bit.Value;
+                        }
+                    }
+                }
+
+                // Load PreconBits (textboxes)
+                if (config.Sections.TryGetValue("PreconBits", out var preconBits))
+                {
+                    if (numericUpDown_PREFEN != null)
+                    {
+                        if (int.TryParse(preconBits.TryGetValue("PREFEN", out var prefen) ? prefen : "0", out int prefenValue))
+                            numericUpDown_PREFEN.Value = prefenValue;
+                    }
+                    if (numericUpDown_PFMWS != null)
+                    {
+                        if (int.TryParse(preconBits.TryGetValue("PFMWS", out var pfmws) ? pfmws : "0", out int pfmwsValue))
+                            numericUpDown_PFMWS.Value = pfmwsValue;
+                    }
+                    if (numericUpDown_ECCCON != null)
+                    {
+                        if (int.TryParse(preconBits.TryGetValue("ECCCON", out var ecccon) ? ecccon : "0", out int eccconValue))
+                            numericUpDown_ECCCON.Value = eccconValue;
+                    }
+                }
+            }
+        }
+
+        private DeviceConfig GetConfigFromForm()
+        {
+            var config = new DeviceConfig();
+            config.Variant = "MZ"; // Default value since comboBoxVariant might not exist
+            config.Sections = new Dictionary<string, Dictionary<string, string>>();
+
+            // Populate config bits from form controls using the section mapping
+            foreach (var kvp in configBitComboBoxes)
+            {
+                string key = kvp.Key;
+                ComboBox combo = kvp.Value;
+                if (combo == null) continue; // Skip null controls
+                
+                string section = configBitSections.ContainsKey(key) ? configBitSections[key] : "DEVCFG0";
+                string value = combo.SelectedItem?.ToString() ?? "";
+
+                if (!config.Sections.ContainsKey(section))
+                    config.Sections[section] = new Dictionary<string, string>();
+                
+                config.Sections[section][key] = value;
+            }
+
+            // Add USERID (NumericUpDown)
+            if (numericUpDown_USERID != null)
+            {
+                if (!config.Sections.ContainsKey("DEVCFG3"))
+                    config.Sections["DEVCFG3"] = new Dictionary<string, string>();
+                config.Sections["DEVCFG3"]["USERID"] = $"0x{((int)numericUpDown_USERID.Value):X}";
+            }
+
+            // Add PreconBits (numeric up/down controls)
+            if (!config.Sections.ContainsKey("PreconBits"))
+                config.Sections["PreconBits"] = new Dictionary<string, string>();
+            
+            if (numericUpDown_PREFEN != null)
+                config.Sections["PreconBits"]["PREFEN"] = numericUpDown_PREFEN.Value.ToString();
+            if (numericUpDown_PFMWS != null)
+                config.Sections["PreconBits"]["PFMWS"] = numericUpDown_PFMWS.Value.ToString();
+            if (numericUpDown_ECCCON != null)
+                config.Sections["PreconBits"]["ECCCON"] = numericUpDown_ECCCON.Value.ToString();
+
+            return config;
+        }
+
+
+        public void saveConfig_ToJson(string path_)
+        {
+            var config = DeviceConfig.Load(path_); // Load existing config
+            if (config == null) config = new DeviceConfig(); // Fallback if file missing
+            UpdateConfigFromFormAndCheckKeys(config); // Update only changed values
+            config.Save(path_); // Save back to file
+            MessageBox.Show("Configuration saved!");
+        }
+
+        private void UpdateConfigFromFormAndCheckKeys(DeviceConfig config)
+        {
+            // Initialize Sections if null
+            if (config.Sections == null)
+                config.Sections = new Dictionary<string, Dictionary<string, string>>();
+
+            // For section-based config
+            foreach (var kvp in configBitComboBoxes)
+            {
+                string key = kvp.Key;
+                ComboBox combo = kvp.Value;
+                if (combo == null) continue; // Skip null controls
+                
+                string section = configBitSections.ContainsKey(key) ? configBitSections[key] : "DEVCFG0"; // fallback
+                string newValue = combo.SelectedItem?.ToString() ?? "";
+                
+                if (!config.Sections.ContainsKey(section))
+                    config.Sections[section] = new Dictionary<string, string>();
+                config.Sections[section][key] = newValue;
+            }
+
+            // NumericUpDown USERID
+            if (numericUpDown_USERID != null)
+            {
+                if (!config.Sections.ContainsKey("DEVCFG3"))
+                    config.Sections["DEVCFG3"] = new Dictionary<string, string>();
+                config.Sections["DEVCFG3"]["USERID"] = $"0x{((int)numericUpDown_USERID.Value):X}";
+            }
+
+            // Add PreconBits (numeric up/down controls)
+            if (!config.Sections.ContainsKey("PreconBits"))
+                config.Sections["PreconBits"] = new Dictionary<string, string>();
+            
+            if (numericUpDown_PREFEN != null)
+                config.Sections["PreconBits"]["PREFEN"] = numericUpDown_PREFEN.Value.ToString();
+            if (numericUpDown_PFMWS != null)
+                config.Sections["PreconBits"]["PFMWS"] = numericUpDown_PFMWS.Value.ToString();
+            if (numericUpDown_ECCCON != null)
+                config.Sections["PreconBits"]["ECCCON"] = numericUpDown_ECCCON.Value.ToString();
+        }
+
+
+        #endregion LOAD/GET CONFIG
+
+
+        #region BUTTON EVENTS
+
+
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (String.IsNullOrEmpty(path))
+            {
+                MessageBox.Show("No file path specified. Use 'Save As' to specify a file.");
+                return;
+            }
+            saveConfig_ToJson(path);
+        }
+
+        #endregion BUTTON EVENTS
+
+        #region MENU EVENTS
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog
+            {
+                Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*",
+                Title = "Open Device Configuration"
+            };
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                path = ofd.FileName;
+                var config = DeviceConfig.Load(path);
+                if (config != null)
+                {
+                    LoadConfigToForm(path);
+                }
+            }
+        }
+
+
+
+        private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string new_path = path;
+            SaveFileDialog sfd = new SaveFileDialog
+            {
+                Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*",
+                Title = "Save Device Configuration As"
+            };
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                new_path = sfd.FileName;
+                saveConfig_ToJson(new_path);
+            }
+        }
+
+
+        private void generateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Get the current config from the form
+                var config = DeviceConfig.Load(path); // Load existing config
+                if (config == null) 
+                {
+                    MessageBox.Show("No configuration found. Please save a configuration first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                
+                // Update config with current form values
+                UpdateConfigFromFormAndCheckKeys(config);
+                
+                // Save the updated config to ensure it's current
+                config.Save(path);
+                
+                // Generate the C file using T4 template
+                GenerateConfigBitsFile();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error generating config bits file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void GenerateConfigBitsFile()
+        {
+            try
+            {
+                // Paths
+                string templatePath = Path.Combine(Application.StartupPath, "Templates", "config_bits.tt");
+                string configPath = path; // Use the same path as the form
+                string outputPath = Path.Combine(Application.StartupPath, "config_bits.c");
+
+                // Check if template exists
+                if (!File.Exists(templatePath))
+                {
+                    MessageBox.Show($"Template file not found: {templatePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Check if config exists
+                if (!File.Exists(configPath))
+                {
+                    MessageBox.Show($"Configuration file not found: {configPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Prepare the T4 command
+                string t4Command = "t4";
+                string arguments = $"-p ConfigPath=\"{configPath}\" \"{templatePath}\" -o \"{outputPath}\"";
+
+                // Create process info
+                var processInfo = new ProcessStartInfo
+                {
+                    FileName = t4Command,
+                    Arguments = arguments,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                    WorkingDirectory = Path.GetDirectoryName(templatePath)
+                };
+
+                // Start the process
+                using (var process = Process.Start(processInfo))
+                {
+                    if (process == null)
+                    {
+                        MessageBox.Show("Failed to start T4 process. Make sure 't4' tool is installed and in your PATH.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+                    // Read output and errors
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+                    
+                    process.WaitForExit();
+
+                    if (process.ExitCode == 0)
+                    {
+                        MessageBox.Show($"Configuration bits file generated successfully!\n\nOutput: {outputPath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
+                        // Optionally open the generated file
+                        if (MessageBox.Show("Would you like to open the generated file?", "Open File", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            try
+                            {
+                                Process.Start(new ProcessStartInfo(outputPath) { UseShellExecute = true });
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error opening file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string errorMessage = $"T4 process failed with exit code {process.ExitCode}";
+                        if (!string.IsNullOrEmpty(error))
+                            errorMessage += $"\n\nError: {error}";
+                        if (!string.IsNullOrEmpty(output))
+                            errorMessage += $"\n\nOutput: {output}";
+                            
+                        MessageBox.Show(errorMessage, "T4 Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error running T4 template: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        #endregion
+    }
+}

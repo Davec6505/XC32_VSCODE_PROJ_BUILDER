@@ -1,0 +1,162 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true" #>
+<#@ output extension=".c" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="System.Collections" #>
+<#@ assembly name="System.Text.Json" #>
+<#@ assembly name="System.Memory" #>
+<#@ assembly name="netstandard" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.Json" #>
+<#@ import namespace="System.IO" #>
+<#@ parameter type="System.String" name="ConfigPath" #>
+<#
+    var configPath = ConfigPath;
+    var configJson = File.ReadAllText(configPath);
+    var config = JsonSerializer.Deserialize<DeviceConfig>(configJson);
+    
+    // Flatten all sections into configBits for easier access
+    var configBits = new Dictionary<string, string>();
+    if (config.Sections != null)
+    {
+        foreach (var section in config.Sections)
+        {
+            foreach (var bit in section.Value)
+            {
+                configBits[bit.Key] = bit.Value;
+            }
+        }
+    }
+    
+    // Get PreconBits from the PreconBits section
+    var preconBits = new Dictionary<string, string>();
+    if (config.Sections != null && config.Sections.ContainsKey("PreconBits"))
+    {
+        preconBits = config.Sections["PreconBits"];
+    }
+
+    var sectionHeaders = new Dictionary<string, string> {
+        {"DEVCFG0", "/*** DEVCFG0 ***/"},
+        {"DEVCFG1", "/*** DEVCFG1 ***/"},
+        {"DEVCFG2", "/*** DEVCFG2 ***/"},
+        {"DEVCFG3", "/*** DEVCFG3 ***/"},
+        {"BF1SEQ0", "/*** BF1SEQ0 ***/"}
+    };
+    var sectionOrder = new[] { "DEVCFG0", "DEVCFG1", "DEVCFG2", "DEVCFG3", "BF1SEQ0" };
+    var sectionMap = new Dictionary<string, List<string>> {
+        {"DEVCFG0", new List<string>{"DEBUG","JTAGEN","ICESEL","TRCEN","BOOTISA","FECCCON","FSLEEP","DBGPER","SMCLR","SOSCGAIN","SOSCBOOST","POSCGAIN","POSCBOOST","EJTAGBEN","CP"}},
+        {"DEVCFG1", new List<string>{"FNOSC","DMTINTV","FSOSCEN","IESO","POSCMOD","OSCIOFNC","FCKSM","WDTPS","WDTSPGM","FWDTEN","WINDIS","FWDTWINSZ","DMTCNT","FDMTEN"}},
+        {"DEVCFG2", new List<string>{"FPLLIDIV","FPLLRNG","FPLLICLK","FPLLMULT","FPLLODIV","UPLLFSEL"}},
+        {"DEVCFG3", new List<string>{"USERID","FMIIEN","FETHIO","PGL1WAY","PMDL1WAY","IOL1WAY","FUSBIDIO"}},
+        {"BF1SEQ0", new List<string>{"TSEQ","CSEQ"}}
+    };
+#>
+// ****************************************************************************
+// ****************************************************************************
+// Section: Configuration Bits
+// ****************************************************************************
+// ****************************************************************************
+
+<#
+    foreach (var section in sectionOrder) {
+#>
+<#= sectionHeaders[section] #>
+<#
+        foreach (var bitName in sectionMap[section]) {
+            if (configBits.ContainsKey(bitName)) {
+#>
+#pragma config <#= bitName #> =      <#= configBits[bitName] #>
+<#         }
+        }
+    }
+#>
+// *****************************************************************************
+// *****************************************************************************
+// Section: Local initialization functions
+// *****************************************************************************
+// *****************************************************************************
+
+/* MISRAC 2012 deviation block end */
+
+/*******************************************************************************
+  Function:
+    void SYS_Initialize ( void *data )
+
+  Summary:
+    Initializes the board, services, drivers, application and other modules.
+
+  Remarks:
+ */
+
+void SYS_Initialize ( void* data )
+{
+    /* Start out with interrupts disabled before configuring any modules */
+    __builtin_disable_interrupts();
+
+    CLK_Initialize();
+    /* Configure Prefetch, Wait States and ECC */
+<#
+    foreach (var precon in preconBits) {
+#>
+    PRECONbits.<#= precon.Key #> = <#= precon.Value #>;
+<#     }
+#>
+
+    /* Enable global interrupts */
+    __builtin_enable_interrupts();
+}
+
+// *****************************************************************************
+/* Function:
+    void CLK_Initialize( void )
+
+  Summary:
+    Initializes hardware and internal data structure of the System Clock.
+
+  Description:
+    This function initializes the hardware and internal data structure of System
+    Clock Service.
+
+  Remarks:
+    This is configuration values for the static version of the Clock System
+    Service module is determined by the user via the MHC GUI.
+
+    The objective is to eliminate the user's need to be knowledgeable in the
+    function of the 'configuration bits' to configure the system oscillators.
+*/
+
+void CLK_Initialize( void )
+{
+    /* unlock system for clock configuration */
+    SYSKEY = 0x00000000U;
+    SYSKEY = 0xAA996655U;
+    SYSKEY = 0x556699AAU;
+
+    /* Peripheral Module Disable Configuration */
+
+    CFGCONbits.PMDLOCK = 0;
+
+    PMD1 = 0x1001U;
+    PMD2 = 0x3U;
+    PMD3 = 0x1f701ffU;
+    PMD4 = 0x1fdU;
+    PMD5 = 0x301f3f3fU;
+    PMD6 = 0x10830001U;
+    PMD7 = 0x500000U;
+
+    CFGCONbits.PMDLOCK = 1;
+
+    /* Peripheral Bus 3 is by default enabled, set its divisor */
+    PB3DIVbits.PBDIV = 3;
+
+    /* Lock system since done with clock configuration */
+    SYSKEY = 0x33333333U;
+}
+
+<#+
+    public class DeviceConfig
+    {
+        public string Variant { get; set; }
+        public Dictionary<string, Dictionary<string, string>> Sections { get; set; }
+    }
+#>

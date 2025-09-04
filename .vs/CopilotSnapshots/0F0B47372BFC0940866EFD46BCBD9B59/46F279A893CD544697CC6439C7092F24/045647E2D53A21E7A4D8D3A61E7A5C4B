@@ -1,0 +1,124 @@
+﻿<#@ template language="C#" debug="false" hostspecific="true" #>
+<#@ output extension=".h" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="System.Collections" #>
+<#@ assembly name="System.Text.Json" #>
+<#@ assembly name="System.Memory" #>
+<#@ assembly name="netstandard" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.Json" #>
+<#@ import namespace="System.IO" #>
+<#@ parameter type="System.String" name="ConfigPath" #>
+<#
+    var configPath = ConfigPath;
+    var configJson = File.ReadAllText(configPath);
+    var config = JsonSerializer.Deserialize<DeviceConfig>(configJson);
+    
+    // Get variant from config, default to "MZ"
+    var variant = (config != null && !string.IsNullOrEmpty(config.Variant)) ? config.Variant : "MZ";
+
+    string deviceName, deviceArch, deviceFamily, deviceSeries;
+    uint cpuClockFrequency;
+
+    if (variant == "MZ")
+    {
+        deviceName = "PIC32MZ2048EFH064";
+        deviceArch = "MIPS";
+        deviceFamily = "PIC32MZEF";
+        deviceSeries = "PIC32MZ";
+        cpuClockFrequency = 200000000U;
+    }
+    else // MX
+    {
+        deviceName = "PIC32MX795F512L";
+        deviceArch = "MIPS";
+        deviceFamily = "PIC32MX";
+        deviceSeries = "PIC32MX";
+        cpuClockFrequency = 80000000U;
+    }
+#>
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
+
+// *****************************************************************************
+// Section: Included Files
+// *****************************************************************************
+#include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <xc.h>
+#include <sys/attribs.h>
+#include "toolchain_specifics.h"
+
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus
+extern "C" {
+#endif
+// DOM-IGNORE-END
+
+/* Device Information */
+#define DEVICE_NAME          "<#= deviceName #>"
+#define DEVICE_ARCH          "<#= deviceArch #>"
+#define DEVICE_FAMILY        "<#= deviceFamily #>"
+#define DEVICE_SERIES        "<#= deviceSeries #>"
+
+/* CPU clock frequency */
+#define CPU_CLOCK_FREQUENCY <#= cpuClockFrequency #>U
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: System Service Definitions
+// *****************************************************************************
+// *****************************************************************************
+void SYS_Initialize(void *data);
+void CLK_Initialize(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Library/Stack Definitions
+// *****************************************************************************
+// *****************************************************************************
+void STACK_Init(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Driver Definitions
+// *****************************************************************************
+// *****************************************************************************
+void DRV_TimerInitialize(void);
+void DRV_USARTInitialize(void);
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: System Data Types
+// *****************************************************************************
+// *****************************************************************************
+typedef struct
+{
+    uint32_t baudRate;
+    uint8_t  dataBits;
+    uint8_t  stopBits;
+    uint8_t  parity;
+} USART_CONFIG;
+
+// *****************************************************************************
+// *****************************************************************************
+// Section: Configuration System Service Definitions
+// *****************************************************************************
+// *****************************************************************************
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus
+}
+#endif
+// DOM-IGNORE-END
+
+#endif /* DEFINITIONS_H */
+
+<#+
+    public class DeviceConfig
+    {
+        public string Variant { get; set; }
+        public Dictionary<string, Dictionary<string, string>> Sections { get; set; }
+    }
+#>

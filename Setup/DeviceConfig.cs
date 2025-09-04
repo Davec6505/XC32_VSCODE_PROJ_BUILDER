@@ -12,6 +12,18 @@ namespace Setup
         public Dictionary<string, string> ConfigBits { get; set; } = new();
         public Dictionary<string, string> PreconBits { get; set; } = new();
         public Dictionary<string, Dictionary<string, string>> Sections { get; set; } = new();
+        
+        // Device Properties
+        public string DeviceName { get; set; } = string.Empty;
+        public string DeviceArch { get; set; } = string.Empty;
+        public string DeviceFamily { get; set; } = string.Empty;
+        public string DeviceSeries { get; set; } = string.Empty;
+        public uint CpuClockFrequency { get; set; } = 0;
+
+        // Add peripheral-specific sections
+        public Dictionary<string, string> UARTConfig { get; set; } = new();
+        public Dictionary<string, string> SPIConfig { get; set; } = new();
+        public Dictionary<string, string> GPIOConfig { get; set; } = new();
 
         public static DeviceConfig? Load(string path)
         {
@@ -69,7 +81,16 @@ namespace Setup
 
         public void Save(string path)
         {
-            var toSave = new { Sections = this.Sections };
+            // Include device properties in the saved JSON
+            var toSave = new { 
+                Sections = this.Sections,
+                Variant = this.Variant,
+                DeviceName = this.DeviceName,
+                DeviceArch = this.DeviceArch,
+                DeviceFamily = this.DeviceFamily,
+                DeviceSeries = this.DeviceSeries,
+                CpuClockFrequency = this.CpuClockFrequency
+            };
             var json = JsonSerializer.Serialize(toSave, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(path, json);
         }
