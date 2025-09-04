@@ -4,175 +4,257 @@
 <#@ output extension=".c" #>
 <#@ assembly name="System.Runtime" #>
 <#@ assembly name="System.Collections" #>
-<#@ assembly name="System.Text.Json" #>
-<#@ assembly name="System.Memory" #>
-<#@ assembly name="netstandard" #>
 <#@ import namespace="System" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="System.Text.Json" #>
 <#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
 <#@ parameter type="System.String" name="ConfigPath" #>
 <#
+    // Robust config path handling
     var configPath = ConfigPath;
-    var configJson = File.ReadAllText(configPath);
-    var config = JsonSerializer.Deserialize<DeviceConfig>(configJson);
     
-    // Flatten all sections into configBits for easier access
-    var configBits = new Dictionary<string, string>();
-    if (config != null && config.Sections != null)
+    if (string.IsNullOrEmpty(configPath))
     {
-        foreach (var section in config.Sections)
+        configPath = this.Host.ResolvePath("..\\device_config.json");
+    }
+    
+    if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+    {
+        var possiblePaths = new[] {
+            this.Host.ResolvePath("device_config.json"),
+            this.Host.ResolvePath("..\\device_config.json"),
+            this.Host.ResolvePath("..\\..\\device_config.json"),
+            Path.Combine(Environment.CurrentDirectory, "device_config.json")
+        };
+        
+        foreach (var testPath in possiblePaths)
         {
-            if (section.Value != null)
+            if (!string.IsNullOrEmpty(testPath) && File.Exists(testPath))
             {
-                foreach (var bit in section.Value)
-                {
-                    if (!string.IsNullOrEmpty(bit.Key) && !string.IsNullOrEmpty(bit.Value))
-                    {
-                        configBits[bit.Key] = bit.Value;
-                    }
-                }
+                configPath = testPath;
+                break;
             }
         }
     }
     
-    // Get PreconBits from the PreconBits section
-    var preconBits = new Dictionary<string, string>();
-    if (config != null && config.Sections != null && config.Sections.ContainsKey("PreconBits"))
+    if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
     {
-        var preconSection = config.Sections["PreconBits"];
-        if (preconSection != null)
+        throw new FileNotFoundException($"Configuration file not found. Searched: {ConfigPath ?? "null"}");
+    }
+    
+    // Simple JSON parsing without JsonSerializer
+    string configJson = File.ReadAllText(configPath);
+    
+    var configBits = new Dictionary<string, string>();
+    var preconBits = new Dictionary<string, string>();
+    var peripheralStates = new Dictionary<string, bool>();
+    
+    // Extract config bits using simple string parsing
+    ExtractSection(configJson, "DEVCFG0", configBits);
+    ExtractSection(configJson, "DEVCFG1", configBits);
+    ExtractSection(configJson, "DEVCFG2", configBits);
+    ExtractSection(configJson, "DEVCFG3", configBits);
+    ExtractSection(configJson, "DEVCP0", configBits);
+    ExtractSection(configJson, "BF1SEQ3", configBits);
+    
+    // Extract PreconBits
+    ExtractSection(configJson, "PreconBits", preconBits);
+    
+    // Extract PeripheralConfig
+    var peripheralDict = new Dictionary<string, string>();
+    ExtractSection(configJson, "PeripheralConfig", peripheralDict);
+    
+    foreach (var kvp in peripheralDict)
+    {
+        if (bool.TryParse(kvp.Value, out bool isEnabled))
         {
-            preconBits = preconSection;
+            peripheralStates[kvp.Key] = isEnabled;
         }
     }
-
-    var sectionHeaders = new Dictionary<string, string> {
-        {"DEVCFG0", "/*** DEVCFG0 ***/"},
-        {"DEVCFG1", "/*** DEVCFG1 ***/"},
-        {"DEVCFG2", "/*** DEVCFG2 ***/"},
-        {"DEVCFG3", "/*** DEVCFG3 ***/"},
-        {"BF1SEQ0", "/*** BF1SEQ0 ***/"}
-    };
-    var sectionOrder = new[] { "DEVCFG0", "DEVCFG1", "DEVCFG2", "DEVCFG3", "BF1SEQ0" };
-    var sectionMap = new Dictionary<string, List<string>> {
-        {"DEVCFG0", new List<string>{"DEBUG","JTAGEN","ICESEL","TRCEN","BOOTISA","FECCCON","FSLEEP","DBGPER","SMCLR","SOSCGAIN","SOSCBOOST","POSCGAIN","POSCBOOST","EJTAGBEN","CP"}},
-        {"DEVCFG1", new List<string>{"FNOSC","DMTINTV","FSOSCEN","IESO","POSCMOD","OSCIOFNC","FCKSM","WDTPS","WDTSPGM","FWDTEN","WINDIS","FWDTWINSZ","DMTCNT","FDMTEN"}},
-        {"DEVCFG2", new List<string>{"FPLLIDIV","FPLLRNG","FPLLICLK","FPLLMULT","FPLLODIV","UPLLFSEL"}},
-        {"DEVCFG3", new List<string>{"USERID","FMIIEN","FETHIO","PGL1WAY","PMDL1WAY","IOL1WAY","FUSBIDIO"}},
-        {"BF1SEQ0", new List<string>{"TSEQ","CSEQ"}}
-    };
-#>
-// ****************************************************************************
-// ****************************************************************************
-// Section: Configuration Bits
-// ****************************************************************************
-// ****************************************************************************
-
-<#
-    foreach (var section in sectionOrder) {
-#>
-<#= sectionHeaders[section] #>
-<#
-        foreach (var bitName in sectionMap[section]) {
-            if (configBits.ContainsKey(bitName) && !string.IsNullOrEmpty(configBits[bitName])) {
-#>
-#pragma config <#= bitName #> =      <#= configBits[bitName] #>
-<#         }
-        }
+    
+    // PMD register defaults
+    uint pmd1 = 0x1001U;
+    uint pmd2 = 0x3U;
+    uint pmd3 = 0x1f701ffU;
+    uint pmd4 = 0x1fdU;
+    uint pmd5 = 0x301f3f3fU;
+    uint pmd6 = 0x10830001U;
+    uint pmd7 = 0x500000U;
+    
+    // Apply peripheral settings - THIS IS WHERE THE MAGIC HAPPENS
+    if (peripheralStates.ContainsKey("enable_UART") && peripheralStates["enable_UART"])
+    {
+        pmd5 &= ~0x3U; // Enable UART1 and UART2
     }
+    
+    if (peripheralStates.ContainsKey("enable_SPI") && peripheralStates["enable_SPI"])
+    {
+        pmd5 &= ~0x300U; // Enable SPI1 and SPI2
+    }
+    
+    if (peripheralStates.ContainsKey("enable_I2C") && peripheralStates["enable_I2C"])
+    {
+        pmd5 &= ~0x80U; // Enable I2C1
+    }
+    
+    if (peripheralStates.ContainsKey("enable_Timer") && peripheralStates["enable_Timer"])
+    {
+        pmd1 &= ~0x3U; // Enable TMR1 and TMR2
+    }
+    
+    if (peripheralStates.ContainsKey("enable_ADC") && peripheralStates["enable_ADC"])
+    {
+        pmd1 &= ~0x2000U; // Enable ADC
+    }
+
+    // Configuration sections mapping
+    var configSections = new Dictionary<string, string[]> 
+    {
+        {"DEVCFG0", new[] {"DEBUG","JTAGEN","ICESEL","TRCEN","BOOTISA","FECCCON","FSLEEP","DBGPER","SMCLR","SOSCGAIN","SOSCBOOST","POSCGAIN","POSCBOOST","EJTAGBEN","CP"}},
+        {"DEVCFG1", new[] {"FNOSC","DMTINTV","FSOSCEN","IESO","POSCMOD","OSCIOFNC","FCKSM","WDTPS","WDTSPGM","FWDTEN","WINDIS","FWDTWINSZ","DMTCNT","FDMTEN"}},
+        {"DEVCFG2", new[] {"FPLLIDIV","FPLLRNG","FPLLICLK","FPLLMULT","FPLLODIV","UPLLFSEL"}},
+        {"DEVCFG3", new[] {"USERID","FMIIEN","FETHIO","PGL1WAY","PMDL1WAY","IOL1WAY","FUSBIDIO"}},
+        {"BF1SEQ0", new[] {"TSEQ","CSEQ"}}
+    };
 #>
+// ****************************************************************************
+// ****************************************************************************
+// Section: Configuration Bits Generated from: <#= Path.GetFileName(configPath) #>
+// ****************************************************************************
+// ****************************************************************************
+
+<# foreach (var section in configSections) { #>
+/*** <#= section.Key #> ***/
+<# foreach (var bitName in section.Value) {
+    if (configBits.ContainsKey(bitName) && !string.IsNullOrEmpty(configBits[bitName])) { #>
+#pragma config <#= bitName #> = <#= configBits[bitName] #>
+<# }
+} } #>
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Local initialization functions
 // *****************************************************************************
 // *****************************************************************************
-
-/* MISRAC 2012 deviation block end */
-
-/*******************************************************************************
-  Function:
-    void SYS_Initialize ( void *data )
-
-  Summary:
-    Initializes the board, services, drivers, application and other modules.
-
-  Remarks:
- */
-
-void SYS_Initialize ( void* data )
+void SYS_Initialize(void* data)
 {
-    /* Start out with interrupts disabled before configuring any modules */
     __builtin_disable_interrupts();
-
     CLK_Initialize();
-    /* Configure Prefetch, Wait States and ECC */
-<#
-    if (preconBits != null && preconBits.Count > 0) {
-        foreach (var precon in preconBits) {
-            if (!string.IsNullOrEmpty(precon.Key) && !string.IsNullOrEmpty(precon.Value)) {
-#>
+    
+<# foreach (var precon in preconBits) {
+    if (!string.IsNullOrEmpty(precon.Key) && !string.IsNullOrEmpty(precon.Value)) { #>
     PRECONbits.<#= precon.Key #> = <#= precon.Value #>;
-<#         }
-        }
-    }
-#>
+<# }
+} #>
 
-    /* Enable global interrupts */
     __builtin_enable_interrupts();
 }
 
-// *****************************************************************************
-/* Function:
-    void CLK_Initialize( void )
-
-  Summary:
-    Initializes hardware and internal data structure of the System Clock.
-
-  Description:
-    This function initializes the hardware and internal data structure of System
-    Clock Service.
-
-  Remarks:
-    This is configuration values for the static version of the Clock System
-    Service module is determined by the user via the MHC GUI.
-
-    The objective is to eliminate the user's need to be knowledgeable in the
-    function of the 'configuration bits' to configure the system oscillators.
-*/
-
-void CLK_Initialize( void )
+void CLK_Initialize(void)
 {
-    /* unlock system for clock configuration */
     SYSKEY = 0x00000000U;
     SYSKEY = 0xAA996655U;
     SYSKEY = 0x556699AAU;
 
-    /* Peripheral Module Disable Configuration */
-
     CFGCONbits.PMDLOCK = 0;
 
-    PMD1 = 0x1001U;
-    PMD2 = 0x3U;
-    PMD3 = 0x1f701ffU;
-    PMD4 = 0x1fdU;
-    PMD5 = 0x301f3f3fU;
-    PMD6 = 0x10830001U;
-    PMD7 = 0x500000U;
+    PMD1 = 0x<#= pmd1.ToString("X") #>U;  // <# if(peripheralStates.ContainsKey("enable_Timer") && peripheralStates["enable_Timer"]) { #>TIMERS ENABLED<# } else { #>TIMERS DISABLED<# } #>
+    PMD2 = 0x<#= pmd2.ToString("X") #>U;
+    PMD3 = 0x<#= pmd3.ToString("X") #>U;
+    PMD4 = 0x<#= pmd4.ToString("X") #>U;
+    PMD5 = 0x<#= pmd5.ToString("X") #>U;  // <# if(peripheralStates.ContainsKey("enable_UART") && peripheralStates["enable_UART"]) { #>UART ENABLED<# } else { #>UART DISABLED<# } #>
+    PMD6 = 0x<#= pmd6.ToString("X") #>U;
+    PMD7 = 0x<#= pmd7.ToString("X") #>U;
 
     CFGCONbits.PMDLOCK = 1;
-
-    /* Peripheral Bus 3 is by default enabled, set its divisor */
     PB3DIVbits.PBDIV = 3;
-
-    /* Lock system since done with clock configuration */
     SYSKEY = 0x33333333U;
 }
 
 <#+
-    public class DeviceConfig
+    // Simple JSON section extractor
+    private void ExtractSection(string json, string sectionName, Dictionary<string, string> output)
     {
-        public string Variant { get; set; }
-        public Dictionary<string, Dictionary<string, string>> Sections { get; set; }
+        try 
+        {
+            string searchPattern = $"\"{sectionName}\":";
+            int sectionStart = json.IndexOf(searchPattern, StringComparison.OrdinalIgnoreCase);
+            if (sectionStart == -1) return;
+            
+            int braceStart = json.IndexOf('{', sectionStart);
+            if (braceStart == -1) return;
+            
+            int braceCount = 1;
+            int pos = braceStart + 1;
+            int braceEnd = -1;
+            
+            while (pos < json.Length && braceCount > 0)
+            {
+                char c = json[pos];
+                if (c == '{') braceCount++;
+                else if (c == '}') braceCount--;
+                
+                if (braceCount == 0)
+                {
+                    braceEnd = pos;
+                    break;
+                }
+                pos++;
+            }
+            
+            if (braceEnd == -1) return;
+            
+            string sectionContent = json.Substring(braceStart + 1, braceEnd - braceStart - 1);
+            ParseKeyValuePairs(sectionContent, output);
+        }
+        catch { }
+    }
+    
+    private void ParseKeyValuePairs(string content, Dictionary<string, string> output)
+    {
+        try
+        {
+            var pairs = new List<string>();
+            var current = "";
+            bool inQuotes = false;
+            
+            for (int i = 0; i < content.Length; i++)
+            {
+                char c = content[i];
+                if (c == '"' && (i == 0 || content[i-1] != '\\'))
+                {
+                    inQuotes = !inQuotes;
+                }
+                else if (c == ',' && !inQuotes)
+                {
+                    pairs.Add(current.Trim());
+                    current = "";
+                    continue;
+                }
+                current += c;
+            }
+            
+            if (!string.IsNullOrEmpty(current.Trim()))
+            {
+                pairs.Add(current.Trim());
+            }
+            
+            foreach (var pair in pairs)
+            {
+                if (string.IsNullOrEmpty(pair)) continue;
+                
+                int colonIndex = pair.IndexOf(':');
+                if (colonIndex == -1) continue;
+                
+                string key = pair.Substring(0, colonIndex).Trim().Trim('"');
+                string value = pair.Substring(colonIndex + 1).Trim().Trim('"');
+                
+                if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                {
+                    output[key] = value;
+                }
+            }
+        }
+        catch { }
     }
 #>

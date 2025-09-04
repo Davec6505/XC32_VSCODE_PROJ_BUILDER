@@ -17,9 +17,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>config_bits.c.tt</DependentUpon>
     </None>
+    <None Update="Templates\config_bits.c.c">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>config_bits.c.tt</DependentUpon>
+    </None>
     <None Update="Templates\config_bits.c.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>config_bits.c.</LastGenOutput>
+      <LastGenOutput>config_bits.c.c</LastGenOutput>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Templates\config_bits.h.h">

@@ -1,56 +1,118 @@
-﻿<#+
+﻿# 1. Template Directives
+<#@ template language="C#" debug="false" hostspecific="true" #>
+<#@ output extension=".h" #>
+<#@ assembly name="System.Runtime" #>
+<#@ assembly name="System.Collections" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.IO" #>
+<#@ parameter type="System.String" name="ConfigPath" #>
+
+# 2. Configuration Loading and Defaults
+<#
+    // Robust config path handling (same as C template)
     var configPath = ConfigPath;
-    var configJson = File.ReadAllText(configPath);
+    
+    if (string.IsNullOrEmpty(configPath))
+    {
+        configPath = this.Host.ResolvePath("..\\device_config.json");
+    }
+    
+    if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+    {
+        var possiblePaths = new[] {
+            this.Host.ResolvePath("device_config.json"),
+            this.Host.ResolvePath("..\\device_config.json"),
+            this.Host.ResolvePath("..\\..\\device_config.json"),
+            Path.Combine(Environment.CurrentDirectory, "device_config.json")
+        };
+        
+        foreach (var testPath in possiblePaths)
+        {
+            if (!string.IsNullOrEmpty(testPath) && File.Exists(testPath))
+            {
+                configPath = testPath;
+                break;
+            }
+        }
+    }
+    
+    if (string.IsNullOrEmpty(configPath) || !File.Exists(configPath))
+    {
+        throw new FileNotFoundException($"Configuration file not found. Searched: {ConfigPath ?? "null"}");
+    }
+    
+    // Simple JSON parsing without JsonSerializer (to avoid System.Memory conflicts)
+    string configJson = File.ReadAllText(configPath);
     
     // Default values
-    var variant = "MZ";
+    string variant = "MZ";
     string deviceName = "PIC32MZ2048EFH064";
     string deviceArch = "MIPS";
     string deviceFamily = "PIC32MZEF";
     string deviceSeries = "PIC32MZ";
     uint cpuClockFrequency = 200000000U;
-
+    
     try 
     {
-        var config = JsonSerializer.Deserialize<DeviceConfig>(configJson, new JsonSerializerOptions 
-        { 
-            PropertyNameCaseInsensitive = true 
-        });
-        
-        if (config != null)
+        // Simple string-based extraction to avoid JsonSerializer
+        if (configJson.Contains("\"Variant\""))
         {
-            // Get variant
-            if (!string.IsNullOrEmpty(config.Variant))
+            var variantMatch = System.Text.RegularExpressions.Regex.Match(configJson, "\"Variant\"\\s*:\\s*\"([^\"]+)\"");
+            if (variantMatch.Success)
             {
-                variant = config.Variant;
+                variant = variantMatch.Groups[1].Value;
             }
-            
-            // Get device properties if they exist
-            if (!string.IsNullOrEmpty(config.DeviceName))
+        }
+        
+        if (configJson.Contains("\"DeviceName\""))
+        {
+            var deviceMatch = System.Text.RegularExpressions.Regex.Match(configJson, "\"DeviceName\"\\s*:\\s*\"([^\"]+)\"");
+            if (deviceMatch.Success)
             {
-                deviceName = config.DeviceName;
+                deviceName = deviceMatch.Groups[1].Value;
             }
-            if (!string.IsNullOrEmpty(config.DeviceArch))
+        }
+        
+        if (configJson.Contains("\"DeviceArch\""))
+        {
+            var archMatch = System.Text.RegularExpressions.Regex.Match(configJson, "\"DeviceArch\"\\s*:\\s*\"([^\"]+)\"");
+            if (archMatch.Success)
             {
-                deviceArch = config.DeviceArch;
+                deviceArch = archMatch.Groups[1].Value;
             }
-            if (!string.IsNullOrEmpty(config.DeviceFamily))
+        }
+        
+        if (configJson.Contains("\"DeviceFamily\""))
+        {
+            var familyMatch = System.Text.RegularExpressions.Regex.Match(configJson, "\"DeviceFamily\"\\s*:\\s*\"([^\"]+)\"");
+            if (familyMatch.Success)
             {
-                deviceFamily = config.DeviceFamily;
+                deviceFamily = familyMatch.Groups[1].Value;
             }
-            if (!string.IsNullOrEmpty(config.DeviceSeries))
+        }
+        
+        if (configJson.Contains("\"DeviceSeries\""))
+        {
+            var seriesMatch = System.Text.RegularExpressions.Regex.Match(configJson, "\"DeviceSeries\"\\s*:\\s*\"([^\"]+)\"");
+            if (seriesMatch.Success)
             {
-                deviceSeries = config.DeviceSeries;
+                deviceSeries = seriesMatch.Groups[1].Value;
             }
-            if (config.CpuClockFrequency > 0)
+        }
+        
+        if (configJson.Contains("\"CpuClockFrequency\""))
+        {
+            var freqMatch = System.Text.RegularExpressions.Regex.Match(configJson, "\"CpuClockFrequency\"\\s*:\\s*(\\d+)");
+            if (freqMatch.Success)
             {
-                cpuClockFrequency = config.CpuClockFrequency;
+                uint.TryParse(freqMatch.Groups[1].Value, out cpuClockFrequency);
             }
         }
     }
-    catch (Exception ex)
+    catch 
     {
-        // If deserialization fails, use defaults based on variant detection from raw JSON
+        // If parsing fails, use defaults based on variant detection
         if (configJson.Contains("\"MX\""))
         {
             variant = "MX";
@@ -59,35 +121,36 @@
             deviceSeries = "PIC32MX";
             cpuClockFrequency = 80000000U;
         }
-        // Otherwise keep MZ defaults
     }
 
-    // Final validation and defaults based on variant
+    // Final validation based on variant
     if (variant == "MX")
     {
-        if (deviceName.StartsWith("PIC32MZ") || deviceName == "PIC32MZ2048EFH064")
+        if (deviceName.Contains("MZ") || deviceName == "PIC32MZ2048EFH064")
         {
             deviceName = "PIC32MX795F512L";
         }
-        if (deviceFamily == "PIC32MZEF" || string.IsNullOrEmpty(deviceFamily))
+        if (deviceFamily == "PIC32MZEF")
         {
             deviceFamily = "PIC32MX";
         }
-        if (deviceSeries == "PIC32MZ" || string.IsNullOrEmpty(deviceSeries))
+        if (deviceSeries == "PIC32MZ")
         {
             deviceSeries = "PIC32MX";
         }
-        if (cpuClockFrequency == 200000000U || cpuClockFrequency == 0)
+        if (cpuClockFrequency == 200000000U)
         {
             cpuClockFrequency = 80000000U;
         }
     }
 #>
+
+# 3. Header Guards and Includes
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
 // *****************************************************************************
-// Section: Included Files
+// Section: Included Files - Generated from: <#= Path.GetFileName(configPath) #>
 // *****************************************************************************
 #include <stdint.h>
 #include <stddef.h>
@@ -152,6 +215,7 @@ typedef struct
 // Section: Configuration System Service Definitions
 // *****************************************************************************
 // *****************************************************************************
+
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus
 }
@@ -159,16 +223,3 @@ typedef struct
 // DOM-IGNORE-END
 
 #endif /* DEFINITIONS_H */
-
-<#+
-    public class DeviceConfig
-    {
-        public string Variant { get; set; }
-        public Dictionary<string, Dictionary<string, string>> Sections { get; set; }
-        public string DeviceName { get; set; }
-        public string DeviceArch { get; set; }
-        public string DeviceFamily { get; set; }
-        public string DeviceSeries { get; set; }
-        public uint CpuClockFrequency { get; set; }
-    }
-#>

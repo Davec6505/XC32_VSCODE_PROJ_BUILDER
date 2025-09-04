@@ -20,6 +20,11 @@ namespace Setup
         public string DeviceSeries { get; set; } = string.Empty;
         public uint CpuClockFrequency { get; set; } = 0;
 
+        // Add peripheral-specific sections
+        public Dictionary<string, string> UARTConfig { get; set; } = new();
+        public Dictionary<string, string> SPIConfig { get; set; } = new();
+        public Dictionary<string, string> GPIOConfig { get; set; } = new();
+
         public static DeviceConfig? Load(string path)
         {
             if (!File.Exists(path))

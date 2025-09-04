@@ -38,6 +38,14 @@
             generateToolStripMenuItem = new ToolStripMenuItem();
             tabControl1 = new TabControl();
             tabClock = new TabPage();
+            groupBox_PerEnaDis = new GroupBox();
+            checkBox_ENCAN = new CheckBox();
+            checkBox_ENADC = new CheckBox();
+            checkBox_ENTIMER = new CheckBox();
+            checkBox_ENI2C = new CheckBox();
+            checkBox_ENSPI = new CheckBox();
+            checkBox_ENUART = new CheckBox();
+            comboBox_DEVICE = new ComboBox();
             groupBox_BF1SEQ3 = new GroupBox();
             numericUpDown_CSEQ = new NumericUpDown();
             numericUpDown_TSEQ = new NumericUpDown();
@@ -142,10 +150,11 @@
             label1 = new Label();
             comboBoxVariant = new ComboBox();
             tabPins = new TabPage();
-            comboBox_DEVICE = new ComboBox();
+            checkBox_ENPWM = new CheckBox();
             menuStrip1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabClock.SuspendLayout();
+            groupBox_PerEnaDis.SuspendLayout();
             groupBox_BF1SEQ3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_CSEQ).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_TSEQ).BeginInit();
@@ -217,7 +226,7 @@
             // generateToolStripMenuItem
             // 
             generateToolStripMenuItem.Name = "generateToolStripMenuItem";
-            generateToolStripMenuItem.Size = new Size(224, 26);
+            generateToolStripMenuItem.Size = new Size(152, 26);
             generateToolStripMenuItem.Text = "Generate";
             generateToolStripMenuItem.Click += generateToolStripMenuItem_Click;
             // 
@@ -234,6 +243,7 @@
             // 
             // tabClock
             // 
+            tabClock.Controls.Add(groupBox_PerEnaDis);
             tabClock.Controls.Add(comboBox_DEVICE);
             tabClock.Controls.Add(groupBox_BF1SEQ3);
             tabClock.Controls.Add(groupBox1);
@@ -246,11 +256,96 @@
             tabClock.Controls.Add(comboBoxVariant);
             tabClock.Location = new Point(4, 29);
             tabClock.Name = "tabClock";
-            tabClock.Padding = new Padding(3, 3, 3, 3);
+            tabClock.Padding = new Padding(3);
             tabClock.Size = new Size(1266, 738);
             tabClock.TabIndex = 0;
             tabClock.Text = "Clock";
             tabClock.UseVisualStyleBackColor = true;
+            // 
+            // groupBox_PerEnaDis
+            // 
+            groupBox_PerEnaDis.Controls.Add(checkBox_ENPWM);
+            groupBox_PerEnaDis.Controls.Add(checkBox_ENCAN);
+            groupBox_PerEnaDis.Controls.Add(checkBox_ENADC);
+            groupBox_PerEnaDis.Controls.Add(checkBox_ENTIMER);
+            groupBox_PerEnaDis.Controls.Add(checkBox_ENI2C);
+            groupBox_PerEnaDis.Controls.Add(checkBox_ENSPI);
+            groupBox_PerEnaDis.Controls.Add(checkBox_ENUART);
+            groupBox_PerEnaDis.Location = new Point(981, 64);
+            groupBox_PerEnaDis.Name = "groupBox_PerEnaDis";
+            groupBox_PerEnaDis.Size = new Size(250, 435);
+            groupBox_PerEnaDis.TabIndex = 11;
+            groupBox_PerEnaDis.TabStop = false;
+            groupBox_PerEnaDis.Text = "Peripheral Enable/Disable";
+            // 
+            // checkBox_ENCAN
+            // 
+            checkBox_ENCAN.AutoSize = true;
+            checkBox_ENCAN.Location = new Point(29, 204);
+            checkBox_ENCAN.Name = "checkBox_ENCAN";
+            checkBox_ENCAN.Size = new Size(110, 24);
+            checkBox_ENCAN.TabIndex = 5;
+            checkBox_ENCAN.Text = "Enable CAN";
+            checkBox_ENCAN.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_ENADC
+            // 
+            checkBox_ENADC.AutoSize = true;
+            checkBox_ENADC.Location = new Point(29, 171);
+            checkBox_ENADC.Name = "checkBox_ENADC";
+            checkBox_ENADC.Size = new Size(110, 24);
+            checkBox_ENADC.TabIndex = 4;
+            checkBox_ENADC.Text = "Enable ADC";
+            checkBox_ENADC.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_ENTIMER
+            // 
+            checkBox_ENTIMER.AutoSize = true;
+            checkBox_ENTIMER.Location = new Point(29, 138);
+            checkBox_ENTIMER.Name = "checkBox_ENTIMER";
+            checkBox_ENTIMER.Size = new Size(118, 24);
+            checkBox_ENTIMER.TabIndex = 3;
+            checkBox_ENTIMER.Text = "Enable Timer";
+            checkBox_ENTIMER.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_ENI2C
+            // 
+            checkBox_ENI2C.AutoSize = true;
+            checkBox_ENI2C.Location = new Point(29, 105);
+            checkBox_ENI2C.Name = "checkBox_ENI2C";
+            checkBox_ENI2C.Size = new Size(101, 24);
+            checkBox_ENI2C.TabIndex = 2;
+            checkBox_ENI2C.Text = "Enable I2C";
+            checkBox_ENI2C.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_ENSPI
+            // 
+            checkBox_ENSPI.AutoSize = true;
+            checkBox_ENSPI.Location = new Point(29, 72);
+            checkBox_ENSPI.Name = "checkBox_ENSPI";
+            checkBox_ENSPI.Size = new Size(100, 24);
+            checkBox_ENSPI.TabIndex = 1;
+            checkBox_ENSPI.Text = "Enable SPI";
+            checkBox_ENSPI.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_ENUART
+            // 
+            checkBox_ENUART.AutoSize = true;
+            checkBox_ENUART.Location = new Point(29, 39);
+            checkBox_ENUART.Name = "checkBox_ENUART";
+            checkBox_ENUART.Size = new Size(116, 24);
+            checkBox_ENUART.TabIndex = 0;
+            checkBox_ENUART.Text = "Enable UART";
+            checkBox_ENUART.UseVisualStyleBackColor = true;
+            // 
+            // comboBox_DEVICE
+            // 
+            comboBox_DEVICE.FormattingEnabled = true;
+            comboBox_DEVICE.Items.AddRange(new object[] { "32MZ1024EFH064", "32MZ1024EFH100", "32MZ1024EFH124", "32MZ1024EFH144", "32MZ2024EFH064", "32MZ2024EFH100", "32MZ2024EFH124", "32MZ2024EFH144" });
+            comboBox_DEVICE.Location = new Point(166, 20);
+            comboBox_DEVICE.Name = "comboBox_DEVICE";
+            comboBox_DEVICE.Size = new Size(178, 28);
+            comboBox_DEVICE.TabIndex = 10;
             // 
             // groupBox_BF1SEQ3
             // 
@@ -1277,20 +1372,21 @@
             // 
             tabPins.Location = new Point(4, 29);
             tabPins.Name = "tabPins";
-            tabPins.Padding = new Padding(3, 3, 3, 3);
-            tabPins.Size = new Size(1266, 736);
+            tabPins.Padding = new Padding(3);
+            tabPins.Size = new Size(1266, 738);
             tabPins.TabIndex = 1;
             tabPins.Text = "Pins";
             tabPins.UseVisualStyleBackColor = true;
             // 
-            // comboBox_DEVICE
+            // checkBox_ENPWM
             // 
-            comboBox_DEVICE.FormattingEnabled = true;
-            comboBox_DEVICE.Items.AddRange(new object[] { "32MZ1024EFH064", "32MZ1024EFH100", "32MZ1024EFH124", "32MZ1024EFH144", "32MZ2024EFH064", "32MZ2024EFH100", "32MZ2024EFH124", "32MZ2024EFH144" });
-            comboBox_DEVICE.Location = new Point(166, 20);
-            comboBox_DEVICE.Name = "comboBox_DEVICE";
-            comboBox_DEVICE.Size = new Size(178, 28);
-            comboBox_DEVICE.TabIndex = 10;
+            checkBox_ENPWM.AutoSize = true;
+            checkBox_ENPWM.Location = new Point(29, 234);
+            checkBox_ENPWM.Name = "checkBox_ENPWM";
+            checkBox_ENPWM.Size = new Size(115, 24);
+            checkBox_ENPWM.TabIndex = 6;
+            checkBox_ENPWM.Text = "Enable PWM";
+            checkBox_ENPWM.UseVisualStyleBackColor = true;
             // 
             // Form1
             // 
@@ -1311,6 +1407,8 @@
             tabControl1.ResumeLayout(false);
             tabClock.ResumeLayout(false);
             tabClock.PerformLayout();
+            groupBox_PerEnaDis.ResumeLayout(false);
+            groupBox_PerEnaDis.PerformLayout();
             groupBox_BF1SEQ3.ResumeLayout(false);
             groupBox_BF1SEQ3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)numericUpDown_CSEQ).EndInit();
@@ -1452,5 +1550,13 @@
         private ToolStripMenuItem actionsToolStripMenuItem;
         private ToolStripMenuItem generateToolStripMenuItem;
         private ComboBox comboBox_DEVICE;
+        private GroupBox groupBox_PerEnaDis;
+        private CheckBox checkBox_ENADC;
+        private CheckBox checkBox_ENTIMER;
+        private CheckBox checkBox_ENI2C;
+        private CheckBox checkBox_ENSPI;
+        private CheckBox checkBox_ENUART;
+        private CheckBox checkBox_ENCAN;
+        private CheckBox checkBox_ENPWM;
     }
 }

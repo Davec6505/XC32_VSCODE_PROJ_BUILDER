@@ -40,10 +40,12 @@ namespace Setup
         };
 
 
+        private Dictionary<string, CheckBox> peripheralCheckBoxes;
+
         public Form1()
         {
             InitializeComponent();
-            this.AutoScaleMode = AutoScaleMode.Font; // or AutoScaleMode.Dpi
+            this.AutoScaleMode = AutoScaleMode.Font;
             
             // Initialize variant combo box
             if (comboBoxVariant != null)
@@ -117,15 +119,18 @@ namespace Setup
                 //{ "TSEQ", numericUpDown_TSEQ },
                 //{ "CSEQ", numericUpDown_CSEQ }
             };
-        }
 
-        private void ComboBoxVariant_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (comboBoxVariant != null && comboBoxVariant.SelectedItem != null)
+            // Initialize peripheral checkboxes dictionary
+            peripheralCheckBoxes = new Dictionary<string, CheckBox>
             {
-                string selectedVariant = comboBoxVariant.SelectedItem.ToString();
-                UpdateDeviceComboBox(selectedVariant);
-            }
+                { "enable_UART", checkBox_ENUART },
+                { "enable_SPI", checkBox_ENSPI },
+                { "enable_I2C", checkBox_ENI2C },
+                { "enable_Timer", checkBox_ENTIMER },
+                { "enable_ADC", checkBox_ENADC },
+                { "enable_CAN", checkBox_ENCAN },
+                { "enable_PWM", checkBox_ENPWM }
+            };
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -174,10 +179,10 @@ namespace Setup
                 {
                     comboBoxVariant.SelectedItem = config.Variant;
                 }
-                
+
                 // Update device combo box based on variant
                 UpdateDeviceComboBox(config.Variant);
-                
+
                 // Set the selected device if it exists in config
                 if (!string.IsNullOrEmpty(config.DeviceName) && comboBox_DEVICE != null)
                 {
@@ -204,52 +209,68 @@ namespace Setup
                 UpdateDeviceComboBox("MZ");
             }
 
-            // Load from Sections if present
-            if (config.Sections != null)
+    // Load from Sections if present - MOVED OUTSIDE THE else BLOCK
+    if (config.Sections != null)
+    {
+        foreach (var section in config.Sections)
+        {
+            foreach (var bit in section.Value)
             {
-                foreach (var section in config.Sections)
+                if (bit.Key == "USERID" && numericUpDown_USERID != null)
                 {
-                    foreach (var bit in section.Value)
+                    if (int.TryParse(bit.Value.Replace("0x", ""), System.Globalization.NumberStyles.HexNumber, null, out int userIdValue))
                     {
-                        if (bit.Key == "USERID" && numericUpDown_USERID != null)
-                        {
-                            if (int.TryParse(bit.Value.Replace("0x", ""), System.Globalization.NumberStyles.HexNumber, null, out int userIdValue))
-                            {
-                                userIdValue = Math.Max((int)numericUpDown_USERID.Minimum, Math.Min(userIdValue, (int)numericUpDown_USERID.Maximum));
-                                numericUpDown_USERID.Value = userIdValue;
-                            }
-                            else
-                            {
-                                numericUpDown_USERID.Value = 0;
-                            }
-                        }
-                        else if (configBitComboBoxes.TryGetValue(bit.Key, out var comboBox) && comboBox != null)
-                        {
-                            comboBox.SelectedItem = bit.Value;
-                        }
+                        userIdValue = Math.Max((int)numericUpDown_USERID.Minimum, Math.Min(userIdValue, (int)numericUpDown_USERID.Maximum));
+                        numericUpDown_USERID.Value = userIdValue;
+                    }
+                    else
+                    {
+                        numericUpDown_USERID.Value = 0;
                     }
                 }
-
-                // Load PreconBits (textboxes)
-                if (config.Sections.TryGetValue("PreconBits", out var preconBits))
+                else if (configBitComboBoxes.TryGetValue(bit.Key, out var comboBox) && comboBox != null)
                 {
-                    if (numericUpDown_PREFEN != null)
-                    {
-                        if (int.TryParse(preconBits.TryGetValue("PREFEN", out var prefen) ? prefen : "0", out int prefenValue))
-                            numericUpDown_PREFEN.Value = prefenValue;
-                    }
-                    if (numericUpDown_PFMWS != null)
-                    {
-                        if (int.TryParse(preconBits.TryGetValue("PFMWS", out var pfmws) ? pfmws : "0", out int pfmwsValue))
-                            numericUpDown_PFMWS.Value = pfmwsValue;
-                    }
-                    if (numericUpDown_ECCCON != null)
-                    {
-                        if (int.TryParse(preconBits.TryGetValue("ECCCON", out var ecccon) ? ecccon : "0", out int eccconValue))
-                            numericUpDown_ECCCON.Value = eccconValue;
-                    }
+                    comboBox.SelectedItem = bit.Value;
                 }
             }
+        }
+
+        // Load PreconBits
+        if (config.Sections.TryGetValue("PreconBits", out var preconBits))
+        {
+            if (numericUpDown_PREFEN != null)
+            {
+                if (int.TryParse(preconBits.TryGetValue("PREFEN", out var prefen) ? prefen : "0", out int prefenValue))
+                    numericUpDown_PREFEN.Value = prefenValue;
+            }
+            if (numericUpDown_PFMWS != null)
+            {
+                if (int.TryParse(preconBits.TryGetValue("PFMWS", out var pfmws) ? pfmws : "0", out int pfmwsValue))
+                    numericUpDown_PFMWS.Value = pfmwsValue;
+            }
+            if (numericUpDown_ECCCON != null)
+            {
+                if (int.TryParse(preconBits.TryGetValue("ECCCON", out var ecccon) ? ecccon : "0", out int eccconValue))
+                    numericUpDown_ECCCON.Value = eccconValue;
+            }
+        }
+
+        // Load peripheral settings - NOW RUNS FOR ALL CONFIGS
+        if (config.Sections.TryGetValue("PeripheralConfig", out var peripheralSettings))
+        {
+            foreach (var kvp in peripheralCheckBoxes)
+            {
+                if (kvp.Value != null && peripheralSettings.TryGetValue(kvp.Key, out var setting))
+                {
+                    bool.TryParse(setting, out bool isEnabled);
+                    kvp.Value.Checked = isEnabled;
+                    
+                    // Debug output to verify loading
+                    System.Diagnostics.Debug.WriteLine($"Loading peripheral {kvp.Key}: {setting} -> {isEnabled}");
+                }
+            }
+        }
+    }
         }
 
         private DeviceConfig GetConfigFromForm()
@@ -339,6 +360,18 @@ namespace Setup
             if (numericUpDown_ECCCON != null)
                 config.Sections["PreconBits"]["ECCCON"] = numericUpDown_ECCCON.Value.ToString();
 
+            // Add peripheral enable settings
+            if (!config.Sections.ContainsKey("PeripheralConfig"))
+                config.Sections["PeripheralConfig"] = new Dictionary<string, string>();
+            
+            foreach (var kvp in peripheralCheckBoxes)
+            {
+                if (kvp.Value != null)
+                {
+                    config.Sections["PeripheralConfig"][kvp.Key] = kvp.Value.Checked.ToString().ToLower();
+                }
+            }
+            
             return config;
         }
 
@@ -355,7 +388,7 @@ namespace Setup
         {
             // Initialize Sections if null
             if (config.Sections == null)
-                config.Sections = new Dictionary<string, Dictionary<string, string>>();
+                config.Sections = new Dictionary<string, Dictionary<string, string>> ();
 
             // Get current variant from variant combo box
             if (comboBoxVariant != null && comboBoxVariant.SelectedItem != null)
@@ -442,8 +475,17 @@ namespace Setup
         #endregion LOAD/GET CONFIG
 
 
-        #region BUTTON EVENTS
+        #region BUTTON / FORM EVENTS
 
+
+        private void ComboBoxVariant_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxVariant != null && comboBoxVariant.SelectedItem != null)
+            {
+                string selectedVariant = comboBoxVariant.SelectedItem.ToString();
+                UpdateDeviceComboBox(selectedVariant);
+            }
+        }
 
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -518,14 +560,16 @@ namespace Setup
                 MessageBox.Show($"Error generating config bits file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        #endregion MENU EVENTS
 
+        #region HELPER METHODS
         private void GenerateConfigBitsFile()
         {
             try
             {
                 // First try to find templates relative to the application startup path
                 string templatesDir = Path.Combine(Application.StartupPath, "Templates");
-                string templatePathC = Path.Combine(templatesDir, "config_bits.tt");
+                string templatePathC = Path.Combine(templatesDir, "config_bits.c.tt");
                 string templatePathH = Path.Combine(templatesDir, "config_bits.h.tt");
                 
                 // If not found in startup path, try to find project directory
@@ -613,7 +657,7 @@ namespace Setup
                 bool successC = false, successH = false;
                 string errorMessages = "";
 
-                // Generate C file
+                // Generate C file using T4 template
                 try
                 {
                     successC = GenerateTemplateFile(templatePathC, configPath, finalOutputPathC, "C source");
@@ -623,11 +667,10 @@ namespace Setup
                     errorMessages += $"C file generation error: {ex.Message}\n";
                 }
 
-                // Generate H file
+                // Generate H file using T4 template
                 try
                 {
-                    // Try manual generation first for header files as they're simpler
-                    successH = GenerateTemplateFileManual(templatePathH, configPath, finalOutputPathH, "header");
+                    successH = GenerateTemplateFile(templatePathH, configPath, finalOutputPathH, "header");
                 }
                 catch (Exception ex)
                 {
@@ -673,14 +716,22 @@ namespace Setup
         {
             try
             {
-                // Prepare the T4 command
+                // Prepare the T4 command with properly quoted paths
                 string t4Command = "t4";
-                string arguments = $"-p ConfigPath=\"{configPath}\" \"{templatePath}\" -o \"{outputPath}\"";
+                string arguments = $"-p ConfigPath=\"{configPath.Replace("\\", "\\\\")}\" \"{templatePath}\" -o \"{outputPath}\"";
 
                 // Debug output
                 System.Diagnostics.Debug.WriteLine($"Executing: {t4Command} {arguments}");
+                System.Diagnostics.Debug.WriteLine($"ConfigPath being passed: {configPath}");
+                System.Diagnostics.Debug.WriteLine($"File exists: {File.Exists(configPath)}");
 
-                // Create process info
+                // Verify the config file exists before calling T4
+                if (!File.Exists(configPath))
+                {
+                    MessageBox.Show($"Configuration file not found: {configPath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+
                 var processInfo = new ProcessStartInfo
                 {
                     FileName = t4Command,
@@ -751,138 +802,6 @@ namespace Setup
             }
         }
 
-        private bool GenerateTemplateFileManual(string templatePath, string configPath, string outputPath, string fileType)
-        {
-            try
-            {
-                System.Diagnostics.Debug.WriteLine($"Manual generation for {fileType}: Template={templatePath}, Config={configPath}, Output={outputPath}");
-
-                // Read the config JSON
-                var configJson = File.ReadAllText(configPath);
-                // Use fully qualified name to resolve ambiguity and avoid variable shadowing
-                DeviceConfig configObj = System.Text.Json.JsonSerializer.Deserialize<DeviceConfig>(configJson, new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                string output = "";
-
-                if (fileType.Contains("header"))
-                {
-                    // Generate header file manually
-                    output = GenerateHeaderContent(configObj);
-                }
-                else
-                {
-                    // For C file, still try T4 as it's more complex
-                    return GenerateTemplateFile(templatePath, configPath, outputPath, fileType);
-                }
-
-                File.WriteAllText(outputPath, output);
-                System.Diagnostics.Debug.WriteLine($"Manual generation completed for {fileType}");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Manual generation failed: {ex}");
-                MessageBox.Show($"Manual generation failed for {fileType}: {ex.Message}", "Manual Generation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-
-        private string GenerateHeaderContent(DeviceConfig config)
-        {
-            // Default values
-            var variant = config?.Variant ?? "MZ";
-            string deviceName = config?.DeviceName ?? "PIC32MZ2048EFH064";
-            string deviceArch = config?.DeviceArch ?? "MIPS";
-            string deviceFamily = config?.DeviceFamily ?? "PIC32MZEF";
-            string deviceSeries = config?.DeviceSeries ?? "PIC32MZ";
-            uint cpuClockFrequency = config?.CpuClockFrequency ?? 200000000U;
-
-            // Validate based on variant
-            if (variant == "MX")
-            {
-                if (deviceName.Contains("MZ") || deviceName == "PIC32MZ2048EFH064")
-                    deviceName = "PIC32MX795F512L";
-                if (deviceFamily == "PIC32MZEF" || string.IsNullOrEmpty(deviceFamily))
-                    deviceFamily = "PIC32MX";
-                if (deviceSeries == "PIC32MZ" || string.IsNullOrEmpty(deviceSeries))
-                    deviceSeries = "PIC32MX";
-                if (cpuClockFrequency == 200000000U || cpuClockFrequency == 0)
-                    cpuClockFrequency = 80000000U;
-            }
-
-            return $@"#ifndef DEFINITIONS_H
-#define DEFINITIONS_H
-
-// *****************************************************************************
-// Section: Included Files
-// *****************************************************************************
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
-#include <xc.h>
-#include <sys/attribs.h>
-#include ""toolchain_specifics.h""
-
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus
-extern ""C"" {{
-#endif
-// DOM-IGNORE-END
-
-/* Device Information */
-#define DEVICE_NAME          ""{deviceName}""
-#define DEVICE_ARCH          ""{deviceArch}""
-#define DEVICE_FAMILY        ""{deviceFamily}""
-#define DEVICE_SERIES        ""{deviceSeries}""
-
-/* CPU clock frequency */
-#define CPU_CLOCK_FREQUENCY {cpuClockFrequency}U
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: System Service Definitions
-// *****************************************************************************
-// *****************************************************************************
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Library/Stack Definitions
-// *****************************************************************************
-// *****************************************************************************
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Driver Definitions
-// *****************************************************************************
-// *****************************************************************************
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: System Data Types
-// *****************************************************************************
-// *****************************************************************************
-
-// *****************************************************************************
-// *****************************************************************************
-// Section: Configuration System Service Definitions
-// *****************************************************************************
-// *****************************************************************************
-
-/* Function Prototypes */
-void SYS_Initialize(void *data);
-void CLK_Initialize(void);
-
-// DOM-IGNORE-BEGIN
-#ifdef __cplusplus
-}}
-#endif
-// DOM-IGNORE-END
-
-#endif /* DEFINITIONS_H */
-";
-        }
-
-        // Add this method to your Form1 class to fix CS0103
         private void UpdateDeviceComboBox(string variant)
         {
             if (comboBox_DEVICE == null)

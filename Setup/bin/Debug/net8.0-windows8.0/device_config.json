@@ -60,6 +60,15 @@
       "PREFEN": "3",
       "PFMWS": "2",
       "ECCCON": "2"
+    },
+    "PeripheralConfig": {
+      "enable_UART": "true",
+      "enable_SPI": "false",
+      "enable_I2C": "true",
+      "enable_Timer": "true",
+      "enable_ADC": "false",
+      "enable_CAN": "false",
+      "enable_PWM": "false"
     }
   }
 }
