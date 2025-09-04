@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\davec\\git\\xc32_vscode_proj_builder\\setup\\pin_mappings_comprehensive.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\pin_mappings_comprehensive.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\davec\\git\\xc32_vscode_proj_builder\\setup\\pinmappingmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\pinmappingmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -47,6 +51,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "pin_mappings_comprehensive.json",
+              "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\pin_mappings_comprehensive.json",
+              "RelativeDocumentMoniker": "Setup\\pin_mappings_comprehensive.json",
+              "ToolTip": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\pin_mappings_comprehensive.json*",
+              "RelativeToolTip": "Setup\\pin_mappings_comprehensive.json*",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAADIAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-04T21:27:48.874Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "PinMappingManager.cs",
               "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\PinMappingManager.cs",
               "RelativeDocumentMoniker": "Setup\\PinMappingManager.cs",
@@ -59,7 +76,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "DeviceConfig.cs",
               "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\DeviceConfig.cs",
               "RelativeDocumentMoniker": "Setup\\DeviceConfig.cs",
@@ -72,7 +89,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeDocumentMoniker": "Setup\\Form1.cs",
@@ -85,7 +102,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Form1.cs [Design]",
               "DocumentMoniker": "C:\\Users\\davec\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeDocumentMoniker": "Setup\\Form1.cs",
