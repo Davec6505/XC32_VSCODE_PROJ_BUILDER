@@ -81,10 +81,14 @@ void CLK_Initialize(void)
 
     CFGCONbits.PMDLOCK = 0;
 
-    PMD1 = 0x1000U;  // TIMERS ENABLED    PMD2 = 0x3U;
+    PMD1 = 0x1000U;  // TIMERS ENABLED
+
+    PMD2 = 0x3U;
     PMD3 = 0x1F701FFU;
     PMD4 = 0x1FDU;
-    PMD5 = 0x301F3F3CU;  // UART ENABLED    PMD6 = 0x10830001U;
+    PMD5 = 0x301F3F3CU;  // UART ENABLED
+
+    PMD6 = 0x10830001U;
     PMD7 = 0x500000U;
 
     CFGCONbits.PMDLOCK = 1;

@@ -1,0 +1,65 @@
+﻿| Freemarker Syntax | T4 Equivalent        |
+|-------------------|----------------------| 
+| <#assign x = ...> | <# var x = ...; #>   | 
+| <#if cond>        | <# if(cond) { #>     | 
+| <#list ...>       | <# foreach(...) { #> | 
+| ${var}            | <#= var #>           |
+
+
+|------------------------------------------|
+•	<#list ... as i> → C# for loops
+•	<#assign ...> → C# variable declarations
+•	<#if ...> → C# if statements
+•	${...} → <#= ... #> for output
+•	.vars[...] → vars[...]
+•	?upper_case → .ToUpper()
+•	gt → >
+•	lt → <
+•	eq → ==
+•	ne → !=
+•	and → &&
+•	or → ||
+•	! → !
+•	?size → .Count
+•	?length → .Length
+•	?starts_with("str") → .StartsWith("str")
+•	?ends_with("str") → .EndsWith("str")
+•	?contains("str") → .Contains("str")
+•	?index_of("str") → .IndexOf("str")
+•	?substring(x,y) → .Substring(x,y)
+•	?replace("a","b") → .Replace("a","b")
+•	?trim → .Trim()
+•	?lower_case → .ToLower()
+•	?cap_first → char.ToUpper(...[0]) + ... .Substring(1)
+•	?sort → .OrderBy(x => x)
+•	?reverse → .Reverse()
+•	?join(",") → .Join(",")
+•	?keys → .Keys
+•	?values → .Values
+•	?default("val") → ?? "val"
+|------------------------------------------|
+// Example Freemarker Template
+<#assign title = "Hello World">
+<#if title?length > 0>
+<h1>${title?upper_case}</h1>
+<#else>
+<h1>No Title</h1>
+</#if>
+<ul>
+<#list items as item>
+	<li>${item}</li>
+	</#list>
+	</ul>
+// Equivalent T4 Template
+<# var title = "Hello World"; #>
+<# if(title.Length > 0) { #>
+<h1><#= title.ToUpper() #></h1>
+<# } else { #>
+<h1>No Title</h1>
+<# } #>
+<ul>
+<# foreach(var item in items) { #>
+	<li><#= item #></li>
+	<# } #>
+</ul>
+// Note: Ensure to include necessary namespaces and references in T4 templates for collections and LINQ operations.

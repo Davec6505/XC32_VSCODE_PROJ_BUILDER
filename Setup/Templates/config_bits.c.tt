@@ -158,11 +158,11 @@ void CLK_Initialize(void)
 
     CFGCONbits.PMDLOCK = 0;
 
-    PMD1 = 0x<#= pmd1.ToString("X") #>U;  // <# if(peripheralStates.ContainsKey("enable_Timer") && peripheralStates["enable_Timer"]) { #>TIMERS ENABLED<# } else { #>TIMERS DISABLED<# } #>
+    PMD1 = 0x<#= pmd1.ToString("X") #>U;  // <# if(peripheralStates.ContainsKey("enable_Timer") && peripheralStates["enable_Timer"]) { #>TIMERS ENABLED<# } else { #>TIMERS DISABLED<# } #><#= Environment.NewLine #>
     PMD2 = 0x<#= pmd2.ToString("X") #>U;
     PMD3 = 0x<#= pmd3.ToString("X") #>U;
     PMD4 = 0x<#= pmd4.ToString("X") #>U;
-    PMD5 = 0x<#= pmd5.ToString("X") #>U;  // <# if(peripheralStates.ContainsKey("enable_UART") && peripheralStates["enable_UART"]) { #>UART ENABLED<# } else { #>UART DISABLED<# } #>
+    PMD5 = 0x<#= pmd5.ToString("X") #>U;  // <# if(peripheralStates.ContainsKey("enable_UART") && peripheralStates["enable_UART"]) { #>UART ENABLED<# } else { #>UART DISABLED<# } #><#= Environment.NewLine #>
     PMD6 = 0x<#= pmd6.ToString("X") #>U;
     PMD7 = 0x<#= pmd7.ToString("X") #>U;
 
