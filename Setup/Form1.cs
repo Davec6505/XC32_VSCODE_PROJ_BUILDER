@@ -316,7 +316,7 @@ namespace Setup
             // Use the public GetOrCreateSession method instead of the inaccessible CreateSession method
             var session = host.GetOrCreateSession();
             session["Config"] = config; // Add the "Config" object to the session
-
+            host.Session = session;
             string result = await engine.ProcessTemplateAsync(template, host); // Updated to use ProcessTemplateAsync
             File.WriteAllText(outputPath, result);
         }
