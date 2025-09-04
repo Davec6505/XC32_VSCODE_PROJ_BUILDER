@@ -137,17 +137,14 @@ namespace Setup
                 { "enable_PWM", checkBox_ENPWM }
             };
 
-            // Only initialize GPIO controls - don't add extra tab setup
+            // Initialize GPIO controls to work with manually placed controls
             InitializeGpioControls();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             this.TopMost = true;
-            // Hide the taskbar icon and set the form as a tool window
             this.ShowInTaskbar = false;
-            // this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            // Do not load configWords or call CreateConfigUI on startup
             LoadConfigToForm(path);
         }
 
@@ -159,18 +156,14 @@ namespace Setup
             }
             else
             {
-                // MessageBox.Show("No file path specified. Use 'Save As' to specify a file.","Closing Application!",MessageBoxButtons.YesNo,MessageBoxIcon.Exclamation);
                 if (DialogResult.Cancel == MessageBox.Show("No file path specified. Use 'Save As' to specify a file. click 'OK' to continue or 'Cancel' to abort.", "Closing Application!", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                 {
-                    e.Cancel = true; // Prevent closing if no path
-                    return; // Allow closing
+                    e.Cancel = true;
+                    return;
                 }
-
                 return;
             }
         }
-
-
 
         #region LOAD/GET CONFIG
 
@@ -182,19 +175,15 @@ namespace Setup
             // Load variant and update UI controls
             if (!string.IsNullOrEmpty(config.Variant))
             {
-                // Update variant combo box
                 if (comboBoxVariant != null && comboBoxVariant.Items.Contains(config.Variant))
                 {
                     comboBoxVariant.SelectedItem = config.Variant;
                 }
 
-                // Update device combo box based on variant
                 UpdateDeviceComboBox(config.Variant);
 
-                // Set the selected device if it exists in config
                 if (!string.IsNullOrEmpty(config.DeviceName) && comboBox_DEVICE != null)
                 {
-                    // Remove "PIC" prefix if present to match combo box items
                     string deviceToSelect = config.DeviceName.Replace("PIC", "");
                     if (comboBox_DEVICE.Items.Contains(deviceToSelect))
                     {
@@ -202,14 +191,12 @@ namespace Setup
                     }
                     else if (comboBox_DEVICE.Items.Count > 0)
                     {
-                        // Default to first item if saved device not found
                         comboBox_DEVICE.SelectedIndex = 0;
                     }
                 }
             }
             else
             {
-                // Default to MZ if no variant specified in loaded config
                 if (comboBoxVariant != null)
                 {
                     comboBoxVariant.SelectedItem = "MZ";
@@ -217,7 +204,6 @@ namespace Setup
                 UpdateDeviceComboBox("MZ");
             }
 
-            // Load from Sections if present - MOVED OUTSIDE THE else BLOCK
             if (config.Sections != null)
             {
                 foreach (var section in config.Sections)
@@ -263,7 +249,7 @@ namespace Setup
                     }
                 }
 
-                // Load peripheral settings - NOW RUNS FOR ALL CONFIGS
+                // Load peripheral settings
                 if (config.Sections.TryGetValue("PeripheralConfig", out var peripheralSettings))
                 {
                     foreach (var kvp in peripheralCheckBoxes)
@@ -272,22 +258,18 @@ namespace Setup
                         {
                             bool.TryParse(setting, out bool isEnabled);
                             kvp.Value.Checked = isEnabled;
-                    
-                            // Debug output to verify loading
                             System.Diagnostics.Debug.WriteLine($"Loading peripheral {kvp.Key}: {setting} -> {isEnabled}");
                         }
                     }
                 }
 
-                // Load GPIO settings
+                // Load GPIO settings from manually placed controls
                 if (config.Sections.TryGetValue("GpioConfig", out var gpioSettings))
                 {
                     foreach (var pinConfig in gpioPinConfigs)
                     {
-                        // Find corresponding config in section
                         if (gpioSettings.TryGetValue($"PIN_{pinConfig.PinNumber}_FUNCTION_TYPE", out var functionType))
                         {
-                            // Update function type combo box
                             if (gpioPinFunctionCombos.TryGetValue(pinConfig.PinNumber, out var functionCombo))
                             {
                                 functionCombo.SelectedItem = functionType;
@@ -296,7 +278,6 @@ namespace Setup
                         
                         if (gpioSettings.TryGetValue($"PIN_{pinConfig.PinNumber}_FUNCTION_NAME", out var functionName))
                         {
-                            // Update function name text box
                             if (gpioPinNameTextBoxes.TryGetValue(pinConfig.PinNumber, out var nameTextBox))
                             {
                                 nameTextBox.Text = functionName;
@@ -406,7 +387,7 @@ namespace Setup
                 }
             }
             
-            // Add GPIO configuration
+            // Add GPIO configuration from manually placed controls
             if (!config.Sections.ContainsKey("GpioConfig"))
                 config.Sections["GpioConfig"] = new Dictionary<string, string>();
             
@@ -928,19 +909,19 @@ namespace Setup
             }
         }
 
+        // REPLACED: Dynamic control creation with manual control discovery
         private void InitializeGpioControls()
         {
             gpioPinConfigs = new List<GpioPinConfig>();
             gpioPinFunctionCombos = new Dictionary<int, ComboBox>();
             gpioPinNameTextBoxes = new Dictionary<int, TextBox>();
             
-            CreateGpioPinControls();
+            // Find manually placed controls by name pattern
+            PopulateGpioControlsByName();
         }
 
-        private void CreateGpioPinControls()
+        private void PopulateGpioControlsByName()
         {
-            int pinsPerSide = TOTAL_GPIO_PINS / 4; // 8 pins per side for 32 total pins
-            
             for (int i = 1; i <= TOTAL_GPIO_PINS; i++)
             {
                 // Create pin configuration
@@ -948,108 +929,60 @@ namespace Setup
                 {
                     PinNumber = i,
                     PinName = $"PIN_{i:D2}",
+                    FunctionType = "None",
+                    FunctionName = $"PIN_{i:D2}",
                     CtrlRegNum = (i - 1) / 32,
                     CtrlRegIndex = (i - 1) % 32
                 };
                 gpioPinConfigs.Add(pinConfig);
                 
-                // Calculate position around the square
-                Point position = CalculatePinControlPosition(i, pinsPerSide);
+                // Find ComboBox by name pattern (e.g., comboBox_Pin1Function)
+                string comboName = $"comboBox_Pin{i}Function";
+                var functionCombo = this.Controls.Find(comboName, true).FirstOrDefault() as ComboBox;
                 
-                // Create function type combo box
-                var functionCombo = new ComboBox
+                if (functionCombo != null)
                 {
-                    Name = $"cmbPin{i}Function",
-                    Location = position,
-                    Size = new Size(100, 23),
-                    DropDownStyle = ComboBoxStyle.DropDownList,
-                    Tag = i // Store pin number
-                };
-                functionCombo.Items.AddRange(GpioPinConfig.FunctionTypes);
-                functionCombo.SelectedItem = "None"; // Default to None
-                functionCombo.SelectedIndexChanged += GpioFunctionCombo_SelectedIndexChanged;
+                    // Configure the ComboBox
+                    functionCombo.DropDownStyle = ComboBoxStyle.DropDownList;
+                    functionCombo.Items.Clear();
+                    functionCombo.Items.AddRange(GpioPinConfig.FunctionTypes);
+                    functionCombo.SelectedItem = "None";
+                    functionCombo.Tag = i; // Store pin number for event handling
+                    functionCombo.SelectedIndexChanged += GpioFunctionCombo_SelectedIndexChanged;
+                    
+                    // Store reference
+                    gpioPinFunctionCombos[i] = functionCombo;
+                }
                 
-                // Create function name text box
-                var nameTextBox = new TextBox
+                // Find TextBox by name pattern (e.g., textBox_Pin1Name)
+                string textBoxName = $"textBox_Pin{i}Name";
+                var nameTextBox = this.Controls.Find(textBoxName, true).FirstOrDefault() as TextBox;
+                
+                if (nameTextBox != null)
                 {
-                    Name = $"txtPin{i}Name",
-                    Location = new Point(position.X, position.Y + 25),
-                    Size = new Size(100, 23),
-                    Text = $"PIN_{i:D2}",
-                    Tag = i // Store pin number
-                };
-                nameTextBox.TextChanged += GpioNameTextBox_TextChanged;
+                    // Configure the TextBox
+                    nameTextBox.Text = $"PIN_{i:D2}";
+                    nameTextBox.Tag = i; // Store pin number for event handling
+                    nameTextBox.TextChanged += GpioNameTextBox_TextChanged;
+                    
+                    // Store reference
+                    gpioPinNameTextBoxes[i] = nameTextBox;
+                }
                 
-                // Create pin number label
-                var pinLabel = new Label
+                // Find Label by name pattern (e.g., label_Pin1) - optional
+                string labelName = $"label_Pin{i}";
+                var pinLabel = this.Controls.Find(labelName, true).FirstOrDefault() as Label;
+                
+                if (pinLabel != null)
                 {
-                    Name = $"lblPin{i}",
-                    Location = new Point(position.X + 25, position.Y - 20),
-                    Size = new Size(50, 15),
-                    Text = $"Pin {i}",
-                    Font = new Font("Segoe UI", 8F, FontStyle.Bold),
-                    TextAlign = ContentAlignment.MiddleCenter
-                };
-                
-                // Store references
-                gpioPinFunctionCombos[i] = functionCombo;
-                gpioPinNameTextBoxes[i] = nameTextBox;
-                
-                // Add controls to the container
-                panelGpioContainer.Controls.Add(functionCombo);
-                panelGpioContainer.Controls.Add(nameTextBox);
-                panelGpioContainer.Controls.Add(pinLabel);
+                    pinLabel.Text = $"Pin {i}";
+                    pinLabel.Font = new Font("Segoe UI", 8F, FontStyle.Bold);
+                    pinLabel.TextAlign = ContentAlignment.MiddleCenter;
+                }
             }
         }
 
-        private Point CalculatePinControlPosition(int pinNumber, int pinsPerSide)
-        {
-            // Get center square position and size
-            int centerX = panelCenterSquare.Location.X + panelCenterSquare.Width / 2;
-            int centerY = panelCenterSquare.Location.Y + panelCenterSquare.Height / 2;
-            int squareHalfWidth = panelCenterSquare.Width / 2;
-            int squareHalfHeight = panelCenterSquare.Height / 2;
-            
-            // Determine which side of the square (0=top, 1=right, 2=bottom, 3=left)
-            int side = (pinNumber - 1) / pinsPerSide;
-            int positionOnSide = (pinNumber - 1) % pinsPerSide;
-            
-            // Calculate spacing between pins
-            int spacing = 120; // Space between pin controls
-            int offset = (pinsPerSide - 1) * spacing / 2; // Center the pins on each side
-            
-            switch (side)
-            {
-                case 0: // Top side
-                    return new Point(
-                        centerX - offset + (positionOnSide * spacing) - 50,
-                        centerY - squareHalfHeight - 80
-                    );
-                    
-                case 1: // Right side
-                    return new Point(
-                        centerX + squareHalfWidth + 30,
-                        centerY - offset + (positionOnSide * spacing) - 25
-                    );
-                    
-                case 2: // Bottom side
-                    return new Point(
-                        centerX + offset - (positionOnSide * spacing) - 50,
-                        centerY + squareHalfHeight + 30
-                    );
-                    
-                case 3: // Left side
-                    return new Point(
-                        centerX - squareHalfWidth - 130,
-                        centerY + offset - (positionOnSide * spacing) - 25
-                    );
-                    
-                default:
-                    return new Point(0, 0);
-            }
-        }
-
-        // Event handlers for GPIO controls
+        // Keep your existing event handlers - they work with manually placed controls
         private void GpioFunctionCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (sender is ComboBox combo && combo.Tag is int pinNumber)
@@ -1116,14 +1049,11 @@ namespace Setup
             {
                 try
                 {
-                    // Update configuration first
-                    UpdateGpioConfigInDeviceConfig();
+                 //   UpdateGpioConfigInDeviceConfig();
                     
-                    // Save current config
                     var config = GetConfigFromForm();
                     config.Save(path);
                     
-                    // Generate GPIO files
                     GenerateGpioFiles();
                     
                     MessageBox.Show("GPIO files generated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1134,7 +1064,6 @@ namespace Setup
                 }
                 finally
                 {
-                    // Uncheck the checkbox
                     checkBox_GenerateGpio.Checked = false;
                 }
             }
@@ -1142,12 +1071,10 @@ namespace Setup
 
         private void GenerateGpioFiles()
         {
-            // Find templates directory
             string templatesDir = Path.Combine(Application.StartupPath, "Templates", "gpio");
             string templatePathC = Path.Combine(templatesDir, "plib_gpio.c.tt");
             string templatePathH = Path.Combine(templatesDir, "plib_gpio.h.tt");
             
-            // If not found in startup path, try project directory
             if (!File.Exists(templatePathC) || !File.Exists(templatePathH))
             {
                 string projectDir = Application.StartupPath;
@@ -1168,7 +1095,6 @@ namespace Setup
 
             string configPath = path;
 
-            // Check if templates exist
             if (!File.Exists(templatePathC))
             {
                 throw new FileNotFoundException($"GPIO C template not found: {templatePathC}");
@@ -1182,13 +1108,11 @@ namespace Setup
                 throw new FileNotFoundException($"Configuration file not found: {configPath}");
             }
 
-            // Create target directory: same as config file but add /srcs/default/gpio
             string targetProjectDir = Path.GetDirectoryName(configPath);
             string srcsDir = Path.Combine(targetProjectDir, "srcs");
             string defaultDir = Path.Combine(srcsDir, "default");
             string gpioDir = Path.Combine(defaultDir, "gpio");
             
-            // Create directory structure
             if (!Directory.Exists(srcsDir))
                 Directory.CreateDirectory(srcsDir);
             if (!Directory.Exists(defaultDir))
@@ -1196,7 +1120,6 @@ namespace Setup
             if (!Directory.Exists(gpioDir))
                 Directory.CreateDirectory(gpioDir);
 
-            // Generate files
             string finalOutputPathC = Path.Combine(gpioDir, "plib_gpio.c");
             string finalOutputPathH = Path.Combine(gpioDir, "plib_gpio.h");
 
@@ -1213,46 +1136,38 @@ namespace Setup
         {
             var config = GetConfigFromForm();
             
-            // Add GPIO configuration section
             if (!config.Sections.ContainsKey("GpioConfig"))
                 config.Sections["GpioConfig"] = new Dictionary<string, string>();
             
             var gpioSection = config.Sections["GpioConfig"];
             
-            // Clear existing GPIO config
             var keysToRemove = gpioSection.Keys.Where(k => k.StartsWith("PIN_") || k.StartsWith("GPIO_PIN_")).ToList();
             foreach (var key in keysToRemove)
             {
                 gpioSection.Remove(key);
             }
             
-            // Count pins that are not "None"
             int activePinCount = 0;
             
-            // Add current configuration (only for pins that are not "None")
             foreach (var pin in gpioPinConfigs.Where(p => p.FunctionType != "None"))
             {
                 string pinPrefix = $"PIN_{pin.PinNumber}_";
                 gpioSection[$"{pinPrefix}FUNCTION_TYPE"] = pin.FunctionType;
                 gpioSection[$"{pinPrefix}FUNCTION_NAME"] = pin.FunctionName;
-                gpioSection[$"{pinPrefix}GPIO_CTRL_REG_NUM"] = pin.CtrlRegNum.ToString();
+                gpioSection[$"{pinPrefix}GPIO_CTRL_REG_NUM"] =  pin.CtrlRegNum.ToString();
                 gpioSection[$"{pinPrefix}GPIO_CTRL_REG_INDEX"] = pin.CtrlRegIndex.ToString();
                 gpioSection[$"GPIO_PIN_NAME_{pin.PinNumber}"] = pin.PinName;
                 activePinCount++;
             }
             
-            // Only set max index if there are active pins
             if (activePinCount > 0)
             {
                 gpioSection["GPIO_PIN_MAX_INDEX"] = TOTAL_GPIO_PINS.ToString();
-                
-                // Add some default enums for the template
                 gpioSection["GPIO_MUX_FUNC_ENUM_LIST"] = "GPIO_FUNCTION_GPIO = 0, GPIO_FUNCTION_ALT1 = 1, GPIO_FUNCTION_ALT2 = 2";
                 gpioSection["GPIO_PU_PD_ENUM_LIST"] = "GPIO_PULL_NONE = 0, GPIO_PULL_UP = 1, GPIO_PULL_DOWN = 2";
             }
             else
             {
-                // If no active pins, remove the section entirely
                 config.Sections.Remove("GpioConfig");
             }
         }

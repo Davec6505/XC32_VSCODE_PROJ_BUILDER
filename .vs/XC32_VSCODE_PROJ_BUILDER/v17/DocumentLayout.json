@@ -3,28 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\form1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\gpiopinconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\gpiopinconfig.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\templates\\gpio\\plib_gpio.h.tt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\templates\\gpio\\plib_gpio.h.tt||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|c:\\users\\automation\\git\\xc32_vscode_proj_builder\\setup\\templates\\gpio\\plib_gpio.c.tt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{8E213613-70B5-4DD3-92B9-6078BA5F7692}|Setup\\Setup.csproj|solutionrelative:setup\\templates\\gpio\\plib_gpio.c.tt||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -48,15 +36,15 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "GpioPinConfig.cs",
-              "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\GpioPinConfig.cs",
-              "RelativeDocumentMoniker": "Setup\\GpioPinConfig.cs",
-              "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\GpioPinConfig.cs",
-              "RelativeToolTip": "Setup\\GpioPinConfig.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAABAAAAAAAAAA==",
+              "DocumentIndex": 1,
+              "Title": "Form1.Designer.cs",
+              "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.Designer.cs",
+              "RelativeDocumentMoniker": "Setup\\Form1.Designer.cs",
+              "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.Designer.cs",
+              "RelativeToolTip": "Setup\\Form1.Designer.cs",
+              "ViewState": "AgIAAJgGAAAAAAAAAAAAAMQGAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-04T12:58:56.568Z",
+              "WhenOpened": "2025-09-04T15:01:01.438Z",
               "EditorCaption": ""
             },
             {
@@ -68,59 +56,20 @@
               "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs [Design]",
               "RelativeToolTip": "Setup\\Form1.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-04T12:51:34.03Z",
+              "WhenOpened": "2025-09-04T14:31:39.581Z",
               "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Form1.Designer.cs",
-              "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.Designer.cs",
-              "RelativeDocumentMoniker": "Setup\\Form1.Designer.cs",
-              "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.Designer.cs",
-              "RelativeToolTip": "Setup\\Form1.Designer.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAAA1wBgAAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-09-04T12:47:24.731Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Form1.cs",
               "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeDocumentMoniker": "Setup\\Form1.cs",
               "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Form1.cs",
               "RelativeToolTip": "Setup\\Form1.cs",
-              "ViewState": "AgIAAM4EAAAAAAAAAAAAAOoEAAAUAAAAAAAAAA==",
+              "ViewState": "AgIAAAsEAAAAAAAAAAASwBsEAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-09-04T12:47:16.508Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "plib_gpio.c.tt",
-              "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\gpio\\plib_gpio.c.tt",
-              "RelativeDocumentMoniker": "Setup\\Templates\\gpio\\plib_gpio.c.tt",
-              "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\gpio\\plib_gpio.c.tt",
-              "RelativeToolTip": "Setup\\Templates\\gpio\\plib_gpio.c.tt",
-              "ViewState": "AgIAACcAAAAAAAAAAAAAABkAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2025-09-04T10:59:07.976Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "plib_gpio.h.tt",
-              "DocumentMoniker": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\gpio\\plib_gpio.h.tt",
-              "RelativeDocumentMoniker": "Setup\\Templates\\gpio\\plib_gpio.h.tt",
-              "ToolTip": "C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\Templates\\gpio\\plib_gpio.h.tt",
-              "RelativeToolTip": "Setup\\Templates\\gpio\\plib_gpio.h.tt",
-              "ViewState": "AgIAAOQAAAAAAAAAAAAAAPEAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2025-09-04T10:58:36.948Z",
               "EditorCaption": ""
             }
           ]

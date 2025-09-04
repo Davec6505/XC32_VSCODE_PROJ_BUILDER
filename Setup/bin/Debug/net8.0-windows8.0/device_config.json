@@ -1,20 +1,20 @@
 {
   "Sections": {
     "DEVCFG0": {
-      "DEBUG": "",
-      "JTAGEN": "",
-      "ICESEL": "",
-      "TRCEN": "",
-      "BOOTISA": "",
-      "FECCCON": "",
-      "FSLEEP": "",
-      "DBGPER": "",
-      "SMCLR": "",
-      "SOSCGAIN": "",
-      "SOSCBOOST": "",
-      "POSCGAIN": "",
-      "POSCBOOST": "",
-      "EJTAGBEN": ""
+      "DEBUG": "OFF",
+      "JTAGEN": "OFF",
+      "ICESEL": "ICS_PGx1",
+      "TRCEN": "OFF",
+      "BOOTISA": "MIPS32",
+      "FECCCON": "OFF_UNLOCKED",
+      "FSLEEP": "OFF",
+      "DBGPER": "PG_ALL",
+      "SMCLR": "MCLR_NORM",
+      "SOSCGAIN": "GAIN_LEVEL_3",
+      "SOSCBOOST": "ON",
+      "POSCGAIN": "GAIN_LEVEL_3",
+      "POSCBOOST": "ON",
+      "EJTAGBEN": "NORMAL"
     },
     "DEVCFG1": {
       "FNOSC": "SPLL",
@@ -41,13 +41,13 @@
       "UPLLFSEL": "FREQ_24MHZ"
     },
     "DEVCFG3": {
-      "FMIIEN": "",
-      "FETHIO": "",
-      "PGL1WAY": "",
-      "PMDL1WAY": "",
-      "IOL1WAY": "",
-      "FUSBIDIO": "",
-      "USERID": "0x64"
+      "FMIIEN": "ON",
+      "FETHIO": "ON",
+      "PGL1WAY": "ON",
+      "PMDL1WAY": "ON",
+      "IOL1WAY": "ON",
+      "FUSBIDIO": "ON",
+      "USERID": "0xFFFB"
     },
     "DEVCP0": {
       "CP": "OFF"
