@@ -1,0 +1,906 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using Newtonsoft.Json;
+
+namespace Setup
+{
+    public class PinMapping
+    {
+        public string PinName { get; set; }
+        public List<string> AvailableFunctions { get; set; } = new List<string>();
+        public string DefaultFunction { get; set; }
+        public string PinType { get; set; }
+        public string Port { get; set; }
+        public string PortPin { get; set; }
+        public string AnalogChannel { get; set; }
+        public Dictionary<string, string> PeripheralMappings { get; set; } = new Dictionary<string, string>();
+        public bool IsReadOnly { get; set; }
+        public string PinLocation { get; set; } // For BGA packages
+    }
+
+    public class PackageInfo
+    {
+        public string Description { get; set; }
+        public int PinCount { get; set; }
+        public Dictionary<string, PinMapping> PinMappings { get; set; } = new Dictionary<string, PinMapping>();
+    }
+
+    public class DeviceInfo
+    {
+        public Dictionary<string, PackageInfo> Packages { get; set; } = new Dictionary<string, PackageInfo>();
+    }
+
+    public class UIControlMapping
+    {
+        public string ControlName { get; set; }
+        public string PinNumber { get; set; }
+        public string PropertyPath { get; set; }
+    }
+
+    public class UIControlMappings
+    {
+        public List<UIControlMapping> TextBoxMappings { get; set; } = new List<UIControlMapping>();
+        public List<UIControlMapping> ComboBoxMappings { get; set; } = new List<UIControlMapping>();
+    }
+
+    public class PackageDetection
+    {
+        public Dictionary<string, string> DeviceToPackageMapping { get; set; } = new Dictionary<string, string>();
+    }
+
+    public class DevicePinMappings
+    {
+        public string Description { get; set; }
+        public string Version { get; set; }
+        public string LastUpdated { get; set; }
+        public Dictionary<string, DeviceInfo> SupportedDevices { get; set; } = new Dictionary<string, DeviceInfo>();
+        public UIControlMappings UIControlMappings { get; set; } = new UIControlMappings();
+        public PackageDetection PackageDetection { get; set; } = new PackageDetection();
+    }
+
+    public class PinMappingRoot
+    {
+        public DevicePinMappings DevicePinMappings { get; set; } = new DevicePinMappings();
+    }
+
+    public class PinMappingManager
+    {
+        private PinMappingRoot _pinMappings;
+        private string _currentDevice;
+        private string _currentPackage;
+        private Dictionary<string, TextBox> _textBoxControls;
+        private Dictionary<string, ComboBox> _comboBoxControls;
+        private bool _isInitialized = false;
+
+        public PinMappingManager()
+        {
+            _textBoxControls = new Dictionary<string, TextBox>();
+            _comboBoxControls = new Dictionary<string, ComboBox>();
+        }
+
+        public bool LoadPinMappings(string filePath)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine($"=== LOADING PIN MAPPINGS ===");
+                System.Diagnostics.Debug.WriteLine($"Attempting to load pin mappings from: {filePath}");
+                
+                if (!File.Exists(filePath))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Pin mapping file not found: {filePath}");
+                    return false;
+                }
+
+                string json = File.ReadAllText(filePath);
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    System.Diagnostics.Debug.WriteLine("Pin mapping file is empty");
+                    return false;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"JSON file size: {json.Length} characters");
+                System.Diagnostics.Debug.WriteLine("Starting JSON deserialization...");
+
+                _pinMappings = JsonConvert.DeserializeObject<PinMappingRoot>(json);
+                
+                if (_pinMappings?.DevicePinMappings == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Failed to deserialize pin mappings or structure is invalid");
+                    return false;
+                }
+
+                // Validate the loaded structure
+                System.Diagnostics.Debug.WriteLine("=== VALIDATING LOADED STRUCTURE ===");
+                System.Diagnostics.Debug.WriteLine($"DevicePinMappings: {(_pinMappings.DevicePinMappings != null ? "?" : "?")}");
+                System.Diagnostics.Debug.WriteLine($"SupportedDevices: {(_pinMappings.DevicePinMappings.SupportedDevices != null ? "?" : "?")}");
+                System.Diagnostics.Debug.WriteLine($"UIControlMappings: {(_pinMappings.DevicePinMappings.UIControlMappings != null ? "?" : "?")}");
+                System.Diagnostics.Debug.WriteLine($"PackageDetection: {(_pinMappings.DevicePinMappings.PackageDetection != null ? "?" : "?")}");
+                
+                if (_pinMappings.DevicePinMappings.SupportedDevices != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Supported Devices Count: {_pinMappings.DevicePinMappings.SupportedDevices.Count}");
+                    foreach (var device in _pinMappings.DevicePinMappings.SupportedDevices.Keys)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  Device: {device}");
+                        if (_pinMappings.DevicePinMappings.SupportedDevices[device]?.Packages != null)
+                        {
+                            foreach (var package in _pinMappings.DevicePinMappings.SupportedDevices[device].Packages.Keys)
+                            {
+                                var packageInfo = _pinMappings.DevicePinMappings.SupportedDevices[device].Packages[package];
+                                System.Diagnostics.Debug.WriteLine($"    Package: {package} (Pin count: {packageInfo?.PinCount}, Mappings: {packageInfo?.PinMappings?.Count ?? 0})");
+                            }
+                        }
+                    }
+                }
+                
+                if (_pinMappings.DevicePinMappings.UIControlMappings != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"TextBox Mappings Count: {_pinMappings.DevicePinMappings.UIControlMappings.TextBoxMappings?.Count ?? 0}");
+                    System.Diagnostics.Debug.WriteLine($"ComboBox Mappings Count: {_pinMappings.DevicePinMappings.UIControlMappings.ComboBoxMappings?.Count ?? 0}");
+                    
+                    if (_pinMappings.DevicePinMappings.UIControlMappings.TextBoxMappings?.Count > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine("First few TextBox mappings:");
+                        for (int i = 0; i < Math.Min(5, _pinMappings.DevicePinMappings.UIControlMappings.TextBoxMappings.Count); i++)
+                        {
+                            var mapping = _pinMappings.DevicePinMappings.UIControlMappings.TextBoxMappings[i];
+                            System.Diagnostics.Debug.WriteLine($"  {i + 1}: {mapping?.ControlName} -> Pin {mapping?.PinNumber}");
+                        }
+                    }
+                    
+                    if (_pinMappings.DevicePinMappings.UIControlMappings.ComboBoxMappings?.Count > 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine("First few ComboBox mappings:");
+                        for (int i = 0; i < Math.Min(5, _pinMappings.DevicePinMappings.UIControlMappings.ComboBoxMappings.Count); i++)
+                        {
+                            var mapping = _pinMappings.DevicePinMappings.UIControlMappings.ComboBoxMappings[i];
+                            System.Diagnostics.Debug.WriteLine($"  {i + 1}: {mapping?.ControlName} -> Pin {mapping?.PinNumber}");
+                        }
+                    }
+                }
+                
+                if (_pinMappings.DevicePinMappings.PackageDetection?.DeviceToPackageMapping != null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Package Detection Mappings: {_pinMappings.DevicePinMappings.PackageDetection.DeviceToPackageMapping.Count}");
+                    foreach (var mapping in _pinMappings.DevicePinMappings.PackageDetection.DeviceToPackageMapping)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  {mapping.Key} -> {mapping.Value}");
+                    }
+                }
+
+                _isInitialized = true;
+                System.Diagnostics.Debug.WriteLine("=== PIN MAPPINGS LOADED SUCCESSFULLY ===");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading pin mappings: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                _isInitialized = false;
+                return false;
+            }
+        }
+
+        public void RegisterControls(Form form)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("=== STARTING CONTROL REGISTRATION ===");
+                
+                if (!_isInitialized)
+                {
+                    System.Diagnostics.Debug.WriteLine("Pin mappings not initialized, cannot register controls");
+                    return;
+                }
+                
+                if _pinMappings?.DevicePinMappings?.UIControlMappings == null
+                {
+                    System.Diagnostics.Debug.WriteLine("UIControlMappings is null, cannot register controls");
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine("Starting control registration...");
+                System.Diagnostics.Debug.WriteLine($"Available TextBox mappings: {_pinMappings.DevicePinMappings.UIControlMappings.TextBoxMappings?.Count ?? 0}");
+                System.Diagnostics.Debug.WriteLine($"Available ComboBox mappings: {_pinMappings.DevicePinMappings.UIControlMappings.ComboBoxMappings?.Count ?? 0}");
+
+                // Clear existing registrations
+                _textBoxControls.Clear();
+                _comboBoxControls.Clear();
+
+                // Register all textbox controls
+                if (_pinMappings.DevicePinMappings.UIControlMappings.TextBoxMappings != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Processing TextBox mappings...");
+                    foreach (var mapping in _pinMappings.DevicePinMappings.UIControlMappings.TextBoxMappings)
+                    {
+                        if (mapping != null && !string.IsNullOrEmpty(mapping.ControlName) && !string.IsNullOrEmpty(mapping.PinNumber))
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Looking for TextBox: {mapping.ControlName}");
+                            var control = FindControlByName<TextBox>(form, mapping.ControlName);
+                            if (control != null)
+                            {
+                                _textBoxControls[mapping.PinNumber] = control;
+                                System.Diagnostics.Debug.WriteLine($"? Registered TextBox: {mapping.ControlName} for pin {mapping.PinNumber}");
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"? TextBox control not found: {mapping.ControlName}");
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Invalid mapping: ControlName='{mapping?.ControlName}', PinNumber='{mapping?.PinNumber}'");
+                        }
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No TextBox mappings available");
+                }
+
+                // Register all combobox controls
+                if (_pinMappings.DevicePinMappings.UIControlMappings.ComboBoxMappings != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Processing ComboBox mappings...");
+                    foreach (var mapping in _pinMappings.DevicePinMappings.UIControlMappings.ComboBoxMappings)
+                    {
+                        if (mapping != null && !string.IsNullOrEmpty(mapping.ControlName) && !string.IsNullOrEmpty(mapping.PinNumber))
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Looking for ComboBox: {mapping.ControlName}");
+                            var control = FindControlByName<ComboBox>(form, mapping.ControlName);
+                            if (control != null)
+                            {
+                                _comboBoxControls[mapping.PinNumber] = control;
+                                System.Diagnostics.Debug.WriteLine($"? Registered ComboBox: {mapping.ControlName} for pin {mapping.PinNumber}");
+                            }
+                            else
+                            {
+                                System.Diagnostics.Debug.WriteLine($"? ComboBox control not found: {mapping.ControlName}");
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Invalid mapping: ControlName='{mapping?.ControlName}', PinNumber='{mapping?.PinNumber}'");
+                        }
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No ComboBox mappings available");
+                }
+
+                System.Diagnostics.Debug.WriteLine($"=== CONTROL REGISTRATION COMPLETED ===");
+                System.Diagnostics.Debug.WriteLine($"Registered TextBoxes: {_textBoxControls.Count}");
+                System.Diagnostics.Debug.WriteLine($"Registered ComboBoxes: {_comboBoxControls.Count}");
+                
+                // List all registered controls
+                if (_textBoxControls.Count > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("Registered TextBoxes:");
+                    foreach (var kvp in _textBoxControls)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  Pin {kvp.Key}: {kvp.Value.Name}");
+                    }
+                }
+                
+                if (_comboBoxControls.Count > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("Registered ComboBoxes:");
+                    foreach (var kvp in _comboBoxControls)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  Pin {kvp.Key}: {kvp.Value.Name}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error registering controls: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+        }
+
+        private T FindControlByName<T>(Control parent, string name) where T : Control
+        {
+            try
+            {
+                if (parent == null || string.IsNullOrEmpty(name))
+                    return null;
+
+                if (parent.Name == name && parent is T)
+                    return parent as T;
+
+                foreach (Control child in parent.Controls)
+                {
+                    var result = FindControlByName<T>(child, name);
+                    if (result != null)
+                        return result;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error finding control {name}: {ex.Message}");
+                return null;
+            }
+        }
+
+        public bool SetDevice(string deviceName)
+        {
+            try
+            {
+                if (!_isInitialized || string.IsNullOrEmpty(deviceName))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Cannot set device: not initialized or invalid device name");
+                    return false;
+                }
+
+                _currentDevice = deviceName;
+                
+                // Determine package from device name
+                if (_pinMappings?.DevicePinMappings?.PackageDetection?.DeviceToPackageMapping?.TryGetValue(deviceName, out string package) == true)
+                {
+                    _currentPackage = package;
+                    System.Diagnostics.Debug.WriteLine($"Set device {deviceName} with package {package}");
+                    return true;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Device {deviceName} not found in package mapping");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error setting device {deviceName}: {ex.Message}");
+                return false;
+            }
+        }
+
+        public void UpdateUIFromPinMappings()
+        {
+            try
+            {
+                if (!_isInitialized || string.IsNullOrEmpty(_currentDevice) || string.IsNullOrEmpty(_currentPackage))
+                {
+                    System.Diagnostics.Debug.WriteLine("Cannot update UI: not properly initialized");
+                    System.Diagnostics.Debug.WriteLine($"  _isInitialized: {_isInitialized}");
+                    System.Diagnostics.Debug.WriteLine($"  _currentDevice: {_currentDevice}");
+                    System.Diagnostics.Debug.WriteLine($"  _currentPackage: {_currentPackage}");
+                    return;
+                }
+
+                if (!_pinMappings.DevicePinMappings.SupportedDevices.TryGetValue("PIC32MZ", out var deviceInfo))
+                {
+                    System.Diagnostics.Debug.WriteLine("PIC32MZ device info not found");
+                    System.Diagnostics.Debug.WriteLine($"Available devices: {string.Join(", ", _pinMappings.DevicePinMappings.SupportedDevices.Keys)}");
+                    return;
+                }
+
+                if (!deviceInfo.Packages.TryGetValue(_currentPackage, out var packageInfo))
+                {
+                    System.Diagnostics.Debug.WriteLine($"Package info not found for {_currentPackage}");
+                    System.Diagnostics.Debug.WriteLine($"Available packages: {string.Join(", ", deviceInfo.Packages.Keys)}");
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Updating UI for {_currentDevice} ({_currentPackage})");
+                System.Diagnostics.Debug.WriteLine($"Found {packageInfo.PinMappings.Count} pin mappings");
+                System.Diagnostics.Debug.WriteLine($"Registered TextBoxes: {_textBoxControls.Count}, ComboBoxes: {_comboBoxControls.Count}");
+
+                // Update textboxes with pin names
+                int textBoxUpdates = 0;
+                foreach (var kvp in _textBoxControls)
+                {
+                    try
+                    {
+                        string pinNumber = kvp.Key;
+                        TextBox textBox = kvp.Value;
+
+                        if (textBox == null) 
+                        {
+                            System.Diagnostics.Debug.WriteLine($"TextBox for pin {pinNumber} is null");
+                            continue;
+                        }
+
+                        if (packageInfo.PinMappings.TryGetValue(pinNumber, out var pinMapping))
+                        {
+                            textBox.Text = pinMapping.PinName ?? "";
+                            textBox.ReadOnly = pinMapping.IsReadOnly;
+                            
+                            // Set background color based on pin type
+                            SetPinTypeColor(textBox, pinMapping.PinType);
+                            textBoxUpdates++;
+                            
+                            System.Diagnostics.Debug.WriteLine($"Updated TextBox pin {pinNumber}: {pinMapping.PinName} ({pinMapping.PinType})");
+                        }
+                        else
+                        {
+                            textBox.Text = "NC";
+                            textBox.ReadOnly = true;
+                            textBox.BackColor = System.Drawing.Color.LightGray;
+                            System.Diagnostics.Debug.WriteLine($"Set TextBox pin {pinNumber} to NC (no mapping found)");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error updating textbox for pin {kvp.Key}: {ex.Message}");
+                    }
+                }
+
+                // Update comboboxes with available functions
+                int comboBoxUpdates = 0;
+                foreach (var kvp in _comboBoxControls)
+                {
+                    try
+                    {
+                        string pinNumber = kvp.Key;
+                        ComboBox comboBox = kvp.Value;
+
+                        if (comboBox == null) 
+                        {
+                          System.Diagnostics.Debug.WriteLine($"ComboBox for pin {pinNumber} is null");
+                          continue;
+                        }
+
+                        if (packageInfo.PinMappings.TryGetValue(pinNumber, out var pinMapping))
+                        {
+                            comboBox.Items.Clear();
+                            if (pinMapping.AvailableFunctions != null && pinMapping.AvailableFunctions.Count > 0)
+                            {
+                                comboBox.Items.AddRange(pinMapping.AvailableFunctions.ToArray());
+                                comboBox.SelectedItem = pinMapping.DefaultFunction;
+                                comboBoxUpdates++;
+                                
+                                System.Diagnostics.Debug.WriteLine($"Updated ComboBox pin {pinNumber}: Added {pinMapping.AvailableFunctions.Count} functions, selected '{pinMapping.DefaultFunction}'");
+                                System.Diagnostics.Debug.WriteLine($"  Functions: {string.Join(", ", pinMapping.AvailableFunctions)}");
+                            }
+                            else
+                            {
+                                comboBox.Items.Add("GPIO");
+                                comboBox.SelectedItem = "GPIO";
+                                System.Diagnostics.Debug.WriteLine($"ComboBox pin {pinNumber}: No functions available, defaulted to GPIO");
+                            }
+                            comboBox.Enabled = !pinMapping.IsReadOnly;
+                            
+                            if (pinMapping.IsReadOnly)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"ComboBox pin {pinNumber}: Set to read-only");
+                            }
+                        }
+                        else
+                        {
+                            comboBox.Items.Clear();
+                            comboBox.Items.Add("NC");
+                            comboBox.SelectedItem = "NC";
+                            comboBox.Enabled = false;
+                            System.Diagnostics.Debug.WriteLine($"Set ComboBox pin {pinNumber} to NC (no mapping found)");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error updating combobox for pin {kvp.Key}: {ex.Message}");
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"UI update completed successfully: {textBoxUpdates} TextBoxes, {comboBoxUpdates} ComboBoxes updated");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating UI from pin mappings: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+        }
+
+        public void UpdatePinMappingsFromUI(DeviceConfig config)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("=== UPDATE PIN MAPPINGS FROM UI ===");
+                System.Diagnostics.Debug.WriteLine($"Registered TextBoxes: {_textBoxControls.Count}");
+                System.Diagnostics.Debug.WriteLine($"Registered ComboBoxes: {_comboBoxControls.Count}");
+                System.Diagnostics.Debug.WriteLine($"Current Device: {_currentDevice}");
+                System.Diagnostics.Debug.WriteLine($"Current Package: {_currentPackage}");
+                
+                if (config == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Cannot update pin mappings: config is null");
+                    return;
+                }
+
+                if (config.Sections == null)
+                    config.Sections = new Dictionary<string, Dictionary<string, string>>();
+
+                if (!config.Sections.ContainsKey("PinConfigurations"))
+                    config.Sections["PinConfigurations"] = new Dictionary<string, string>();
+
+                // Clear existing pin configurations
+                config.Sections["PinConfigurations"].Clear();
+
+                // If no controls are registered, we can't save pin data
+                if (_textBoxControls.Count == 0 && _comboBoxControls.Count == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine("No controls registered - cannot save pin data");
+                    return;
+                }
+
+                // Create individual pin entries instead of one large JSON string
+                int processedPins = 0;
+
+                foreach (var kvp in _textBoxControls)
+                {
+                    try
+                    {
+                        string pinNumber = kvp.Key;
+                        TextBox textBox = kvp.Value;
+
+                        if (textBox == null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"TextBox for pin {pinNumber} is null");
+                            continue;
+                        }
+                        
+                        if (_comboBoxControls.TryGetValue(pinNumber, out var comboBox) && comboBox != null)
+                        {
+                            var pinConfig = new
+                            {
+                                PinName = textBox.Text ?? "",
+                                SelectedFunction = comboBox.SelectedItem?.ToString() ?? "GPIO",
+                                Package = _currentPackage ?? "64-pin"
+                            };
+
+                            // Add available functions if we have the pin mapping
+                            if (!string.IsNullOrEmpty(_currentDevice) && !string.IsNullOrEmpty(_currentPackage) && _isInitialized)
+                            {
+                                if (_pinMappings.DevicePinMappings.SupportedDevices.TryGetValue("PIC32MZ", out var deviceInfo) &&
+                                    deviceInfo.Packages.TryGetValue(_currentPackage, out var packageInfo) &&
+                                    packageInfo.PinMappings.TryGetValue(pinNumber, out var pinMapping))
+                                {
+                                    var fullPinConfig = new
+                                    {
+                                        PinName = textBox.Text ?? "",
+                                        SelectedFunction = comboBox.SelectedItem?.ToString() ?? "GPIO",
+                                        AvailableFunctions = pinMapping.AvailableFunctions ?? new List<string> { "GPIO" },
+                                        Package = _currentPackage ?? "64-pin"
+                                    };
+                                    
+                                    // Store as individual pin entries with readable format
+                                    config.Sections["PinConfigurations"][$"Pin{pinNumber}"] = JsonConvert.SerializeObject(fullPinConfig, Formatting.None);
+                                    processedPins++;
+                                    System.Diagnostics.Debug.WriteLine($"Saved pin {pinNumber}: {textBox.Text} -> {comboBox.SelectedItem}");
+                                }
+                                else
+                                {
+                                    config.Sections["PinConfigurations"][$"Pin{pinNumber}"] = JsonConvert.SerializeObject(pinConfig, Formatting.None);
+                                    processedPins++;
+                                    System.Diagnostics.Debug.WriteLine($"Saved pin {pinNumber} (basic): {textBox.Text} -> {comboBox.SelectedItem}");
+                                }
+                            }
+                            else
+                            {
+                                config.Sections["PinConfigurations"][$"Pin{pinNumber}"] = JsonConvert.SerializeObject(pinConfig, Formatting.None);
+                                processedPins++;
+                                System.Diagnostics.Debug.WriteLine($"Saved pin {pinNumber} (fallback): {textBox.Text} -> {comboBox.SelectedItem}");
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"No ComboBox found for pin {pinNumber}");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error processing pin {kvp.Key}: {ex.Message}");
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Processed {processedPins} pins for saving");
+
+                if (processedPins > 0)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Saved {processedPins} pin configurations to config");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No pin configurations to save");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error updating pin mappings from UI: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
+        }
+
+        public void LoadPinConfigurationsFromConfig(DeviceConfig config)
+        {
+            try
+            {
+                if (config?.Sections == null || 
+                    !config.Sections.TryGetValue("PinConfigurations", out var pinConfigSection))
+                {
+                    System.Diagnostics.Debug.WriteLine("No pin configurations found in config");
+                    return;
+                }
+
+                System.Diagnostics.Debug.WriteLine($"Loading pin configurations: {pinConfigSection.Count} entries found");
+
+                // Try to load from new individual pin format first
+                bool foundIndividualPins = false;
+                foreach (var kvp in pinConfigSection)
+                {
+                    try
+                    {
+                        if (kvp.Key.StartsWith("Pin") && kvp.Key.Length > 3)
+                        {
+                            // Extract pin number from "Pin1", "Pin2", etc.
+                            string pinNumberStr = kvp.Key.Substring(3);
+                            
+                            if (int.TryParse(pinNumberStr, out _))
+                            {
+                                foundIndividualPins = true;
+                                dynamic pinConfig = JsonConvert.DeserializeObject(kvp.Value);
+
+                                if (_textBoxControls.TryGetValue(pinNumberStr, out var textBox) && textBox != null)
+                                {
+                                    textBox.Text = pinConfig.PinName?.ToString() ?? "";
+                                    System.Diagnostics.Debug.WriteLine($"Loaded pin {pinNumberStr} name: {textBox.Text}");
+                                }
+
+                                if (_comboBoxControls.TryGetValue(pinNumberStr, out var comboBox) && comboBox != null)
+                                {
+                                    string selectedFunction = pinConfig.SelectedFunction?.ToString() ?? "GPIO";
+                                    if (comboBox.Items.Contains(selectedFunction))
+                                    {
+                                        comboBox.SelectedItem = selectedFunction;
+                                        System.Diagnostics.Debug.WriteLine($"Loaded pin {pinNumberStr} function: {selectedFunction}");
+                                    }
+                                    else
+                                    {
+                                        System.Diagnostics.Debug.WriteLine($"Function {selectedFunction} not available for pin {pinNumberStr}, keeping current selection");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error loading individual pin {kvp.Key}: {ex.Message}");
+                    }
+                }
+
+                // Fall back to old format if no individual pins found
+                if (!foundIndividualPins)
+                {
+                    // Try to load from old single "Data" entry format
+                    if (pinConfigSection.TryGetValue("Data", out var jsonData))
+                    {
+                        System.Diagnostics.Debug.WriteLine("Loading from old format (single Data entry)");
+                        var pinConfigurations = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(jsonData);
+                        
+                        foreach (var kvp in pinConfigurations)
+                        {
+                            try
+                            {
+                                string pinNumber = kvp.Key;
+                                dynamic pinConfig = kvp.Value;
+
+                                if (_textBoxControls.TryGetValue(pinNumber, out var textBox) && textBox != null)
+                                {
+                                    textBox.Text = pinConfig.PinName?.ToString() ?? "";
+                                }
+
+                                if (_comboBoxControls.TryGetValue(pinNumber, out var comboBox) && comboBox != null)
+                                {
+                                    string selectedFunction = pinConfig.SelectedFunction?.ToString() ?? "GPIO";
+                                    if (comboBox.Items.Contains(selectedFunction))
+                                    {
+                                        comboBox.SelectedItem = selectedFunction;
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Error loading pin {kvp.Key} from old format: {ex.Message}");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // Legacy format - direct pin number keys
+                        LoadFromOldFormat(pinConfigSection);
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine("Pin configuration loading completed");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading pin configurations: {ex.Message}");
+                // Try to fall back to old format
+                if (config?.Sections?.TryGetValue("PinConfigurations", out var pinConfigSection) == true)
+                {
+                    LoadFromOldFormat(pinConfigSection);
+                }
+            }
+        }
+
+        private void LoadFromOldFormat(Dictionary<string, string> pinConfigSection)
+        {
+            try
+            {
+                foreach (var kvp in pinConfigSection)
+                {
+                    if (int.TryParse(kvp.Key, out _)) // It's a pin number
+                    {
+                        try
+                        {
+                            var pinConfig = JsonConvert.DeserializeObject<dynamic>(kvp.Value);
+                            string pinNumber = kvp.Key;
+
+                            if (_textBoxControls.TryGetValue(pinNumber, out var textBox) && textBox != null)
+                            {
+                                textBox.Text = pinConfig.PinName?.ToString() ?? "";
+                            }
+
+                            if (_comboBoxControls.TryGetValue(pinNumber, out var comboBox) && comboBox != null)
+                            {
+                                string selectedFunction = pinConfig.SelectedFunction?.ToString() ?? "GPIO";
+                                if (comboBox.Items.Contains(selectedFunction))
+                                {
+                                    comboBox.SelectedItem = selectedFunction;
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error loading old format pin {kvp.Key}: {ex.Message}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in LoadFromOldFormat: {ex.Message}");
+            }
+        }
+
+        private void SetPinTypeColor(TextBox textBox, string pinType)
+        {
+            try
+            {
+                if (textBox == null) return;
+
+                switch (pinType?.ToUpper())
+                {
+                    case "POWER":
+                        textBox.BackColor = System.Drawing.Color.LightCoral;
+                        break;
+                    case "ANALOG":
+                        textBox.BackColor = System.Drawing.Color.LightBlue;
+                        break;
+                    case "DIGITAL":
+                        textBox.BackColor = System.Drawing.Color.LightGreen;
+                        break;
+                    default:
+                        textBox.BackColor = System.Drawing.Color.White;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error setting pin type color: {ex.Message}");
+            }
+        }
+
+        public string GetCurrentPackage()
+        {
+            return _currentPackage;
+        }
+
+        public List<string> GetAvailablePackages()
+        {
+            try
+            {
+                if (_pinMappings?.DevicePinMappings?.SupportedDevices?.TryGetValue("PIC32MZ", out var deviceInfo) == true)
+                {
+                    return deviceInfo.Packages.Keys.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting available packages: {ex.Message}");
+            }
+            return new List<string>();
+        }
+
+        public PinMapping GetPinMapping(string pinNumber)
+        {
+            try
+            {
+                if (!_isInitialized || string.IsNullOrEmpty(_currentDevice) || string.IsNullOrEmpty(_currentPackage) || string.IsNullOrEmpty(pinNumber))
+                    return null;
+
+                if (_pinMappings.DevicePinMappings.SupportedDevices.TryGetValue("PIC32MZ", out var deviceInfo) &&
+                    deviceInfo.Packages.TryGetValue(_currentPackage, out var packageInfo) &&
+                    packageInfo.PinMappings.TryGetValue(pinNumber, out var pinMapping))
+                {
+                    return pinMapping;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error getting pin mapping for pin {pinNumber}: {ex.Message}");
+            }
+
+            return null;
+        }
+
+        public bool IsInitialized => _isInitialized;
+
+        // Add a method to manually trigger pin mapping update for debugging
+        public void ForceUpdatePinMappings()
+        {
+            System.Diagnostics.Debug.WriteLine("=== FORCE UPDATE PIN MAPPINGS ===");
+            System.Diagnostics.Debug.WriteLine($"Current state:");
+            System.Diagnostics.Debug.WriteLine($"  Initialized: {_isInitialized}");
+            System.Diagnostics.Debug.WriteLine($"  Current Device: {_currentDevice}");
+            System.Diagnostics.Debug.WriteLine($"  Current Package: {_currentPackage}");
+            System.Diagnostics.Debug.WriteLine($"  TextBox Controls: {_textBoxControls.Count}");
+            System.Diagnostics.Debug.WriteLine($"  ComboBox Controls: {_comboBoxControls.Count}");
+            
+            if (_isInitialized && !string.IsNullOrEmpty(_currentDevice) && !string.IsNullOrEmpty(_currentPackage))
+            {
+                UpdateUIFromPinMappings();
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("Cannot force update - not properly initialized");
+            }
+        }
+
+        // Add a method to validate control registration
+        public void ValidateControlRegistration(Form form)
+        {
+            System.Diagnostics.Debug.WriteLine("=== VALIDATING CONTROL REGISTRATION ===");
+            
+            // Check if the expected controls exist on the form
+            var expectedTextBoxes = new string[] {
+                "textBox_PinName1", "textBox_PinName2", "textBox_PinName3", "textBox_PinName4",
+                "textBox_PinName5", "textBox_PinName6", "textBox_PinName7", "textBox_PinName8",
+                "textBox1_PinName9", "textBox_PinName10", "textBox_PinName11", "textBox_PinName12"
+            };
+            
+            var expectedComboBoxes = new string[] {
+                "comboBox_PinFunc1", "comboBox_PinFunc2", "comboBox_PinFunc3", "comboBox_PinFunc4",
+                "comboBox_PinFunc5", "comboBox_PinFunc6", "comboBox_PinFunc7", "comboBox_PinFunc8",
+                "comboBox1_PinFunc9", "comboBox_PinFunc10", "comboBox_PinFunc11", "comboBox_PinFunc12"
+            };
+            
+            foreach (var controlName in expectedTextBoxes)
+            {
+                var control = FindControlByName<TextBox>(form, controlName);
+                System.Diagnostics.Debug.WriteLine($"TextBox {controlName}: {(control != null ? "FOUND" : "NOT FOUND")}");
+            }
+            
+            foreach (var controlName in expectedComboBoxes)
+            {
+                var control = FindControlByName<ComboBox>(form, controlName);
+                System.Diagnostics.Debug.WriteLine($"ComboBox {controlName}: {(control != null ? "FOUND" : "NOT FOUND")}");
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"Currently registered TextBoxes: {_textBoxControls.Count}");
+            foreach (var kvp in _textBoxControls)
+            {
+                System.Diagnostics.Debug.WriteLine($"  Pin {kvp.Key}: {kvp.Value.Name}");
+            }
+            
+            System.Diagnostics.Debug.WriteLine($"Currently registered ComboBoxes: {_comboBoxControls.Count}");
+            foreach (var kvp in _comboBoxControls)
+            {
+                System.Diagnostics.Debug.WriteLine($"  Pin {kvp.Key}: {kvp.Value.Name}");
+            }
+        }
+    }
+}

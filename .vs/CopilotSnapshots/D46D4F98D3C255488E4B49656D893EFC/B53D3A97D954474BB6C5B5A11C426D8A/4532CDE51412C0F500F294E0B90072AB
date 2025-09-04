@@ -1,0 +1,89 @@
+﻿{
+  "DevicePinMappings": {
+    "Description": "Simple pin mappings for PIC32MZ devices",
+    "Version": "1.0",
+    "LastUpdated": "2024-01-01",
+    "SupportedDevices": {
+      "PIC32MZ": {
+        "Packages": {
+          "64-pin": {
+            "Description": "64-pin TQFP package",
+            "PinCount": 64,
+            "PinMappings": {
+              "1": {
+                "PinName": "PMD7/RE7",
+                "AvailableFunctions": ["GPIO", "PMD7"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "7"
+              },
+              "2": {
+                "PinName": "PMD6/RE6",
+                "AvailableFunctions": ["GPIO", "PMD6"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "6"
+              },
+              "7": {
+                "PinName": "PMD1/RE1",
+                "AvailableFunctions": ["GPIO", "PMD1", "UART1_TX"],
+                "DefaultFunction": "UART1_TX",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "1"
+              },
+              "8": {
+                "PinName": "PMD0/RE0",
+                "AvailableFunctions": ["GPIO", "PMD0", "UART1_RX"],
+                "DefaultFunction": "UART1_RX",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "0"
+              },
+              "9": {
+                "PinName": "AVSS",
+                "AvailableFunctions": ["POWER"],
+                "DefaultFunction": "POWER",
+                "PinType": "Power",
+                "IsReadOnly": true
+              },
+              "10": {
+                "PinName": "AVDD",
+                "AvailableFunctions": ["POWER"],
+                "DefaultFunction": "POWER",
+                "PinType": "Power",
+                "IsReadOnly": true
+              }
+            }
+          }
+        }
+      }
+    },
+    "UIControlMappings": {
+      "TextBoxMappings": [
+        { "ControlName": "textBox_PinName1", "PinNumber": "1", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName2", "PinNumber": "2", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName7", "PinNumber": "7", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName8", "PinNumber": "8", "PropertyPath": "PinName" },
+        { "ControlName": "textBox1_PinName9", "PinNumber": "9", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName10", "PinNumber": "10", "PropertyPath": "PinName" }
+      ],
+      "ComboBoxMappings": [
+        { "ControlName": "comboBox_PinFunc1", "PinNumber": "1", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc2", "PinNumber": "2", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc7", "PinNumber": "7", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc8", "PinNumber": "8", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox1_PinFunc9", "PinNumber": "9", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc10", "PinNumber": "10", "PropertyPath": "SelectedFunction" }
+      ]
+    },
+    "PackageDetection": {
+      "DeviceToPackageMapping": {
+        "32MZ1024EFH064": "64-pin",
+        "32MZ2048EFH064": "64-pin"
+      }
+    }
+  }
+}

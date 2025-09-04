@@ -1,0 +1,715 @@
+﻿{
+  "DevicePinMappings": {
+    "Description": "Comprehensive pin mappings for PIC32MZ devices across different package sizes",
+    "Version": "1.0",
+    "LastUpdated": "2024-01-01",
+    "SupportedDevices": {
+      "PIC32MZ": {
+        "Packages": {
+          "64-pin": {
+            "Description": "64-pin TQFP package",
+            "PinCount": 64,
+            "PinMappings": {
+              "1": {
+                "PinName": "PMD7/RE7",
+                "AvailableFunctions": ["GPIO", "PMD7", "RE7"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "7"
+              },
+              "2": {
+                "PinName": "PMD6/RE6",
+                "AvailableFunctions": ["GPIO", "PMD6", "RE6"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "6"
+              },
+              "3": {
+                "PinName": "PMD5/RE5",
+                "AvailableFunctions": ["GPIO", "PMD5", "RE5"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "5"
+              },
+              "4": {
+                "PinName": "PMD4/RE4",
+                "AvailableFunctions": ["GPIO", "PMD4", "RE4"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "4"
+              },
+              "5": {
+                "PinName": "PMD3/RE3",
+                "AvailableFunctions": ["GPIO", "PMD3", "RE3"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "3"
+              },
+              "6": {
+                "PinName": "PMD2/RE2",
+                "AvailableFunctions": ["GPIO", "PMD2", "RE2"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "2"
+              },
+              "7": {
+                "PinName": "PMD1/RE1",
+                "AvailableFunctions": ["GPIO", "PMD1", "RE1", "UART1_TX", "U1TX"],
+                "DefaultFunction": "UART1_TX",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "1",
+                "PeripheralMappings": {
+                  "UART1": "TX"
+                }
+              },
+              "8": {
+                "PinName": "PMD0/RE0",
+                "AvailableFunctions": ["GPIO", "PMD0", "RE0", "UART1_RX", "U1RX"],
+                "DefaultFunction": "UART1_RX",
+                "PinType": "Digital",
+                "Port": "E",
+                "PortPin": "0",
+                "PeripheralMappings": {
+                  "UART1": "RX"
+                }
+              },
+              "9": {
+                "PinName": "AVSS",
+                "AvailableFunctions": ["POWER"],
+                "DefaultFunction": "POWER",
+                "PinType": "Power",
+                "IsReadOnly": true
+              },
+              "10": {
+                "PinName": "AVDD",
+                "AvailableFunctions": ["POWER"],
+                "DefaultFunction": "POWER",
+                "PinType": "Power",
+                "IsReadOnly": true
+              },
+              "11": {
+                "PinName": "AN24/C1INA/RA0",
+                "AvailableFunctions": ["GPIO", "ADC1_AN24", "C1INA", "RA0"],
+                "DefaultFunction": "ADC1_AN24",
+                "PinType": "Analog",
+                "Port": "A",
+                "PortPin": "0",
+                "AnalogChannel": "AN24",
+                "PeripheralMappings": {
+                  "ADC1": "AN24",
+                  "CMP1": "INA"
+                }
+              },
+              "12": {
+                "PinName": "AN23/C1INB/RA1",
+                "AvailableFunctions": ["GPIO", "ADC1_AN23", "C1INB", "RA1"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Analog",
+                "Port": "A",
+                "PortPin": "1",
+                "AnalogChannel": "AN23",
+                "PeripheralMappings": {
+                  "ADC1": "AN23",
+                  "CMP1": "INB"
+                }
+              },
+              "13": {
+                "PinName": "PGC2/AN22/C2INA/RA2",
+                "AvailableFunctions": ["GPIO", "PGC2", "ADC1_AN22", "C2INA", "RA2", "SPI1_CLK"],
+                "DefaultFunction": "SPI1_CLK",
+                "PinType": "Analog",
+                "Port": "A",
+                "PortPin": "2",
+                "AnalogChannel": "AN22",
+                "PeripheralMappings": {
+                  "ADC1": "AN22",
+                  "CMP2": "INA",
+                  "SPI1": "CLK",
+                  "ICSP": "PGC2"
+                }
+              },
+              "14": {
+                "PinName": "PGD2/AN21/C2INB/RA3",
+                "AvailableFunctions": ["GPIO", "PGD2", "ADC1_AN21", "C2INB", "RA3", "SPI1_MISO"],
+                "DefaultFunction": "SPI1_MISO",
+                "PinType": "Analog",
+                "Port": "A",
+                "PortPin": "3",
+                "AnalogChannel": "AN21",
+                "PeripheralMappings": {
+                  "ADC1": "AN21",
+                  "CMP2": "INB",
+                  "SPI1": "MISO",
+                  "ICSP": "PGD2"
+                }
+              },
+              "15": {
+                "PinName": "T5CK/AN20/C1INC/RA4",
+                "AvailableFunctions": ["GPIO", "T5CK", "ADC1_AN20", "C1INC", "RA4", "TIMER5_CLK"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Analog",
+                "Port": "A",
+                "PortPin": "4",
+                "AnalogChannel": "AN20",
+                "PeripheralMappings": {
+                  "ADC1": "AN20",
+                  "CMP1": "INC",
+                  "TIMER5": "CLK"
+                }
+              },
+              "16": {
+                "PinName": "T4CK/AN19/C2INC/RA5",
+                "AvailableFunctions": ["GPIO", "T4CK", "ADC1_AN19", "C2INC", "RA5", "PWM1", "TIMER4_CLK"],
+                "DefaultFunction": "PWM1",
+                "PinType": "Analog",
+                "Port": "A",
+                "PortPin": "5",
+                "AnalogChannel": "AN19",
+                "PeripheralMappings": {
+                  "ADC1": "AN19",
+                  "CMP2": "INC",
+                  "TIMER4": "CLK",
+                  "PWM": "PWM1"
+                }
+              },
+              "17": {
+                "PinName": "VSS",
+                "AvailableFunctions": ["POWER"],
+                "DefaultFunction": "POWER",
+                "PinType": "Power",
+                "IsReadOnly": true
+              },
+              "18": {
+                "PinName": "VDD",
+                "AvailableFunctions": ["POWER"],
+                "DefaultFunction": "POWER",
+                "PinType": "Power",
+                "IsReadOnly": true
+              },
+              "19": {
+                "PinName": "VUSB",
+                "AvailableFunctions": ["POWER"],
+                "DefaultFunction": "POWER",
+                "PinType": "Power",
+                "IsReadOnly": true
+              },
+              "20": {
+                "PinName": "VBUS",
+                "AvailableFunctions": ["POWER"],
+                "DefaultFunction": "POWER",
+                "PinType": "Power",
+                "IsReadOnly": true
+              },
+              "21": {
+                "PinName": "AN0/C3INA/RB0",
+                "AvailableFunctions": ["GPIO", "ADC1_AN0", "C3INA", "RB0"],
+                "DefaultFunction": "ADC1_AN0",
+                "PinType": "Analog",
+                "Port": "B",
+                "PortPin": "0",
+                "AnalogChannel": "AN0",
+                "PeripheralMappings": {
+                  "ADC1": "AN0",
+                  "CMP3": "INA"
+                }
+              }
+            }
+          },
+          "100-pin": {
+            "Description": "100-pin TQFP package",
+            "PinCount": 100,
+            "PinMappings": {
+              "1": {
+                "PinName": "PMD15/RD7",
+                "AvailableFunctions": ["GPIO", "PMD15", "RD7"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "7"
+              },
+              "2": {
+                "PinName": "PMD14/RD6",
+                "AvailableFunctions": ["GPIO", "PMD14", "RD6"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "6"
+              },
+              "3": {
+                "PinName": "PMD13/RD5",
+                "AvailableFunctions": ["GPIO", "PMD13", "RD5"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "5"
+              },
+              "4": {
+                "PinName": "PMD12/RD4",
+                "AvailableFunctions": ["GPIO", "PMD12", "RD4"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "4"
+              },
+              "5": {
+                "PinName": "PMD11/RD3",
+                "AvailableFunctions": ["GPIO", "PMD11", "RD3"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "3"
+              },
+              "6": {
+                "PinName": "PMD10/RD2",
+                "AvailableFunctions": ["GPIO", "PMD10", "RD2"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "2"
+              },
+              "7": {
+                "PinName": "PMD9/RD1",
+                "AvailableFunctions": ["GPIO", "PMD9", "RD1"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "1"
+              },
+              "8": {
+                "PinName": "PMD8/RD0",
+                "AvailableFunctions": ["GPIO", "PMD8", "RD0"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "0"
+              },
+              "9": {
+                "PinName": "SOSCI/RC13",
+                "AvailableFunctions": ["GPIO", "SOSCI", "RC13", "SPI4_MISO"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "C",
+                "PortPin": "13",
+                "PeripheralMappings": {
+                  "OSC": "SOSCI",
+                  "SPI4": "MISO"
+                }
+              },
+              "10": {
+                "PinName": "SOSCO/RC14",
+                "AvailableFunctions": ["GPIO", "SOSCO", "RC14", "SPI4_SCK"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "C",
+                "PortPin": "14",
+                "PeripheralMappings": {
+                  "OSC": "SOSCO",
+                  "SPI4": "SCK"
+                }
+              }
+            }
+          },
+          "124-pin": {
+            "Description": "124-pin BGA package",
+            "PinCount": 124,
+            "PinMappings": {
+              "A1": {
+                "PinName": "PMD15/RD7",
+                "AvailableFunctions": ["GPIO", "PMD15", "RD7"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "7",
+                "PinLocation": "A1"
+              },
+              "A2": {
+                "PinName": "PMD14/RD6",
+                "AvailableFunctions": ["GPIO", "PMD14", "RD6"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "6",
+                "PinLocation": "A2"
+              }
+            }
+          },
+          "144-pin": {
+            "Description": "144-pin TQFP package",
+            "PinCount": 144,
+            "PinMappings": {
+              "1": {
+                "PinName": "PMD15/RD7",
+                "AvailableFunctions": ["GPIO", "PMD15", "RD7", "ETXD3"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "7",
+                "PeripheralMappings": {
+                  "PMP": "PMD15",
+                  "ETH": "TXD3"
+                }
+              },
+              "2": {
+                "PinName": "PMD14/RD6",
+                "AvailableFunctions": ["GPIO", "PMD14", "RD6", "ETXD2"],
+                "DefaultFunction": "GPIO",
+                "PinType": "Digital",
+                "Port": "D",
+                "PortPin": "6",
+                "PeripheralMappings": {
+                  "PMP": "PMD14",
+                  "ETH": "TXD2"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "UIControlMappings": {
+      "TextBoxMappings": [
+        {
+          "ControlName": "textBox_PinName1",
+          "PinNumber": "1",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName2",
+          "PinNumber": "2",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName3",
+          "PinNumber": "3",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName4",
+          "PinNumber": "4",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName5",
+          "PinNumber": "5",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName6",
+          "PinNumber": "6",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName7",
+          "PinNumber": "7",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName8",
+          "PinNumber": "8",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox1_PinName9",
+          "PinNumber": "9",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName10",
+          "PinNumber": "10",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName11",
+          "PinNumber": "11",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName12",
+          "PinNumber": "12",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName13",
+          "PinNumber": "13",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName14",
+          "PinNumber": "14",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName15",
+          "PinNumber": "15",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName16",
+          "PinNumber": "16",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName17",
+          "PinNumber": "17",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName18",
+          "PinNumber": "18",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName19",
+          "PinNumber": "19",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName20",
+          "PinNumber": "20",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName21",
+          "PinNumber": "21",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName22",
+          "PinNumber": "22",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName23",
+          "PinNumber": "23",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName24",
+          "PinNumber": "24",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName25",
+          "PinNumber": "25",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName26",
+          "PinNumber": "26",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName27",
+          "PinNumber": "27",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName28",
+          "PinNumber": "28",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName29",
+          "PinNumber": "29",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName30",
+          "PinNumber": "30",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_Name31",
+          "PinNumber": "31",
+          "PropertyPath": "PinName"
+        },
+        {
+          "ControlName": "textBox_PinName32",
+          "PinNumber": "32",
+          "PropertyPath": "PinName"
+        }
+      ],
+      "ComboBoxMappings": [
+        {
+          "ControlName": "comboBox_PinFunc1",
+          "PinNumber": "1",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc2",
+          "PinNumber": "2",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc3",
+          "PinNumber": "3",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc4",
+          "PinNumber": "4",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc5",
+          "PinNumber": "5",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc6",
+          "PinNumber": "6",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc7",
+          "PinNumber": "7",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc8",
+          "PinNumber": "8",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox1_PinFunc9",
+          "PinNumber": "9",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc10",
+          "PinNumber": "10",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc11",
+          "PinNumber": "11",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc12",
+          "PinNumber": "12",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc13",
+          "PinNumber": "13",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc14",
+          "PinNumber": "14",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc15",
+          "PinNumber": "15",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc16",
+          "PinNumber": "16",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc17",
+          "PinNumber": "17",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc18",
+          "PinNumber": "18",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc19",
+          "PinNumber": "19",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc20",
+          "PinNumber": "20",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc21",
+          "PinNumber": "21",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc22",
+          "PinNumber": "22",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc23",
+          "PinNumber": "23",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc24",
+          "PinNumber": "24",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc25",
+          "PinNumber": "25",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc26",
+          "PinNumber": "26",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc27",
+          "PinNumber": "27",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc28",
+          "PinNumber": "28",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc29",
+          "PinNumber": "29",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc30",
+          "PinNumber": "30",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc31",
+          "PinNumber": "31",
+          "PropertyPath": "SelectedFunction"
+        },
+        {
+          "ControlName": "comboBox_PinFunc32",
+          "PinNumber": "32",
+          "PropertyPath": "SelectedFunction"
+        }
+      ]
+    },
+    "PackageDetection": {
+      "DeviceToPackageMapping": {
+        "32MZ1024EFH064": "64-pin",
+        "32MZ1024EFH100": "100-pin",
+        "32MZ1024EFH124": "124-pin",
+        "32MZ1024EFH144": "144-pin",
+        "32MZ2048EFH064": "64-pin",
+        "32MZ2048EFH100": "100-pin",
+        "32MZ2048EFH124": "124-pin",
+        "32MZ2048EFH144": "144-pin"
+      }
+    }
+  }
+}

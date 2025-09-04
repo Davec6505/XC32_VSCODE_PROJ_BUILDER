@@ -1,0 +1,399 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
+using Newtonsoft.Json;
+
+namespace Setup
+{
+    public class PinMapping
+    {
+        public string PinName { get; set; }
+        public List<string> AvailableFunctions { get; set; }
+        public string DefaultFunction { get; set; }
+        public string PinType { get; set; }
+        public string Port { get; set; }
+        public string PortPin { get; set; }
+        public string AnalogChannel { get; set; }
+        public Dictionary<string, string> PeripheralMappings { get; set; }
+        public bool IsReadOnly { get; set; }
+        public string PinLocation { get; set; } // For BGA packages
+    }
+
+    public class PackageInfo
+    {
+        public string Description { get; set; }
+        public int PinCount { get; set; }
+        public Dictionary<string, PinMapping> PinMappings { get; set; }
+    }
+
+    public class DeviceInfo
+    {
+        public Dictionary<string, PackageInfo> Packages { get; set; }
+    }
+
+    public class UIControlMapping
+    {
+        public string ControlName { get; set; }
+        public string PinNumber { get; set; }
+        public string PropertyPath { get; set; }
+    }
+
+    public class UIControlMappings
+    {
+        public List<UIControlMapping> TextBoxMappings { get; set; }
+        public List<UIControlMapping> ComboBoxMappings { get; set; }
+    }
+
+    public class PackageDetection
+    {
+        public Dictionary<string, string> DeviceToPackageMapping { get; set; }
+    }
+
+    public class DevicePinMappings
+    {
+        public string Description { get; set; }
+        public string Version { get; set; }
+        public string LastUpdated { get; set; }
+        public Dictionary<string, DeviceInfo> SupportedDevices { get; set; }
+        public UIControlMappings UIControlMappings { get; set; }
+        public PackageDetection PackageDetection { get; set; }
+    }
+
+    public class PinMappingRoot
+    {
+        public DevicePinMappings DevicePinMappings { get; set; }
+    }
+
+    public class PinMappingManager
+    {
+        private PinMappingRoot _pinMappings;
+        private string _currentDevice;
+        private string _currentPackage;
+        private Dictionary<string, TextBox> _textBoxControls;
+        private Dictionary<string, ComboBox> _comboBoxControls;
+
+        public PinMappingManager()
+        {
+            _textBoxControls = new Dictionary<string, TextBox>();
+            _comboBoxControls = new Dictionary<string, ComboBox>();
+        }
+
+        public bool LoadPinMappings(string filePath)
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    return false;
+                }
+
+                string json = File.ReadAllText(filePath);
+                _pinMappings = JsonConvert.DeserializeObject<PinMappingRoot>(json);
+                return _pinMappings != null;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading pin mappings: {ex.Message}");
+                return false;
+            }
+        }
+
+        public void RegisterControls(Form form)
+        {
+            // Register all textbox controls
+            foreach (var mapping in _pinMappings.DevicePinMappings.UIControlMappings.TextBoxMappings)
+            {
+                var control = FindControlByName<TextBox>(form, mapping.ControlName);
+                if (control != null)
+                {
+                    _textBoxControls[mapping.PinNumber] = control;
+                }
+            }
+
+            // Register all combobox controls
+            foreach (var mapping in _pinMappings.DevicePinMappings.UIControlMappings.ComboBoxMappings)
+            {
+                var control = FindControlByName<ComboBox>(form, mapping.ControlName);
+                if (control != null)
+                {
+                    _comboBoxControls[mapping.PinNumber] = control;
+                }
+            }
+        }
+
+        private T FindControlByName<T>(Control parent, string name) where T : Control
+        {
+            if (parent.Name == name && parent is T)
+                return parent as T;
+
+            foreach (Control child in parent.Controls)
+            {
+                var result = FindControlByName<T>(child, name);
+                if (result != null)
+                    return result;
+            }
+
+            return null;
+        }
+
+        public bool SetDevice(string deviceName)
+        {
+            _currentDevice = deviceName;
+            
+            // Determine package from device name
+            if (_pinMappings.DevicePinMappings.PackageDetection.DeviceToPackageMapping.TryGetValue(deviceName, out string package))
+            {
+                _currentPackage = package;
+                return true;
+            }
+
+            return false;
+        }
+
+        public void UpdateUIFromPinMappings()
+        {
+            if (string.IsNullOrEmpty(_currentDevice) || string.IsNullOrEmpty(_currentPackage))
+                return;
+
+            if (!_pinMappings.DevicePinMappings.SupportedDevices.TryGetValue("PIC32MZ", out var deviceInfo))
+                return;
+
+            if (!deviceInfo.Packages.TryGetValue(_currentPackage, out var packageInfo))
+                return;
+
+            // Update textboxes with pin names
+            foreach (var kvp in _textBoxControls)
+            {
+                string pinNumber = kvp.Key;
+                TextBox textBox = kvp.Value;
+
+                if (packageInfo.PinMappings.TryGetValue(pinNumber, out var pinMapping))
+                {
+                    textBox.Text = pinMapping.PinName;
+                    textBox.ReadOnly = pinMapping.IsReadOnly;
+                    
+                    // Set background color based on pin type
+                    SetPinTypeColor(textBox, pinMapping.PinType);
+                }
+                else
+                {
+                    textBox.Text = "NC";
+                    textBox.ReadOnly = true;
+                    textBox.BackColor = System.Drawing.Color.LightGray;
+                }
+            }
+
+            // Update comboboxes with available functions
+            foreach (var kvp in _comboBoxControls)
+            {
+                string pinNumber = kvp.Key;
+                ComboBox comboBox = kvp.Value;
+
+                if (packageInfo.PinMappings.TryGetValue(pinNumber, out var pinMapping))
+                {
+                    comboBox.Items.Clear();
+                    comboBox.Items.AddRange(pinMapping.AvailableFunctions.ToArray());
+                    comboBox.SelectedItem = pinMapping.DefaultFunction;
+                    comboBox.Enabled = !pinMapping.IsReadOnly;
+                }
+                else
+                {
+                    comboBox.Items.Clear();
+                    comboBox.Items.Add("NC");
+                    comboBox.SelectedItem = "NC";
+                    comboBox.Enabled = false;
+                }
+            }
+        }
+
+        public void UpdatePinMappingsFromUI(DeviceConfig config)
+        {
+            if (config.Sections == null)
+                config.Sections = new Dictionary<string, Dictionary<string, string>>();
+
+            if (!config.Sections.ContainsKey("PinConfigurations"))
+                config.Sections["PinConfigurations"] = new Dictionary<string, string>();
+
+            // Clear existing pin configurations
+            config.Sections["PinConfigurations"].Clear();
+
+            // Create a nested dictionary structure for pin configurations
+            var pinConfigurations = new Dictionary<string, object>();
+
+            foreach (var kvp in _textBoxControls)
+            {
+                string pinNumber = kvp.Key;
+                TextBox textBox = kvp.Value;
+                
+                if (_comboBoxControls.TryGetValue(pinNumber, out var comboBox))
+                {
+                    var pinConfig = new
+                    {
+                        PinName = textBox.Text,
+                        SelectedFunction = comboBox.SelectedItem?.ToString() ?? "GPIO",
+                        Package = _currentPackage
+                    };
+
+                    // Add available functions if we have the pin mapping
+                    if (!string.IsNullOrEmpty(_currentDevice) && !string.IsNullOrEmpty(_currentPackage))
+                    {
+                        if (_pinMappings.DevicePinMappings.SupportedDevices.TryGetValue("PIC32MZ", out var deviceInfo) &&
+                            deviceInfo.Packages.TryGetValue(_currentPackage, out var packageInfo) &&
+                            packageInfo.PinMappings.TryGetValue(pinNumber, out var pinMapping))
+                        {
+                            var fullPinConfig = new
+                            {
+                                PinName = textBox.Text,
+                                SelectedFunction = comboBox.SelectedItem?.ToString() ?? "GPIO",
+                                AvailableFunctions = pinMapping.AvailableFunctions,
+                                Package = _currentPackage
+                            };
+                            pinConfigurations[pinNumber] = fullPinConfig;
+                        }
+                        else
+                        {
+                            pinConfigurations[pinNumber] = pinConfig;
+                        }
+                    }
+                    else
+                    {
+                        pinConfigurations[pinNumber] = pinConfig;
+                    }
+                }
+            }
+
+            // Store as JSON string in the configuration
+            config.Sections["PinConfigurations"]["Data"] = JsonConvert.SerializeObject(pinConfigurations, Formatting.Indented);
+        }
+
+        public void LoadPinConfigurationsFromConfig(DeviceConfig config)
+        {
+            if (config.Sections == null || 
+                !config.Sections.TryGetValue("PinConfigurations", out var pinConfigSection))
+                return;
+
+            try
+            {
+                // Try to load from new format first
+                if (pinConfigSection.TryGetValue("Data", out var jsonData))
+                {
+                    var pinConfigurations = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(jsonData);
+                    
+                    foreach (var kvp in pinConfigurations)
+                    {
+                        string pinNumber = kvp.Key;
+                        dynamic pinConfig = kvp.Value;
+
+                        if (_textBoxControls.TryGetValue(pinNumber, out var textBox))
+                        {
+                            textBox.Text = pinConfig.PinName?.ToString() ?? "";
+                        }
+
+                        if (_comboBoxControls.TryGetValue(pinNumber, out var comboBox))
+                        {
+                            string selectedFunction = pinConfig.SelectedFunction?.ToString() ?? "GPIO";
+                            if (comboBox.Items.Contains(selectedFunction))
+                            {
+                                comboBox.SelectedItem = selectedFunction;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Fall back to old format for compatibility
+                    LoadFromOldFormat(pinConfigSection);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading pin configurations: {ex.Message}");
+                // Fall back to old format
+                LoadFromOldFormat(pinConfigSection);
+            }
+        }
+
+        private void LoadFromOldFormat(Dictionary<string, string> pinConfigSection)
+        {
+            foreach (var kvp in pinConfigSection)
+            {
+                if (int.TryParse(kvp.Key, out _)) // It's a pin number
+                {
+                    try
+                    {
+                        var pinConfig = JsonConvert.DeserializeObject<dynamic>(kvp.Value);
+                        string pinNumber = kvp.Key;
+
+                        if (_textBoxControls.TryGetValue(pinNumber, out var textBox))
+                        {
+                            textBox.Text = pinConfig.PinName?.ToString() ?? "";
+                        }
+
+                        if (_comboBoxControls.TryGetValue(pinNumber, out var comboBox))
+                        {
+                            string selectedFunction = pinConfig.SelectedFunction?.ToString() ?? "GPIO";
+                            if (comboBox.Items.Contains(selectedFunction))
+                            {
+                                comboBox.SelectedItem = selectedFunction;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // Skip invalid entries
+                    }
+                }
+            }
+        }
+
+        private void SetPinTypeColor(TextBox textBox, string pinType)
+        {
+            switch (pinType?.ToUpper())
+            {
+                case "POWER":
+                    textBox.BackColor = System.Drawing.Color.LightCoral;
+                    break;
+                case "ANALOG":
+                    textBox.BackColor = System.Drawing.Color.LightBlue;
+                    break;
+                case "DIGITAL":
+                    textBox.BackColor = System.Drawing.Color.LightGreen;
+                    break;
+                default:
+                    textBox.BackColor = System.Drawing.Color.White;
+                    break;
+            }
+        }
+
+        public string GetCurrentPackage()
+        {
+            return _currentPackage;
+        }
+
+        public List<string> GetAvailablePackages()
+        {
+            if (_pinMappings?.DevicePinMappings?.SupportedDevices?.TryGetValue("PIC32MZ", out var deviceInfo) == true)
+            {
+                return deviceInfo.Packages.Keys.ToList();
+            }
+            return new List<string>();
+        }
+
+        public PinMapping GetPinMapping(string pinNumber)
+        {
+            if (string.IsNullOrEmpty(_currentDevice) || string.IsNullOrEmpty(_currentPackage))
+                return null;
+
+            if (_pinMappings.DevicePinMappings.SupportedDevices.TryGetValue("PIC32MZ", out var deviceInfo) &&
+                deviceInfo.Packages.TryGetValue(_currentPackage, out var packageInfo) &&
+                packageInfo.PinMappings.TryGetValue(pinNumber, out var pinMapping))
+            {
+                return pinMapping;
+            }
+
+            return null;
+        }
+    }
+}

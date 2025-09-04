@@ -24,6 +24,10 @@ namespace Setup
         //private string path = String.Empty;//"C:\\Users\\Automation\\GIT\\XC32_VSCODE_PROJ_BUILDER\\Setup\\device_config.json";
         private string path = System.IO.Path.Combine(Application.StartupPath, "device_config.json");
 
+        // Add pin mapping manager
+        private PinMappingManager pinMappingManager;
+        private string pinMappingFilePath = System.IO.Path.Combine(Application.StartupPath, "pin_mappings_comprehensive.json");
+
         // Add this mapping in your Form1 class
         private Dictionary<string, string> configBitSections = new Dictionary<string, string>
         {
@@ -47,6 +51,9 @@ namespace Setup
             InitializeComponent();
             this.AutoScaleMode = AutoScaleMode.Font;
             
+            // Initialize pin mapping manager
+            pinMappingManager = new PinMappingManager();
+            
             // Initialize variant combo box
             if (comboBoxVariant != null)
             {
@@ -58,6 +65,12 @@ namespace Setup
             
             // Initialize device combo box based on default variant
             UpdateDeviceComboBox("MZ");
+            
+            // Add event handler for device selection change
+            if (comboBox_DEVICE != null)
+            {
+                comboBox_DEVICE.SelectedIndexChanged += ComboBox_DEVICE_SelectedIndexChanged;
+            }
             
             // Initialize the dictionary mapping config bits to their respective ComboBoxes
             configBitComboBoxes = new Dictionary<string, ComboBox>
@@ -131,16 +144,230 @@ namespace Setup
                 { "enable_CAN", checkBox_ENCAN },
                 { "enable_PWM", checkBox_ENPWM }
             };
+
+            // Load pin mappings
+            LoadPinMappings();
+        }
+
+        private void LoadPinMappings()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("=== STARTING PIN MAPPINGS LOAD IN FORM1 ===");
+                System.Diagnostics.Debug.WriteLine($"Looking for pin mapping file at: {pinMappingFilePath}");
+                System.Diagnostics.Debug.WriteLine($"File exists: {File.Exists(pinMappingFilePath)}");
+                System.Diagnostics.Debug.WriteLine($"Application.StartupPath: {Application.StartupPath}");
+                
+                if (pinMappingManager.LoadPinMappings(pinMappingFilePath))
+                {
+                    System.Diagnostics.Debug.WriteLine("Pin mappings file loaded successfully, registering controls...");
+                    
+                    // Register UI controls with the pin mapping manager
+                    pinMappingManager.RegisterControls(this);
+                    System.Diagnostics.Debug.WriteLine("Controls registration completed");
+                    
+                    // Validate the registration worked
+                    if (pinMappingManager.IsInitialized)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Pin mapping manager is initialized, running immediate validation...");
+                        pinMappingManager.ValidateControlRegistration(this);
+                    }
+                    
+                    System.Diagnostics.Debug.WriteLine("Pin mappings initialization completed");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Could not load pin mappings from {pinMappingFilePath}");
+                    
+                    // Create a fallback minimal pin mapping if file doesn't exist
+                    CreateFallbackPinMappings();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in LoadPinMappings: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                // Don't let pin mapping errors crash the form
+                MessageBox.Show($"Warning: Could not load pin mappings. Using default settings.\nError: {ex.Message}", 
+                               "Pin Mapping Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void CreateFallbackPinMappings()
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Creating fallback pin mappings...");
+                
+                // Create a minimal fallback configuration
+                var fallbackConfig = new
+                {
+                    DevicePinMappings = new
+                    {
+                        Description = "Fallback pin mappings",
+                        Version = "1.0",
+                        LastUpdated = DateTime.Now.ToString("yyyy-MM-dd"),
+                        SupportedDevices = new Dictionary<string, object>
+                        {
+                            ["PIC32MZ"] = new
+                            {
+                                Packages = new Dictionary<string, object>
+                                {
+                                    ["64-pin"] = new
+                                    {
+                                        Description = "64-pin TQFP package",
+                                        PinCount = 64,
+                                        PinMappings = new Dictionary<string, object>()
+                                    }
+                                }
+                            }
+                        },
+                        UIControlMappings = new
+                        {
+                            TextBoxMappings = new List<object>(),
+                            ComboBoxMappings = new List<object>()
+                        },
+                        PackageDetection = new
+                        {
+                            DeviceToPackageMapping = new Dictionary<string, string>
+                            {
+                                ["32MZ1024EFH064"] = "64-pin",
+                                ["32MZ2048EFH064"] = "64-pin"
+                            }
+                        }
+                    }
+                };
+
+                // Save the fallback configuration
+                string fallbackJson = Newtonsoft.Json.JsonConvert.SerializeObject(fallbackConfig, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(pinMappingFilePath, fallbackJson);
+                
+                System.Diagnostics.Debug.WriteLine($"Fallback pin mappings created at {pinMappingFilePath}");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error creating fallback pin mappings: {ex.Message}");
+            }
+        }
+
+        private void ComboBox_DEVICE_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("=== DEVICE SELECTION CHANGED ===");
+                
+                if (comboBox_DEVICE.SelectedItem == null)
+                {
+                    System.Diagnostics.Debug.WriteLine("No device selected");
+                    return;
+                }
+
+                string deviceName = comboBox_DEVICE.SelectedItem.ToString();
+                System.Diagnostics.Debug.WriteLine($"Selected device: {deviceName}");
+                
+                // Only update pin mappings if the pin mapping manager is initialized
+                if (pinMappingManager?.IsInitialized == true)
+                {
+                    System.Diagnostics.Debug.WriteLine("Pin mapping manager is initialized, proceeding...");
+                    
+                    // Add validation check
+                    pinMappingManager.ValidateControlRegistration(this);
+                    
+                    if (pinMappingManager.SetDevice(deviceName))
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Device set successfully: {deviceName}");
+                        
+                        // Update pin mappings on UI thread
+                        this.BeginInvoke(new Action(() =>
+                        {
+                            try
+                            {
+                                System.Diagnostics.Debug.WriteLine("Invoking pin mapping update on UI thread...");
+                                pinMappingManager.UpdateUIFromPinMappings();
+                                System.Diagnostics.Debug.WriteLine($"UI updated for device: {deviceName}, Package: {pinMappingManager.GetCurrentPackage()}");
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Error updating UI for device {deviceName}: {ex.Message}");
+                                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                            }
+                        }));
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Failed to set device: {deviceName}");
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Pin mapping manager not initialized, skipping pin mapping update. Initialized: {pinMappingManager?.IsInitialized}");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in device selection change: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            this.TopMost = true;
-            // Hide the taskbar icon and set the form as a tool window
-            this.ShowInTaskbar = false;
-            // this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
-            // Do not load configWords or call CreateConfigUI on startup
-            LoadConfigToForm(path);
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("=== FORM1 LOAD START ===");
+                
+                this.TopMost = true;
+                // Hide the taskbar icon and set the form as a tool window
+                this.ShowInTaskbar = false;
+                // this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
+                // Do not load configWords or call CreateConfigUI on startup
+                LoadConfigToForm(path);
+                
+                System.Diagnostics.Debug.WriteLine("=== FORM1 LOAD END ===");
+                
+                // Add a delay and then force a pin mapping update for testing
+                System.Windows.Forms.Timer testTimer = new System.Windows.Forms.Timer();
+                testTimer.Interval = 2000; // 2 seconds
+                testTimer.Tick += (s, args) =>
+                {
+                    testTimer.Stop();
+                    testTimer.Dispose();
+                    
+                    System.Diagnostics.Debug.WriteLine("=== TESTING PIN MAPPINGS AFTER FORM LOAD ===");
+                    
+                    if (pinMappingManager?.IsInitialized == true)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Pin mapping manager is initialized, running validation...");
+                        pinMappingManager.ValidateControlRegistration(this);
+                        
+                        // Try to force update with current settings
+                        if (!string.IsNullOrEmpty(pinMappingManager.GetCurrentPackage()))
+                        {
+                            System.Diagnostics.Debug.WriteLine("Forcing pin mapping update...");
+                            pinMappingManager.ForceUpdatePinMappings();
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("No current package set, trying to set default device...");
+                            if (comboBox_DEVICE.Items.Count > 0)
+                            {
+                                comboBox_DEVICE.SelectedIndex = 0;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Pin mapping manager not initialized: {pinMappingManager?.IsInitialized}");
+                    }
+                };
+                testTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in Form1_Load: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -168,113 +395,198 @@ namespace Setup
 
         private void LoadConfigToForm(string path_)
         {
-            var config = DeviceConfig.Load(path_);
-            if (config == null) return;
-
-            // Load variant and update UI controls
-            if (!string.IsNullOrEmpty(config.Variant))
+            try
             {
-                // Update variant combo box
-                if (comboBoxVariant != null && comboBoxVariant.Items.Contains(config.Variant))
+                System.Diagnostics.Debug.WriteLine($"Loading config from: {path_}");
+                
+                var config = DeviceConfig.Load(path_);
+                if (config == null) 
                 {
-                    comboBoxVariant.SelectedItem = config.Variant;
+                    System.Diagnostics.Debug.WriteLine("Config is null, skipping load");
+                    return;
                 }
 
-                // Update device combo box based on variant
-                UpdateDeviceComboBox(config.Variant);
-
-                // Set the selected device if it exists in config
-                if (!string.IsNullOrEmpty(config.DeviceName) && comboBox_DEVICE != null)
+                // Load variant and update UI controls
+                if (!string.IsNullOrEmpty(config.Variant))
                 {
-                    // Remove "PIC" prefix if present to match combo box items
-                    string deviceToSelect = config.DeviceName.Replace("PIC", "");
-                    if (comboBox_DEVICE.Items.Contains(deviceToSelect))
+                    System.Diagnostics.Debug.WriteLine($"Loading variant: {config.Variant}");
+                    
+                    // Update variant combo box
+                    if (comboBoxVariant != null && comboBoxVariant.Items.Contains(config.Variant))
                     {
-                        comboBox_DEVICE.SelectedItem = deviceToSelect;
+                        comboBoxVariant.SelectedItem = config.Variant;
                     }
-                    else if (comboBox_DEVICE.Items.Count > 0)
+
+                    // Update device combo box based on variant
+                    UpdateDeviceComboBox(config.Variant);
+
+                    // Set the selected device if it exists in config
+                    if (!string.IsNullOrEmpty(config.DeviceName) && comboBox_DEVICE != null)
                     {
-                        // Default to first item if saved device not found
-                        comboBox_DEVICE.SelectedIndex = 0;
+                        // Remove "PIC" prefix if present to match combo box items
+                        string deviceToSelect = config.DeviceName.Replace("PIC", "");
+                        System.Diagnostics.Debug.WriteLine($"Setting device to: {deviceToSelect}");
+                        
+                        if (comboBox_DEVICE.Items.Contains(deviceToSelect))
+                        {
+                            comboBox_DEVICE.SelectedItem = deviceToSelect;
+                            
+
+                            // Update pin mappings for the loaded device - but only if pin manager is ready
+                            if (pinMappingManager?.IsInitialized == true)
+                            {
+                                try
+                                {
+                                    if (pinMappingManager.SetDevice(deviceToSelect))
+                                    {
+                                        pinMappingManager.UpdateUIFromPinMappings();
+                                        System.Diagnostics.Debug.WriteLine("Pin mappings updated for loaded device");
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"Error updating pin mappings for loaded device: {ex.Message}");
+                                }
+                            }
+                        }
+                        else if (comboBox_DEVICE.Items.Count > 0)
+                        {
+                            // Default to first item if saved device not found
+                            comboBox_DEVICE.SelectedIndex = 0;
+                        }
                     }
                 }
-            }
-            else
-            {
-                // Default to MZ if no variant specified in loaded config
-                if (comboBoxVariant != null)
+                else
                 {
-                    comboBoxVariant.SelectedItem = "MZ";
-                }
-                UpdateDeviceComboBox("MZ");
-            }
-
-    // Load from Sections if present - MOVED OUTSIDE THE else BLOCK
-    if (config.Sections != null)
-    {
-        foreach (var section in config.Sections)
-        {
-            foreach (var bit in section.Value)
-            {
-                if (bit.Key == "USERID" && numericUpDown_USERID != null)
-                {
-                    if (int.TryParse(bit.Value.Replace("0x", ""), System.Globalization.NumberStyles.HexNumber, null, out int userIdValue))
+                    // Default to MZ if no variant specified in loaded config
+                    if (comboBoxVariant != null)
                     {
-                        userIdValue = Math.Max((int)numericUpDown_USERID.Minimum, Math.Min(userIdValue, (int)numericUpDown_USERID.Maximum));
-                        numericUpDown_USERID.Value = userIdValue;
+                        comboBoxVariant.SelectedItem = "MZ";
+                    }
+                    UpdateDeviceComboBox("MZ");
+                }
+
+                // Load from Sections if present
+                if (config.Sections != null)
+                {
+                    System.Diagnostics.Debug.WriteLine("Loading config sections...");
+                    
+                    foreach (var section in config.Sections)
+                    {
+                        foreach (var bit in section.Value)
+                        {
+                            if (bit.Key == "USERID" && numericUpDown_USERID != null)
+                            {
+                                if (int.TryParse(bit.Value.Replace("0x", ""), System.Globalization.NumberStyles.HexNumber, null, out int userIdValue))
+                                {
+                                    userIdValue = Math.Max((int)numericUpDown_USERID.Minimum, Math.Min(userIdValue, (int)numericUpDown_USERID.Maximum));
+                                    numericUpDown_USERID.Value = userIdValue;
+                                }
+                                else
+                                {
+                                    numericUpDown_USERID.Value = 0;
+                                }
+                            }
+                            else if (configBitComboBoxes.TryGetValue(bit.Key, out var comboBox) && comboBox != null)
+                            {
+                                comboBox.SelectedItem = bit.Value;
+                            }
+                        }
+                    }
+
+                    // Load PreconBits
+                    if (config.Sections.TryGetValue("PreconBits", out var preconBits))
+                    {
+                        if (numericUpDown_PREFEN != null)
+                        {
+                            if (int.TryParse(preconBits.TryGetValue("PREFEN", out var prefen) ? prefen : "0", out int prefenValue))
+                                numericUpDown_PREFEN.Value = prefenValue;
+                        }
+                        if (numericUpDown_PFMWS != null)
+                        {
+                            if (int.TryParse(preconBits.TryGetValue("PFMWS", out var pfmws) ? pfmws : "0", out int pfmwsValue))
+                                numericUpDown_PFMWS.Value = pfmwsValue;
+                        }
+                        if (numericUpDown_ECCCON != null)
+                        {
+                            if (int.TryParse(preconBits.TryGetValue("ECCCON", out var ecccon) ? ecccon : "0", out int eccconValue))
+                                numericUpDown_ECCCON.Value = eccconValue;
+                        }
+                    }
+
+                    // Load peripheral settings
+                    if (config.Sections.TryGetValue("PeripheralConfig", out var peripheralSettings))
+                    {
+                        foreach (var kvp in peripheralCheckBoxes)
+                        {
+                            if (kvp.Value != null && peripheralSettings.TryGetValue(kvp.Key, out var setting))
+                            {
+                                bool.TryParse(setting, out bool isEnabled);
+                                kvp.Value.Checked = isEnabled;
+                                
+                                System.Diagnostics.Debug.WriteLine($"Loading peripheral {kvp.Key}: {setting} -> {isEnabled}");
+                            }
+                        }
+                    }
+
+                    // Load pin configurations using the pin mapping manager - but only if it's ready
+                    // NOTE: We defer this until after the UI is populated with pin functions
+                    if (pinMappingManager?.IsInitialized == true)
+                    {
+                        try
+                        {
+                            // Store the config for later loading after UI is populated
+                            System.Diagnostics.Debug.WriteLine("Deferring pin configuration load until UI is populated");
+                            
+                            // Schedule pin configuration loading after device UI update
+                            System.Windows.Forms.Timer pinConfigTimer = new System.Windows.Forms.Timer();
+                            pinConfigTimer.Interval = 500; // Small delay to ensure UI is updated
+                            pinConfigTimer.Tick += (s, args) =>
+                            {
+                                pinConfigTimer.Stop();
+                                pinConfigTimer.Dispose();
+                                
+                                try
+                                {
+                                    System.Diagnostics.Debug.WriteLine("Loading deferred pin configurations...");
+                                    pinMappingManager.LoadPinConfigurationsFromConfig(config);
+                                    System.Diagnostics.Debug.WriteLine("Deferred pin configurations loaded successfully");
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine($"Error loading deferred pin configurations: {ex.Message}");
+                                }
+                            };
+                            pinConfigTimer.Start();
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error setting up deferred pin configuration loading: {ex.Message}");
+                        }
                     }
                     else
                     {
-                        numericUpDown_USERID.Value = 0;
+                        System.Diagnostics.Debug.WriteLine("Pin mapping manager not ready, skipping pin configuration load");
                     }
                 }
-                else if (configBitComboBoxes.TryGetValue(bit.Key, out var comboBox) && comboBox != null)
-                {
-                    comboBox.SelectedItem = bit.Value;
-                }
+                
+                System.Diagnostics.Debug.WriteLine("Config loading completed");
             }
-        }
-
-        // Load PreconBits
-        if (config.Sections.TryGetValue("PreconBits", out var preconBits))
-        {
-            if (numericUpDown_PREFEN != null)
+            catch (Exception ex)
             {
-                if (int.TryParse(preconBits.TryGetValue("PREFEN", out var prefen) ? prefen : "0", out int prefenValue))
-                    numericUpDown_PREFEN.Value = prefenValue;
+                System.Diagnostics.Debug.WriteLine($"Error in LoadConfigToForm: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+                
+                // Show error to user but don't crash
+                MessageBox.Show($"Error loading configuration file: {ex.Message}", 
+                               "Configuration Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            if (numericUpDown_PFMWS != null)
-            {
-                if (int.TryParse(preconBits.TryGetValue("PFMWS", out var pfmws) ? pfmws : "0", out int pfmwsValue))
-                    numericUpDown_PFMWS.Value = pfmwsValue;
-            }
-            if (numericUpDown_ECCCON != null)
-            {
-                if (int.TryParse(preconBits.TryGetValue("ECCCON", out var ecccon) ? ecccon : "0", out int eccconValue))
-                    numericUpDown_ECCCON.Value = eccconValue;
-            }
-        }
-
-        // Load peripheral settings - NOW RUNS FOR ALL CONFIGS
-        if (config.Sections.TryGetValue("PeripheralConfig", out var peripheralSettings))
-        {
-            foreach (var kvp in peripheralCheckBoxes)
-            {
-                if (kvp.Value != null && peripheralSettings.TryGetValue(kvp.Key, out var setting))
-                {
-                    bool.TryParse(setting, out bool isEnabled);
-                    kvp.Value.Checked = isEnabled;
-                    
-                    // Debug output to verify loading
-                    System.Diagnostics.Debug.WriteLine($"Loading peripheral {kvp.Key}: {setting} -> {isEnabled}");
-                }
-            }
-        }
-    }
         }
 
         private DeviceConfig GetConfigFromForm()
         {
+            System.Diagnostics.Debug.WriteLine("=== GET CONFIG FROM FORM ===");
+            
             var config = new DeviceConfig();
             
             // Get variant from variant combo box
@@ -288,6 +600,7 @@ namespace Setup
             }
             
             config.Sections = new Dictionary<string, Dictionary<string, string>>();
+
 
             // Set device properties based on variant and selected device
             if (config.Variant == "MZ")
@@ -324,6 +637,8 @@ namespace Setup
                     config.DeviceName = "PIC32MX795F512L"; // Default
                 }
             }
+
+            System.Diagnostics.Debug.WriteLine($"Device info: {config.DeviceName} ({config.Variant})");
 
             // Populate config bits from form controls using the section mapping
             foreach (var kvp in configBitComboBoxes)
@@ -370,6 +685,29 @@ namespace Setup
                 {
                     config.Sections["PeripheralConfig"][kvp.Key] = kvp.Value.Checked.ToString().ToLower();
                 }
+            }
+
+            System.Diagnostics.Debug.WriteLine($"Sections before pin mapping: {config.Sections.Count}");
+
+            // Update pin configurations using the pin mapping manager
+            if (pinMappingManager != null)
+            {
+                System.Diagnostics.Debug.WriteLine("Calling pinMappingManager.UpdatePinMappingsFromUI...");
+                pinMappingManager.UpdatePinMappingsFromUI(config);
+                System.Diagnostics.Debug.WriteLine($"Sections after pin mapping: {config.Sections.Count}");
+                
+                if (config.Sections.ContainsKey("PinConfigurations"))
+                {
+                    System.Diagnostics.Debug.WriteLine($"PinConfigurations section has {config.Sections["PinConfigurations"].Count} entries");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("No PinConfigurations section found after pin mapping update");
+                }
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("pinMappingManager is null - cannot update pin configurations");
             }
             
             return config;

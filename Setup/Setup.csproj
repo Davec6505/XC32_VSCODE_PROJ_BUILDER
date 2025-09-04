@@ -12,6 +12,9 @@
     <None Update="device_config.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="pin_mappings_comprehensive.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Templates\config_bits.c">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

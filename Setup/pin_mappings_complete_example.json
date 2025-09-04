@@ -1,0 +1,156 @@
+{
+  "DevicePinMappings": {
+    "Description": "Complete pin mappings for all PIC32MZ package variants",
+    "Version": "1.0",
+    "LastUpdated": "2024-01-01",
+    "SupportedDevices": {
+      "PIC32MZ": {
+        "Packages": {
+          "64-pin": {
+            "Description": "64-pin TQFP package - Limited I/O pins",
+            "PinCount": 64,
+            "MaxUserPins": 32,
+            "PinMappings": {
+              "1": { "PinName": "PMD7/RE7", "AvailableFunctions": ["GPIO", "PMD7", "RE7"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "E", "PortPin": "7" },
+              "2": { "PinName": "PMD6/RE6", "AvailableFunctions": ["GPIO", "PMD6", "RE6"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "E", "PortPin": "6" },
+              "7": { "PinName": "PMD1/RE1", "AvailableFunctions": ["GPIO", "PMD1", "RE1", "UART1_TX", "U1TX"], "DefaultFunction": "UART1_TX", "PinType": "Digital", "Port": "E", "PortPin": "1", "PeripheralMappings": { "UART1": "TX" } },
+              "8": { "PinName": "PMD0/RE0", "AvailableFunctions": ["GPIO", "PMD0", "RE0", "UART1_RX", "U1RX"], "DefaultFunction": "UART1_RX", "PinType": "Digital", "Port": "E", "PortPin": "0", "PeripheralMappings": { "UART1": "RX" } },
+              "9": { "PinName": "AVSS", "AvailableFunctions": ["POWER"], "DefaultFunction": "POWER", "PinType": "Power", "IsReadOnly": true },
+              "10": { "PinName": "AVDD", "AvailableFunctions": ["POWER"], "DefaultFunction": "POWER", "PinType": "Power", "IsReadOnly": true }
+            }
+          },
+          "100-pin": {
+            "Description": "100-pin TQFP package - Enhanced I/O and peripheral access",
+            "PinCount": 100,
+            "MaxUserPins": 70,
+            "PinMappings": {
+              "1": { "PinName": "PMD15/RD7", "AvailableFunctions": ["GPIO", "PMD15", "RD7"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "7" },
+              "2": { "PinName": "PMD14/RD6", "AvailableFunctions": ["GPIO", "PMD14", "RD6"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "6" },
+              "9": { "PinName": "SOSCI/RC13", "AvailableFunctions": ["GPIO", "SOSCI", "RC13", "SPI4_MISO"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "C", "PortPin": "13", "PeripheralMappings": { "OSC": "SOSCI", "SPI4": "MISO" } },
+              "10": { "PinName": "SOSCO/RC14", "AvailableFunctions": ["GPIO", "SOSCO", "RC14", "SPI4_SCK"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "C", "PortPin": "14", "PeripheralMappings": { "OSC": "SOSCO", "SPI4": "SCK" } },
+              "15": { "PinName": "AVSS", "AvailableFunctions": ["POWER"], "DefaultFunction": "POWER", "PinType": "Power", "IsReadOnly": true },
+              "16": { "PinName": "AVDD", "AvailableFunctions": ["POWER"], "DefaultFunction": "POWER", "PinType": "Power", "IsReadOnly": true },
+              "25": { "PinName": "AN0/C3INA/RB0", "AvailableFunctions": ["GPIO", "ADC1_AN0", "C3INA", "RB0"], "DefaultFunction": "ADC1_AN0", "PinType": "Analog", "Port": "B", "PortPin": "0", "AnalogChannel": "AN0", "PeripheralMappings": { "ADC1": "AN0", "CMP3": "INA" } },
+              "35": { "PinName": "UART2_TX/RF5", "AvailableFunctions": ["GPIO", "UART2_TX", "U2TX", "RF5"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "5", "PeripheralMappings": { "UART2": "TX" } },
+              "36": { "PinName": "UART2_RX/RF4", "AvailableFunctions": ["GPIO", "UART2_RX", "U2RX", "RF4"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "4", "PeripheralMappings": { "UART2": "RX" } }
+            }
+          },
+          "124-pin": {
+            "Description": "124-pin BGA package - Maximum I/O and all peripherals",
+            "PinCount": 124,
+            "MaxUserPins": 90,
+            "PinMappings": {
+              "A1": { "PinName": "PMD15/RD7", "AvailableFunctions": ["GPIO", "PMD15", "RD7"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "7", "PinLocation": "A1" },
+              "A2": { "PinName": "PMD14/RD6", "AvailableFunctions": ["GPIO", "PMD14", "RD6"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "6", "PinLocation": "A2" },
+              "B1": { "PinName": "ETXD3/RD7", "AvailableFunctions": ["GPIO", "ETXD3", "RD7", "ETH_TXD3"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "7", "PinLocation": "B1", "PeripheralMappings": { "ETH": "TXD3" } },
+              "F6": { "PinName": "AVSS", "AvailableFunctions": ["POWER"], "DefaultFunction": "POWER", "PinType": "Power", "IsReadOnly": true, "PinLocation": "F6" },
+              "G6": { "PinName": "AVDD", "AvailableFunctions": ["POWER"], "DefaultFunction": "POWER", "PinType": "Power", "IsReadOnly": true, "PinLocation": "G6" },
+              "H1": { "PinName": "UART3_TX/RF8", "AvailableFunctions": ["GPIO", "UART3_TX", "U3TX", "RF8"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "8", "PinLocation": "H1", "PeripheralMappings": { "UART3": "TX" } },
+              "H2": { "PinName": "UART3_RX/RF2", "AvailableFunctions": ["GPIO", "UART3_RX", "U3RX", "RF2"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "2", "PinLocation": "H2", "PeripheralMappings": { "UART3": "RX" } }
+            }
+          },
+          "144-pin": {
+            "Description": "144-pin TQFP package - Maximum I/O, all peripherals including Ethernet",
+            "PinCount": 144,
+            "MaxUserPins": 110,
+            "PinMappings": {
+              "1": { "PinName": "PMD15/RD7", "AvailableFunctions": ["GPIO", "PMD15", "RD7", "ETXD3"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "7", "PeripheralMappings": { "PMP": "PMD15", "ETH": "TXD3" } },
+              "2": { "PinName": "PMD14/RD6", "AvailableFunctions": ["GPIO", "PMD14", "RD6", "ETXD2"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "6", "PeripheralMappings": { "PMP": "PMD14", "ETH": "TXD2" } },
+              "15": { "PinName": "AVSS", "AvailableFunctions": ["POWER"], "DefaultFunction": "POWER", "PinType": "Power", "IsReadOnly": true },
+              "16": { "PinName": "AVDD", "AvailableFunctions": ["POWER"], "DefaultFunction": "POWER", "PinType": "Power", "IsReadOnly": true },
+              "45": { "PinName": "UART4_TX/RD0", "AvailableFunctions": ["GPIO", "UART4_TX", "U4TX", "RD0"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "0", "PeripheralMappings": { "UART4": "TX" } },
+              "46": { "PinName": "UART4_RX/RD1", "AvailableFunctions": ["GPIO", "UART4_RX", "U4RX", "RD1"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "1", "PeripheralMappings": { "UART4": "RX" } },
+              "65": { "PinName": "EMDC/RD11", "AvailableFunctions": ["GPIO", "EMDC", "RD11", "ETH_MDC"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "11", "PeripheralMappings": { "ETH": "MDC" } },
+              "66": { "PinName": "EMDIO/RD10", "AvailableFunctions": ["GPIO", "EMDIO", "RD10", "ETH_MDIO"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "D", "PortPin": "10", "PeripheralMappings": { "ETH": "MDIO" } },
+              "85": { "PinName": "CAN1_TX/RF1", "AvailableFunctions": ["GPIO", "CAN1_TX", "C1TX", "RF1"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "1", "PeripheralMappings": { "CAN1": "TX" } },
+              "86": { "PinName": "CAN1_RX/RF0", "AvailableFunctions": ["GPIO", "CAN1_RX", "C1RX", "RF0"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "0", "PeripheralMappings": { "CAN1": "RX" } },
+              "125": { "PinName": "SPI3_CLK/RF6", "AvailableFunctions": ["GPIO", "SPI3_CLK", "SCK3", "RF6"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "6", "PeripheralMappings": { "SPI3": "CLK" } },
+              "126": { "PinName": "SPI3_MISO/RF7", "AvailableFunctions": ["GPIO", "SPI3_MISO", "SDI3", "RF7"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "7", "PeripheralMappings": { "SPI3": "MISO" } },
+              "127": { "PinName": "SPI3_MOSI/RF8", "AvailableFunctions": ["GPIO", "SPI3_MOSI", "SDO3", "RF8"], "DefaultFunction": "GPIO", "PinType": "Digital", "Port": "F", "PortPin": "8", "PeripheralMappings": { "SPI3": "MOSI" } }
+            }
+          }
+        }
+      }
+    },
+    "UIControlMappings": {
+      "TextBoxMappings": [
+        { "ControlName": "textBox_PinName1", "PinNumber": "1", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName2", "PinNumber": "2", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName7", "PinNumber": "7", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName8", "PinNumber": "8", "PropertyPath": "PinName" },
+        { "ControlName": "textBox1_PinName9", "PinNumber": "9", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName10", "PinNumber": "10", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName15", "PinNumber": "15", "PropertyPath": "PinName" },
+        { "ControlName": "textBox_PinName16", "PinNumber": "16", "PropertyPath": "PinName" }
+      ],
+      "ComboBoxMappings": [
+        { "ControlName": "comboBox_PinFunc1", "PinNumber": "1", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc2", "PinNumber": "2", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc7", "PinNumber": "7", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc8", "PinNumber": "8", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox1_PinFunc9", "PinNumber": "9", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc10", "PinNumber": "10", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc15", "PinNumber": "15", "PropertyPath": "SelectedFunction" },
+        { "ControlName": "comboBox_PinFunc16", "PinNumber": "16", "PropertyPath": "SelectedFunction" }
+      ]
+    },
+    "PackageDetection": {
+      "DeviceToPackageMapping": {
+        "32MZ1024EFH064": "64-pin",
+        "32MZ1024EFH100": "100-pin",
+        "32MZ1024EFH124": "124-pin",
+        "32MZ1024EFH144": "144-pin",
+        "32MZ2048EFH064": "64-pin",
+        "32MZ2048EFH100": "100-pin",
+        "32MZ2048EFH124": "124-pin",
+        "32MZ2048EFH144": "144-pin"
+      }
+    },
+    "PeripheralAvailability": {
+      "64-pin": {
+        "UART": ["UART1"],
+        "SPI": ["SPI1"],
+        "I2C": ["I2C1"],
+        "CAN": [],
+        "ETH": [],
+        "USB": ["USB"],
+        "ADC": ["ADC1"],
+        "PWM": ["PWM1", "PWM2"],
+        "TIMER": ["TMR1", "TMR2", "TMR3", "TMR4", "TMR5"]
+      },
+      "100-pin": {
+        "UART": ["UART1", "UART2"],
+        "SPI": ["SPI1", "SPI2", "SPI4"],
+        "I2C": ["I2C1", "I2C2"],
+        "CAN": [],
+        "ETH": [],
+        "USB": ["USB"],
+        "ADC": ["ADC1"],
+        "PWM": ["PWM1", "PWM2", "PWM3", "PWM4"],
+        "TIMER": ["TMR1", "TMR2", "TMR3", "TMR4", "TMR5", "TMR6"]
+      },
+      "124-pin": {
+        "UART": ["UART1", "UART2", "UART3"],
+        "SPI": ["SPI1", "SPI2", "SPI3", "SPI4"],
+        "I2C": ["I2C1", "I2C2", "I2C3"],
+        "CAN": ["CAN1"],
+        "ETH": ["ETH"],
+        "USB": ["USB"],
+        "ADC": ["ADC1"],
+        "PWM": ["PWM1", "PWM2", "PWM3", "PWM4", "PWM5", "PWM6"],
+        "TIMER": ["TMR1", "TMR2", "TMR3", "TMR4", "TMR5", "TMR6", "TMR7", "TMR8", "TMR9"]
+      },
+      "144-pin": {
+        "UART": ["UART1", "UART2", "UART3", "UART4", "UART5", "UART6"],
+        "SPI": ["SPI1", "SPI2", "SPI3", "SPI4", "SPI5", "SPI6"],
+        "I2C": ["I2C1", "I2C2", "I2C3", "I2C4", "I2C5"],
+        "CAN": ["CAN1", "CAN2"],
+        "ETH": ["ETH"],
+        "USB": ["USB"],
+        "ADC": ["ADC1"],
+        "PWM": ["PWM1", "PWM2", "PWM3", "PWM4", "PWM5", "PWM6", "PWM7", "PWM8"],
+        "TIMER": ["TMR1", "TMR2", "TMR3", "TMR4", "TMR5", "TMR6", "TMR7", "TMR8", "TMR9"]
+      }
+    }
+  }
+}

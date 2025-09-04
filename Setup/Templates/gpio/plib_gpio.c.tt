@@ -1,3 +1,58 @@
+<#
+template debug="false" hostspecific="true" language="C#"
+#>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Text.Json" #>
+<#@ assembly name="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.Json" #>
+<#@ import namespace="System.IO" #>
+<#@ parameter name="JsonData" type="System.String" #>
+<#@ parameter name="OutputPath" type="System.String" #>
+<#@ output extension=".c" #>
+<#
+    // Parse the JSON data
+    var jsonDocument = JsonDocument.Parse(JsonData);
+    var rootElement = jsonDocument.RootElement;
+    
+    // Helper method to get variable values from JSON
+    string GetVariable(string variableName) 
+    {
+        if (rootElement.TryGetProperty(variableName, out var property))
+        {
+            return property.GetString() ?? "";
+        }
+        return "";
+    }
+    
+    // Helper method to get integer values from JSON
+    int GetIntVariable(string variableName, int defaultValue = 0) 
+    {
+        if (rootElement.TryGetProperty(variableName, out var property))
+        {
+            if (property.TryGetInt32(out var value))
+                return value;
+        }
+        return defaultValue;
+    }
+    
+    // Helper method to get boolean values from JSON
+    bool GetBoolVariable(string variableName, bool defaultValue = false) 
+    {
+        if (rootElement.TryGetProperty(variableName, out var property))
+        {
+            if (property.TryGetBoolean(out var value))
+                return value;
+        }
+        return defaultValue;
+    }
+    
+    // Get key configuration values
+    var GPIO_PIN_MAX_INDEX = GetIntVariable("GPIO_PIN_MAX_INDEX", 0);
+    var CoreSysIntFile = GetBoolVariable("CoreSysIntFile", false);
+#>
 /*******************************************************************************
   GPIO PLIB
 
@@ -46,28 +101,27 @@
 // *****************************************************************************
 
 #include "plib_gpio.h"
-<#if CoreSysIntFile == true>
+<# if (CoreSysIntFile) { #>
 #include "interrupts.h"
-</#if>
+<# } #>
 
 // *****************************************************************************
 // *****************************************************************************
 // Section: GPIO Implementation
 // *****************************************************************************
 // *****************************************************************************
-<#assign TOTAL_NUM_OF_INT_USED = 0>
+<# int totalNumOfIntUsed = 0;
+   for (int i = 1; i <= GPIO_PIN_MAX_INDEX; i++) {
+       var pinInterruptDetect = GetVariable($"PIN_{i}_INTDET");
+       if (!string.IsNullOrEmpty(pinInterruptDetect)) {
+           totalNumOfIntUsed++;
+       }
+   } #>
 
-<#list 1..(GPIO_PIN_MAX_INDEX) as i>
-<#assign pin_interrupt_detect = "PIN_" + i + "_INTDET">
-<#if .vars[pin_interrupt_detect] != "">
-    <#assign TOTAL_NUM_OF_INT_USED = TOTAL_NUM_OF_INT_USED + 1>
-</#if>
-</#list>
-
-<#if TOTAL_NUM_OF_INT_USED gt 0 >
-<#lt>#define TOTAL_NUM_OF_INT_USED ${TOTAL_NUM_OF_INT_USED}U
+<# if (totalNumOfIntUsed > 0) { #>
+#define TOTAL_NUM_OF_INT_USED <#= totalNumOfIntUsed #>U
 static volatile GPIO_PIN_CALLBACK_OBJ pinCallbackObj[TOTAL_NUM_OF_INT_USED];
-</#if>
+<# } #>
 
 #define GET_PINCTRL_REG_ADDR(pin)   (&GPIO_REGS->GPIO_CTRL0[0] + (uint32_t)(pin))
 #define GET_PINCTRL2_REG_ADDR(pin)   (&GPIO_REGS->GPIO_CTRL2P0[0] + (uint32_t)(pin))
@@ -75,28 +129,26 @@ static volatile GPIO_PIN_CALLBACK_OBJ pinCallbackObj[TOTAL_NUM_OF_INT_USED];
 
 void GPIO_Initialize(void)
 {
-    <#list 1..(GPIO_PIN_MAX_INDEX) as i>
-    <#assign PIN_CFG_VAL = "PIN_" + i + "_CFG">
-    <#assign PIN_CFG_VAL2 = "PIN_" + i + "_CFG2">
-    <#assign PIN_CFG_REG_NUM = "PIN_" + i + "_GPIO_CTRL_REG_NUM">
-    <#assign PIN_CFG_REG_INDEX = "PIN_" + i + "_GPIO_CTRL_REG_INDEX">
-    <#if .vars[PIN_CFG_VAL] != "8040">
-    GPIO_REGS->GPIO_CTRL${.vars[PIN_CFG_REG_NUM]}[${.vars[PIN_CFG_REG_INDEX]}] = 0x${.vars[PIN_CFG_VAL]?upper_case};
-    </#if>
-    <#if .vars[PIN_CFG_VAL2] != "0">
-    GPIO_REGS->GPIO_CTRL2P${.vars[PIN_CFG_REG_NUM]}[${.vars[PIN_CFG_REG_INDEX]}] = 0x${.vars[PIN_CFG_VAL2]?upper_case};
-    </#if>
-    </#list>
+<# for (int i = 1; i <= GPIO_PIN_MAX_INDEX; i++) {
+    var pinCfgVal = GetVariable($"PIN_{i}_CFG");
+    var pinCfgVal2 = GetVariable($"PIN_{i}_CFG2");
+    var pinCfgRegNum = GetVariable($"PIN_{i}_GPIO_CTRL_REG_NUM");
+    var pinCfgRegIndex = GetVariable($"PIN_{i}_GPIO_CTRL_REG_INDEX");
+    
+    if (!string.IsNullOrEmpty(pinCfgVal) && pinCfgVal != "8040") { #>
+    GPIO_REGS->GPIO_CTRL<#= pinCfgRegNum #>[<#= pinCfgRegIndex #>] = 0x<#= pinCfgVal.ToUpper() #>;
+<# }
+    if (!string.IsNullOrEmpty(pinCfgVal2) && pinCfgVal2 != "0") { #>
+    GPIO_REGS->GPIO_CTRL2P<#= pinCfgRegNum #>[<#= pinCfgRegIndex #>] = 0x<#= pinCfgVal2.ToUpper() #>;
+<# } } #>
 
-    <#assign ARR_INDEX = 0>
-    <#list 1..(GPIO_PIN_MAX_INDEX) as i>
-    <#assign PIN_INTERRUPT_DETECT = "PIN_" + i + "_INTDET">
-    <#if .vars[PIN_INTERRUPT_DETECT] != "">
-    <#assign PIN_NAME = "GPIO_PIN_NAME_" + i>
-    pinCallbackObj[${ARR_INDEX}].pin = GPIO_PIN_${.vars[PIN_NAME]};
-    <#assign ARR_INDEX = ARR_INDEX + 1>
-    </#if>
-    </#list>
+<# int arrIndex = 0;
+   for (int i = 1; i <= GPIO_PIN_MAX_INDEX; i++) {
+       var pinInterruptDetect = GetVariable($"PIN_{i}_INTDET");
+       if (!string.IsNullOrEmpty(pinInterruptDetect)) {
+           var pinName = GetVariable($"GPIO_PIN_NAME_{i}"); #>
+    pinCallbackObj[<#= arrIndex #>].pin = GPIO_PIN_<#= pinName #>;
+<# arrIndex++; } } #>
 }
 
 void GPIO_PinDirConfig(GPIO_PIN pin, GPIO_DIR dir)
@@ -336,7 +388,7 @@ void GPIO_PropertySet( GPIO_PIN pin, GPIO_PROPERTY gpioProp, const uint32_t prop
     }
 }
 
-<#if TOTAL_NUM_OF_INT_USED gt 0 >
+<# if (totalNumOfIntUsed > 0) { #>
 bool GPIO_PinInterruptCallbackRegister(
     GPIO_PIN pin,
     const GPIO_PIN_CALLBACK callback,
@@ -356,27 +408,25 @@ bool GPIO_PinInterruptCallbackRegister(
     }
     return false;
 }
-</#if>
+<# } #>
 
-<#assign ARR_INDEX = 0>
-<#list 1..(GPIO_PIN_MAX_INDEX) as i>
-<#assign PIN_INTERRUPT_DETECT = "PIN_" + i + "_INTDET">
-<#if .vars[PIN_INTERRUPT_DETECT] != "">
-<#assign PIN_NAME = "GPIO_PIN_NAME_" + i>
-<#assign GIRQ_NUM = "PIN_" + i + "_GIRQNUM">
-<#assign GIRQ_BITPOS = "PIN_" + i + "_GIRQBITPOS">
-void __attribute__((used)) ${.vars[PIN_NAME]}_GRP_InterruptHandler(void)
+<# int arrIndex2 = 0;
+   for (int i = 1; i <= GPIO_PIN_MAX_INDEX; i++) {
+       var pinInterruptDetect = GetVariable($"PIN_{i}_INTDET");
+       if (!string.IsNullOrEmpty(pinInterruptDetect)) {
+           var pinName = GetVariable($"GPIO_PIN_NAME_{i}");
+           var girqNum = GetVariable($"PIN_{i}_GIRQNUM");
+           var girqBitPos = GetVariable($"PIN_{i}_GIRQBITPOS"); #>
+void __attribute__((used)) <#= pinName #>_GRP_InterruptHandler(void)
 {
-    if ((ECIA_REGS->ECIA_RESULT${.vars[GIRQ_NUM]} & ((uint32_t)1U << ${.vars[GIRQ_BITPOS]})) != 0U)
+    if ((ECIA_REGS->ECIA_RESULT<#= girqNum #> & ((uint32_t)1U << <#= girqBitPos #>)) != 0U)
     {
-        ECIA_REGS->ECIA_SRC${.vars[GIRQ_NUM]} |= ((uint32_t)1U << ${.vars[GIRQ_BITPOS]});
-        if (pinCallbackObj[${ARR_INDEX}].callback != NULL)
+        ECIA_REGS->ECIA_SRC<#= girqNum #> |= ((uint32_t)1U << <#= girqBitPos #>);
+        if (pinCallbackObj[<#= arrIndex2 #>].callback != NULL)
         {
-            uintptr_t context = pinCallbackObj[${ARR_INDEX}].context;
-            pinCallbackObj[${ARR_INDEX}].callback(GPIO_PIN_${.vars[PIN_NAME]}, context);
+            uintptr_t context = pinCallbackObj[<#= arrIndex2 #>].context;
+            pinCallbackObj[<#= arrIndex2 #>].callback(GPIO_PIN_<#= pinName #>, context);
         }
     }
 }
-<#assign ARR_INDEX = ARR_INDEX + 1>
-</#if>
-</#list>
+<# arrIndex2++; } } #>

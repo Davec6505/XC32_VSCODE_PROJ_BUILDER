@@ -41,20 +41,16 @@
       "UPLLFSEL": "FREQ_24MHZ"
     },
     "DEVCFG3": {
-      "USERID": "0xFFFB",
       "FMIIEN": "ON",
       "FETHIO": "ON",
       "PGL1WAY": "ON",
       "PMDL1WAY": "ON",
       "IOL1WAY": "ON",
-      "FUSBIDIO": "ON"
+      "FUSBIDIO": "ON",
+      "USERID": "0xFFFB"
     },
     "DEVCP0": {
       "CP": "OFF"
-    },
-    "BF1SEQ3": {
-      "TSEQ": "0xffff",
-      "CSEQ": "0x0"
     },
     "PreconBits": {
       "PREFEN": "3",
@@ -69,6 +65,46 @@
       "enable_ADC": "false",
       "enable_CAN": "false",
       "enable_PWM": "false"
+    },
+    "PinConfigurations": {
+      "Pin1": "{\u0022PinName\u0022:\u0022RE7\u0022,\u0022SelectedFunction\u0022:\u0022GPIO\u0022,\u0022AvailableFunctions\u0022:[\u0022Available\u0022,\u0022AN17\u0022,\u0022CIRX\u0022,\u0022ETXEN\u0022,\u0022GPIO\u0022,\u0022IC4\u0022,\u0022IC8\u0022,\u0022INT4\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin2": "{\u0022PinName\u0022:\u0022RE6\u0022,\u0022SelectedFunction\u0022:\u0022GPIO\u0022,\u0022AvailableFunctions\u0022:[\u0022Available\u0022,\u0022AN16\u0022,\u0022ETX0\u0022,\u0022GPIO\u0022,\u0022PMD6\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin3": "{\u0022PinName\u0022:\u0022RE7\u0022,\u0022SelectedFunction\u0022:\u0022GPIO\u0022,\u0022AvailableFunctions\u0022:[\u0022Available\u0022,\u0022AN17\u0022,\u0022ETX1\u0022,\u0022GPIO\u0022,\u0022PMD7\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin4": "{\u0022PinName\u0022:\u0022RG6\u0022,\u0022SelectedFunction\u0022:\u0022SCK2\u0022,\u0022AvailableFunctions\u0022:[\u0022IC5\u0022,\u0022IC9\u0022,\u0022INT2\u0022,\u0022OC5\u0022,\u0022OC8\u0022,\u0022PMA5\u0022,\u0022REFCLOCK03\u0022,\u0022SCK2\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin5": "{\u0022PinName\u0022:\u0022PMD3/RE3\u0022,\u0022SelectedFunction\u0022:\u0022GPIO\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022PMD3\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin6": "{\u0022PinName\u0022:\u0022PMD2/RE2\u0022,\u0022SelectedFunction\u0022:\u0022GPIO\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022PMD2\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin7": "{\u0022PinName\u0022:\u0022PMD1/RE1\u0022,\u0022SelectedFunction\u0022:\u0022UART1_TX\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022PMD1\u0022,\u0022UART1_TX\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin8": "{\u0022PinName\u0022:\u0022PMD0/RE0\u0022,\u0022SelectedFunction\u0022:\u0022UART1_RX\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022PMD0\u0022,\u0022UART1_RX\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin9": "{\u0022PinName\u0022:\u0022AVSS\u0022,\u0022SelectedFunction\u0022:\u0022POWER\u0022,\u0022AvailableFunctions\u0022:[\u0022POWER\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin10": "{\u0022PinName\u0022:\u0022AVDD\u0022,\u0022SelectedFunction\u0022:\u0022POWER\u0022,\u0022AvailableFunctions\u0022:[\u0022POWER\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin11": "{\u0022PinName\u0022:\u0022AN24/C1INA/RA0\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN24\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN24\u0022,\u0022C1INA\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin12": "{\u0022PinName\u0022:\u0022AN23/C1INB/RA1\u0022,\u0022SelectedFunction\u0022:\u0022GPIO\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN23\u0022,\u0022C1INB\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin13": "{\u0022PinName\u0022:\u0022PGC2/AN22/C2INA/RA2\u0022,\u0022SelectedFunction\u0022:\u0022SPI1_CLK\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022PGC2\u0022,\u0022ADC1_AN22\u0022,\u0022C2INA\u0022,\u0022SPI1_CLK\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin14": "{\u0022PinName\u0022:\u0022PGD2/AN21/C2INB/RA3\u0022,\u0022SelectedFunction\u0022:\u0022SPI1_MISO\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022PGD2\u0022,\u0022ADC1_AN21\u0022,\u0022C2INB\u0022,\u0022SPI1_MISO\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin15": "{\u0022PinName\u0022:\u0022T5CK/AN20/C1INC/RA4\u0022,\u0022SelectedFunction\u0022:\u0022GPIO\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022T5CK\u0022,\u0022ADC1_AN20\u0022,\u0022C1INC\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin16": "{\u0022PinName\u0022:\u0022T4CK/AN19/C2INC/RA5\u0022,\u0022SelectedFunction\u0022:\u0022PWM1\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022T4CK\u0022,\u0022ADC1_AN19\u0022,\u0022C2INC\u0022,\u0022PWM1\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin17": "{\u0022PinName\u0022:\u0022VSS\u0022,\u0022SelectedFunction\u0022:\u0022POWER\u0022,\u0022AvailableFunctions\u0022:[\u0022POWER\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin18": "{\u0022PinName\u0022:\u0022VDD\u0022,\u0022SelectedFunction\u0022:\u0022POWER\u0022,\u0022AvailableFunctions\u0022:[\u0022POWER\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin19": "{\u0022PinName\u0022:\u0022VUSB\u0022,\u0022SelectedFunction\u0022:\u0022POWER\u0022,\u0022AvailableFunctions\u0022:[\u0022POWER\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin20": "{\u0022PinName\u0022:\u0022VBUS\u0022,\u0022SelectedFunction\u0022:\u0022POWER\u0022,\u0022AvailableFunctions\u0022:[\u0022POWER\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin21": "{\u0022PinName\u0022:\u0022AN0/C3INA/RB0\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN0\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN0\u0022,\u0022C3INA\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin22": "{\u0022PinName\u0022:\u0022AN1/C3INB/RB1\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN1\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN1\u0022,\u0022C3INB\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin23": "{\u0022PinName\u0022:\u0022AN2/C3INC/RB2\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN2\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN2\u0022,\u0022C3INC\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin24": "{\u0022PinName\u0022:\u0022AN3/C2INA/RB3\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN3\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN3\u0022,\u0022C2INA\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin25": "{\u0022PinName\u0022:\u0022AN4/C2INB/RB4\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN4\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN4\u0022,\u0022C2INB\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin26": "{\u0022PinName\u0022:\u0022AN5/C2INC/RB5\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN5\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN5\u0022,\u0022C2INC\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin27": "{\u0022PinName\u0022:\u0022AN6/C1INA/RB6\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN6\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN6\u0022,\u0022C1INA\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin28": "{\u0022PinName\u0022:\u0022AN7/C1INB/RB7\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN7\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN7\u0022,\u0022C1INB\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin29": "{\u0022PinName\u0022:\u0022AN8/C1INC/RB8\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN8\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN8\u0022,\u0022C1INC\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin30": "{\u0022PinName\u0022:\u0022AN9/VREF-/RB9\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN9\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN9\u0022,\u0022VREF-\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin31": "{\u0022PinName\u0022:\u0022AN10/VREF\u002B/RB10\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN10\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN10\u0022,\u0022VREF\u002B\u0022],\u0022Package\u0022:\u002264-pin\u0022}",
+      "Pin32": "{\u0022PinName\u0022:\u0022AN11/C3INA/RB11\u0022,\u0022SelectedFunction\u0022:\u0022ADC1_AN11\u0022,\u0022AvailableFunctions\u0022:[\u0022GPIO\u0022,\u0022ADC1_AN11\u0022,\u0022C3INA\u0022],\u0022Package\u0022:\u002264-pin\u0022}"
     }
-  }
+  },
+  "Variant": "MZ",
+  "DeviceName": "PIC32MZ2048EFH064",
+  "DeviceArch": "MIPS",
+  "DeviceFamily": "PIC32MZEF",
+  "DeviceSeries": "PIC32MZ",
+  "CpuClockFrequency": 200000000
 }

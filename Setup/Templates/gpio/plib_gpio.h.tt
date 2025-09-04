@@ -1,3 +1,16 @@
+<# template debug="false" hostspecific="true" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Text.Json" #>
+<#@ assembly name="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.Json" #>
+<#@ import namespace="System.IO" #>
+<#@ parameter name="JsonData" type="System.String" #>
+<#@ parameter name="OutputPath" type="System.String" #>
+<#@ output extension=".h" #>
+
 /*******************************************************************************
   GPIO PLIB
 
@@ -64,33 +77,27 @@
 // Section: Data types and constants
 // *****************************************************************************
 // *****************************************************************************
-<#list 1..GPIO_PIN_MAX_INDEX as i>
-<#assign functype = "PIN_" + i + "_FUNCTION_TYPE">
-<#assign funcname = "PIN_" + i + "_FUNCTION_NAME">
-<#assign ctrlRegNum = "PIN_" + i + "_GPIO_CTRL_REG_NUM">
-<#assign ctrlRegIndex = "PIN_" + i + "_GPIO_CTRL_REG_INDEX">
-<#assign pinName = "GPIO_PIN_NAME_" + i>
-<#if .vars[functype]?has_content>
-    <#if .vars[funcname]?has_content>
-        <#if .vars[ctrlRegNum]?has_content>
-            <#if .vars[ctrlRegIndex]?has_content>
-                <#if !(.vars[functype]?starts_with("SWITCH_") | .vars[functype]?starts_with("LED_"))>
-                    <#lt>/*** Macros for ${.vars[funcname]} pin ***/
-                    <#if .vars[functype] == "GPIO">
-                        <#lt>#define ${.vars[funcname]}_Set()               (GPIO_REGS->GPIO_CTRL${.vars[ctrlRegNum]}[${.vars[ctrlRegIndex]}] |= GPIO_CTRL0_ALT_GPIO_DATA_Msk)
-                        <#lt>#define ${.vars[funcname]}_Clear()             (GPIO_REGS->GPIO_CTRL${.vars[ctrlRegNum]}[${.vars[ctrlRegIndex]}] &= ~GPIO_CTRL0_ALT_GPIO_DATA_Msk)
-                        <#lt>#define ${.vars[funcname]}_Toggle()            (GPIO_REGS->GPIO_CTRL${.vars[ctrlRegNum]}[${.vars[ctrlRegIndex]}] ^= GPIO_CTRL0_ALT_GPIO_DATA_Msk)
-                        <#lt>#define ${.vars[funcname]}_OutputEnable()      (GPIO_REGS->GPIO_CTRL${.vars[ctrlRegNum]}[${.vars[ctrlRegIndex]}] |= GPIO_CTRL0_GPIO_DIR_Msk)
-                        <#lt>#define ${.vars[funcname]}_InputEnable()       (GPIO_REGS->GPIO_CTRL${.vars[ctrlRegNum]}[${.vars[ctrlRegIndex]}] &= ~GPIO_CTRL0_GPIO_DIR_Msk)
-                    </#if>
-                    <#lt>#define ${.vars[funcname]}_Get()               ((GPIO_REGS->GPIO_CTRL${.vars[ctrlRegNum]}[${.vars[ctrlRegIndex]}] & GPIO_CTRL0_GPIO_INP_Msk)? 1 : 0)
-                    <#lt>#define ${.vars[funcname]}_PIN                  ${.vars[pinName]}
-                </#if>
-            </#if>
-        </#if>
-    </#if>
-</#if>
-</#list>
+<# for (int i = 1; i <= GPIO_PIN_MAX_INDEX; i++) { 
+    var functype = GetVariable($"PIN_{i}_FUNCTION_TYPE");
+    var funcname = GetVariable($"PIN_{i}_FUNCTION_NAME");
+    var ctrlRegNum = GetVariable($"PIN_{i}_GPIO_CTRL_REG_NUM");
+    var ctrlRegIndex = GetVariable($"PIN_{i}_GPIO_CTRL_REG_INDEX");
+    var pinName = GetVariable($"GPIO_PIN_NAME_{i}");
+    
+    if (!string.IsNullOrEmpty(functype) && !string.IsNullOrEmpty(funcname) && 
+        !string.IsNullOrEmpty(ctrlRegNum) && !string.IsNullOrEmpty(ctrlRegIndex) &&
+        !functype.StartsWith("SWITCH_") && !functype.StartsWith("LED_")) { #>
+/*** Macros for <#= funcname #> pin ***/
+<# if (functype == "GPIO") { #>
+#define <#= funcname #>_Set()               (GPIO_REGS->GPIO_CTRL<#= ctrlRegNum #>[<#= ctrlRegIndex #>] |= GPIO_CTRL0_ALT_GPIO_DATA_Msk)
+#define <#= funcname #>_Clear()             (GPIO_REGS->GPIO_CTRL<#= ctrlRegNum #>[<#= ctrlRegIndex #>] &= ~GPIO_CTRL0_ALT_GPIO_DATA_Msk)
+#define <#= funcname #>_Toggle()            (GPIO_REGS->GPIO_CTRL<#= ctrlRegNum #>[<#= ctrlRegIndex #>] ^= GPIO_CTRL0_ALT_GPIO_DATA_Msk)
+#define <#= funcname #>_OutputEnable()      (GPIO_REGS->GPIO_CTRL<#= ctrlRegNum #>[<#= ctrlRegIndex #>] |= GPIO_CTRL0_GPIO_DIR_Msk)
+#define <#= funcname #>_InputEnable()       (GPIO_REGS->GPIO_CTRL<#= ctrlRegNum #>[<#= ctrlRegIndex #>] &= ~GPIO_CTRL0_GPIO_DIR_Msk)
+<# } #>
+#define <#= funcname #>_Get()               ((GPIO_REGS->GPIO_CTRL<#= ctrlRegNum #>[<#= ctrlRegIndex #>] & GPIO_CTRL0_GPIO_INP_Msk)? 1 : 0)
+#define <#= funcname #>_PIN                  <#= pinName #>
+<# } } #>
 
 // *****************************************************************************
 /* GPIO Pins
@@ -113,29 +120,27 @@
 
 typedef enum
 {
-<#list 0..GPIO_PIN_MAX_GPIO_PINS as k>
-  <#assign GPIO_PIN_INDEX = "GPIO_PIN_INDEX_" + k>
-  <#assign GPIO_PIN_PAD = "GPIO_PIN_PAD_" + k>
-      <#if .vars[GPIO_PIN_PAD]?has_content>
-          <#if (.vars[GPIO_PIN_PAD] != "None")>
-              <#lt>    /* ${.vars[GPIO_PIN_PAD]} pin */
-              <#lt>    GPIO_PIN_${.vars[GPIO_PIN_PAD]} = ${.vars[GPIO_PIN_INDEX]}U,
-          </#if>
-      </#if>
-</#list>
+<# for (int k = 0; k <= GPIO_PIN_MAX_GPIO_PINS; k++) {
+    var gpioIndex = GetVariable($"GPIO_PIN_INDEX_{k}");
+    var gpioPad = GetVariable($"GPIO_PIN_PAD_{k}");
+    
+    if (!string.IsNullOrEmpty(gpioPad) && gpioPad != "None") { #>
+    /* <#= gpioPad #> pin */
+    GPIO_PIN_<#= gpioPad #> = <#= gpioIndex #>U,
+<# } } #>
 
 /* This element should not be used in any of the GPIO APIs.
  * It will be used by other modules or application to denote that none of
  * the GPIO Pin is used */
-<#lt>    GPIO_PIN_NONE = 65535U,
+    GPIO_PIN_NONE = 65535U,
 
 } GPIO_PIN;
 
 typedef enum
 {
-<#list 0..GPIO_NUM_GROUPS-1 as i>
-    GPIO_GROUP_${i} = ${i},
-</#list>
+<# for (int i = 0; i < GPIO_NUM_GROUPS; i++) { #>
+    GPIO_GROUP_<#= i #> = <#= i #>,
+<# } #>
 } GPIO_GROUP;
 
 typedef enum
@@ -146,7 +151,7 @@ typedef enum
 
 typedef enum
 {
-    ${GPIO_MUX_FUNC_ENUM_LIST}
+    <#= GPIO_MUX_FUNC_ENUM_LIST #>
 }GPIO_FUNCTION;
 
 typedef enum
@@ -174,7 +179,7 @@ typedef enum
 
 typedef enum
 {
-    ${GPIO_PU_PD_ENUM_LIST}
+    <#= GPIO_PU_PD_ENUM_LIST #>
 }GPIO_PULL_TYPE;
 
 typedef enum
@@ -220,16 +225,16 @@ typedef enum {
 } GPIO_PROPERTY;
 
 
-<#assign GPIO_ATLEAST_ONE_INTERRUPT_USED = false>
-
-<#list 1..(GPIO_PIN_MAX_INDEX) as i>
-<#assign PIN_INTERRUPT_DETECT = "PIN_" + i + "_INTDET">
-<#if .vars[PIN_INTERRUPT_DETECT] != "">
-<#assign GPIO_ATLEAST_ONE_INTERRUPT_USED = true>
-</#if>
-</#list>
-
-<#if GPIO_ATLEAST_ONE_INTERRUPT_USED == true >
+<# bool gpioAtLeastOneInterruptUsed = false;
+   for (int i = 1; i <= GPIO_PIN_MAX_INDEX; i++) {
+       var pinInterruptDetect = GetVariable($"PIN_{i}_INTDET");
+       if (!string.IsNullOrEmpty(pinInterruptDetect)) {
+           gpioAtLeastOneInterruptUsed = true;
+           break;
+       }
+   }
+   
+   if (gpioAtLeastOneInterruptUsed) { #>
 typedef  void (*GPIO_PIN_CALLBACK) ( GPIO_PIN pin, uintptr_t context);
 
 typedef struct {
@@ -245,7 +250,7 @@ typedef struct {
 
 } GPIO_PIN_CALLBACK_OBJ;
 
-</#if>
+<# } #>
 
 // *****************************************************************************
 // *****************************************************************************
@@ -286,13 +291,13 @@ void GPIO_PinPwrGateConfig(GPIO_PIN pin, GPIO_PWRGATE pwrGate);
 void GPIO_DrvStrConfig(GPIO_PIN pin, GPIO_DRV drvStrn);
 void GPIO_PropertySet( GPIO_PIN pin, GPIO_PROPERTY gpioProp, const uint32_t propMask );
 
-<#if GPIO_ATLEAST_ONE_INTERRUPT_USED == true >
+<# if (gpioAtLeastOneInterruptUsed) { #>
 bool GPIO_PinInterruptCallbackRegister(
     GPIO_PIN pin,
     const GPIO_PIN_CALLBACK callback,
     uintptr_t context
 );
-</#if>
+<# } #>
 
 // DOM-IGNORE-BEGIN
 #ifdef __cplusplus  // Provide C++ Compatibility
@@ -302,3 +307,14 @@ bool GPIO_PinInterruptCallbackRegister(
 #endif
 // DOM-IGNORE-END
 #endif // PLIB_GPIO_H
+
+<#+
+// Helper method to get variable values - you'll need to implement this based on your template engine
+private string GetVariable(string variableName) 
+{
+    // This is a placeholder - replace with actual implementation for your template engine
+    // For example, if using a property bag or dictionary:
+    // return Properties.ContainsKey(variableName) ? Properties[variableName].ToString() : "";
+    return "";
+}
+#>

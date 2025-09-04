@@ -1,0 +1,491 @@
+{
+  "PinUIMapping": {
+    "Description": "Maps pin UI controls to configuration data for PIC32 devices",
+    "Version": "1.0",
+    "LastUpdated": "2024-01-01",
+    "UIControlMappings": {
+      "TextBoxMappings": [
+        {
+          "PinNumber": "1",
+          "TextBoxControlName": "textBox_PinName1",
+          "JsonPropertyPath": "Sections.PinConfigurations.1.PinName",
+          "DefaultValue": "PMD7/RE7",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "2",
+          "TextBoxControlName": "textBox_PinName2",
+          "JsonPropertyPath": "Sections.PinConfigurations.2.PinName",
+          "DefaultValue": "PMD6/RE6",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "3",
+          "TextBoxControlName": "textBox_PinName3",
+          "JsonPropertyPath": "Sections.PinConfigurations.3.PinName",
+          "DefaultValue": "PMD5/RE5",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "4",
+          "TextBoxControlName": "textBox_PinName4",
+          "JsonPropertyPath": "Sections.PinConfigurations.4.PinName",
+          "DefaultValue": "PMD4/RE4",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "5",
+          "TextBoxControlName": "textBox_PinName5",
+          "JsonPropertyPath": "Sections.PinConfigurations.5.PinName",
+          "DefaultValue": "PMD3/RE3",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "6",
+          "TextBoxControlName": "textBox_PinName6",
+          "JsonPropertyPath": "Sections.PinConfigurations.6.PinName",
+          "DefaultValue": "PMD2/RE2",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "7",
+          "TextBoxControlName": "textBox_PinName7",
+          "JsonPropertyPath": "Sections.PinConfigurations.7.PinName",
+          "DefaultValue": "PMD1/RE1",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "8",
+          "TextBoxControlName": "textBox_PinName8",
+          "JsonPropertyPath": "Sections.PinConfigurations.8.PinName",
+          "DefaultValue": "PMD0/RE0",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "9",
+          "TextBoxControlName": "textBox1_PinName9",
+          "JsonPropertyPath": "Sections.PinConfigurations.9.PinName",
+          "DefaultValue": "AVSS",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "10",
+          "TextBoxControlName": "textBox_PinName10",
+          "JsonPropertyPath": "Sections.PinConfigurations.10.PinName",
+          "DefaultValue": "AVDD",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "11",
+          "TextBoxControlName": "textBox_PinName11",
+          "JsonPropertyPath": "Sections.PinConfigurations.11.PinName",
+          "DefaultValue": "AN24/C1INA/RA0",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "12",
+          "TextBoxControlName": "textBox_PinName12",
+          "JsonPropertyPath": "Sections.PinConfigurations.12.PinName",
+          "DefaultValue": "AN23/C1INB/RA1",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "13",
+          "TextBoxControlName": "textBox_PinName13",
+          "JsonPropertyPath": "Sections.PinConfigurations.13.PinName",
+          "DefaultValue": "PGC2/AN22/C2INA/RA2",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "14",
+          "TextBoxControlName": "textBox_PinName14",
+          "JsonPropertyPath": "Sections.PinConfigurations.14.PinName",
+          "DefaultValue": "PGD2/AN21/C2INB/RA3",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "15",
+          "TextBoxControlName": "textBox_PinName15",
+          "JsonPropertyPath": "Sections.PinConfigurations.15.PinName",
+          "DefaultValue": "T5CK/AN20/C1INC/RA4",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "16",
+          "TextBoxControlName": "textBox_PinName16",
+          "JsonPropertyPath": "Sections.PinConfigurations.16.PinName",
+          "DefaultValue": "T4CK/AN19/C2INC/RA5",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "17",
+          "TextBoxControlName": "textBox_PinName17",
+          "JsonPropertyPath": "Sections.PinConfigurations.17.PinName",
+          "DefaultValue": "VSS",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "18",
+          "TextBoxControlName": "textBox_PinName18",
+          "JsonPropertyPath": "Sections.PinConfigurations.18.PinName",
+          "DefaultValue": "VDD",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "19",
+          "TextBoxControlName": "textBox_PinName19",
+          "JsonPropertyPath": "Sections.PinConfigurations.19.PinName",
+          "DefaultValue": "VUSB",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "20",
+          "TextBoxControlName": "textBox_PinName20",
+          "JsonPropertyPath": "Sections.PinConfigurations.20.PinName",
+          "DefaultValue": "VBUS",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "21",
+          "TextBoxControlName": "textBox_PinName21",
+          "JsonPropertyPath": "Sections.PinConfigurations.21.PinName",
+          "DefaultValue": "AN0/C3INA/RB0",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "22",
+          "TextBoxControlName": "textBox_PinName22",
+          "JsonPropertyPath": "Sections.PinConfigurations.22.PinName",
+          "DefaultValue": "AN1/C3INB/RB1",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "23",
+          "TextBoxControlName": "textBox_PinName23",
+          "JsonPropertyPath": "Sections.PinConfigurations.23.PinName",
+          "DefaultValue": "AN2/C3INC/RB2",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "24",
+          "TextBoxControlName": "textBox_PinName24",
+          "JsonPropertyPath": "Sections.PinConfigurations.24.PinName",
+          "DefaultValue": "AN3/C2INA/RB3",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "25",
+          "TextBoxControlName": "textBox_PinName25",
+          "JsonPropertyPath": "Sections.PinConfigurations.25.PinName",
+          "DefaultValue": "AN4/C2INB/RB4",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "26",
+          "TextBoxControlName": "textBox_PinName26",
+          "JsonPropertyPath": "Sections.PinConfigurations.26.PinName",
+          "DefaultValue": "AN5/C2INC/RB5",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "27",
+          "TextBoxControlName": "textBox_PinName27",
+          "JsonPropertyPath": "Sections.PinConfigurations.27.PinName",
+          "DefaultValue": "AN6/C1INA/RB6",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "28",
+          "TextBoxControlName": "textBox_PinName28",
+          "JsonPropertyPath": "Sections.PinConfigurations.28.PinName",
+          "DefaultValue": "AN7/C1INB/RB7",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "29",
+          "TextBoxControlName": "textBox_PinName29",
+          "JsonPropertyPath": "Sections.PinConfigurations.29.PinName",
+          "DefaultValue": "AN8/C1INC/RB8",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "30",
+          "TextBoxControlName": "textBox_PinName30",
+          "JsonPropertyPath": "Sections.PinConfigurations.30.PinName",
+          "DefaultValue": "AN9/VREF-/RB9",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "31",
+          "TextBoxControlName": "textBox_Name31",
+          "JsonPropertyPath": "Sections.PinConfigurations.31.PinName",
+          "DefaultValue": "AN10/VREF+/RB10",
+          "IsReadOnly": false
+        },
+        {
+          "PinNumber": "32",
+          "TextBoxControlName": "textBox_PinName32",
+          "JsonPropertyPath": "Sections.PinConfigurations.32.PinName",
+          "DefaultValue": "AN11/C3INA/RB11",
+          "IsReadOnly": false
+        }
+      ],
+      "ComboBoxMappings": [
+        {
+          "PinNumber": "1",
+          "ComboBoxControlName": "comboBox_PinFunc1",
+          "JsonPropertyPath": "Sections.PinConfigurations.1.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.1.AvailableFunctions",
+          "DefaultSelection": "GPIO"
+        },
+        {
+          "PinNumber": "2",
+          "ComboBoxControlName": "comboBox_PinFunc2",
+          "JsonPropertyPath": "Sections.PinConfigurations.2.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.2.AvailableFunctions",
+          "DefaultSelection": "GPIO"
+        },
+        {
+          "PinNumber": "3",
+          "ComboBoxControlName": "comboBox_PinFunc3",
+          "JsonPropertyPath": "Sections.PinConfigurations.3.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.3.AvailableFunctions",
+          "DefaultSelection": "GPIO"
+        },
+        {
+          "PinNumber": "4",
+          "ComboBoxControlName": "comboBox_PinFunc4",
+          "JsonPropertyPath": "Sections.PinConfigurations.4.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.4.AvailableFunctions",
+          "DefaultSelection": "GPIO"
+        },
+        {
+          "PinNumber": "5",
+          "ComboBoxControlName": "comboBox_PinFunc5",
+          "JsonPropertyPath": "Sections.PinConfigurations.5.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.5.AvailableFunctions",
+          "DefaultSelection": "GPIO"
+        },
+        {
+          "PinNumber": "6",
+          "ComboBoxControlName": "comboBox_PinFunc6",
+          "JsonPropertyPath": "Sections.PinConfigurations.6.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.6.AvailableFunctions",
+          "DefaultSelection": "GPIO"
+        },
+        {
+          "PinNumber": "7",
+          "ComboBoxControlName": "comboBox_PinFunc7",
+          "JsonPropertyPath": "Sections.PinConfigurations.7.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.7.AvailableFunctions",
+          "DefaultSelection": "UART1_TX"
+        },
+        {
+          "PinNumber": "8",
+          "ComboBoxControlName": "comboBox_PinFunc8",
+          "JsonPropertyPath": "Sections.PinConfigurations.8.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.8.AvailableFunctions",
+          "DefaultSelection": "UART1_RX"
+        },
+        {
+          "PinNumber": "9",
+          "ComboBoxControlName": "comboBox1_PinFunc9",
+          "JsonPropertyPath": "Sections.PinConfigurations.9.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.9.AvailableFunctions",
+          "DefaultSelection": "POWER",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "10",
+          "ComboBoxControlName": "comboBox_PinFunc10",
+          "JsonPropertyPath": "Sections.PinConfigurations.10.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.10.AvailableFunctions",
+          "DefaultSelection": "POWER",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "11",
+          "ComboBoxControlName": "comboBox_PinFunc11",
+          "JsonPropertyPath": "Sections.PinConfigurations.11.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.11.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN24"
+        },
+        {
+          "PinNumber": "12",
+          "ComboBoxControlName": "comboBox_PinFunc12",
+          "JsonPropertyPath": "Sections.PinConfigurations.12.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.12.AvailableFunctions",
+          "DefaultSelection": "GPIO"
+        },
+        {
+          "PinNumber": "13",
+          "ComboBoxControlName": "comboBox_PinFunc13",
+          "JsonPropertyPath": "Sections.PinConfigurations.13.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.13.AvailableFunctions",
+          "DefaultSelection": "SPI1_CLK"
+        },
+        {
+          "PinNumber": "14",
+          "ComboBoxControlName": "comboBox_PinFunc14",
+          "JsonPropertyPath": "Sections.PinConfigurations.14.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.14.AvailableFunctions",
+          "DefaultSelection": "SPI1_MISO"
+        },
+        {
+          "PinNumber": "15",
+          "ComboBoxControlName": "comboBox_PinFunc15",
+          "JsonPropertyPath": "Sections.PinConfigurations.15.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.15.AvailableFunctions",
+          "DefaultSelection": "GPIO"
+        },
+        {
+          "PinNumber": "16",
+          "ComboBoxControlName": "comboBox_PinFunc16",
+          "JsonPropertyPath": "Sections.PinConfigurations.16.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.16.AvailableFunctions",
+          "DefaultSelection": "PWM1"
+        },
+        {
+          "PinNumber": "17",
+          "ComboBoxControlName": "comboBox_PinFunc17",
+          "JsonPropertyPath": "Sections.PinConfigurations.17.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.17.AvailableFunctions",
+          "DefaultSelection": "POWER",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "18",
+          "ComboBoxControlName": "comboBox_PinFunc18",
+          "JsonPropertyPath": "Sections.PinConfigurations.18.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.18.AvailableFunctions",
+          "DefaultSelection": "POWER",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "19",
+          "ComboBoxControlName": "comboBox_PinFunc19",
+          "JsonPropertyPath": "Sections.PinConfigurations.19.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.19.AvailableFunctions",
+          "DefaultSelection": "POWER",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "20",
+          "ComboBoxControlName": "comboBox_PinFunc20",
+          "JsonPropertyPath": "Sections.PinConfigurations.20.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.20.AvailableFunctions",
+          "DefaultSelection": "POWER",
+          "IsReadOnly": true
+        },
+        {
+          "PinNumber": "21",
+          "ComboBoxControlName": "comboBox_PinFunc21",
+          "JsonPropertyPath": "Sections.PinConfigurations.21.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.21.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN0"
+        },
+        {
+          "PinNumber": "22",
+          "ComboBoxControlName": "comboBox_PinFunc22",
+          "JsonPropertyPath": "Sections.PinConfigurations.22.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.22.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN1"
+        },
+        {
+          "PinNumber": "23",
+          "ComboBoxControlName": "comboBox_PinFunc23",
+          "JsonPropertyPath": "Sections.PinConfigurations.23.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.23.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN2"
+        },
+        {
+          "PinNumber": "24",
+          "ComboBoxControlName": "comboBox_PinFunc24",
+          "JsonPropertyPath": "Sections.PinConfigurations.24.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.24.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN3"
+        },
+        {
+          "PinNumber": "25",
+          "ComboBoxControlName": "comboBox_PinFunc25",
+          "JsonPropertyPath": "Sections.PinConfigurations.25.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.25.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN4"
+        },
+        {
+          "PinNumber": "26",
+          "ComboBoxControlName": "comboBox_PinFunc26",
+          "JsonPropertyPath": "Sections.PinConfigurations.26.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.26.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN5"
+        },
+        {
+          "PinNumber": "27",
+          "ComboBoxControlName": "comboBox_PinFunc27",
+          "JsonPropertyPath": "Sections.PinConfigurations.27.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.27.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN6"
+        },
+        {
+          "PinNumber": "28",
+          "ComboBoxControlName": "comboBox_PinFunc28",
+          "JsonPropertyPath": "Sections.PinConfigurations.28.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.28.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN7"
+        },
+        {
+          "PinNumber": "29",
+          "ComboBoxControlName": "comboBox_PinFunc29",
+          "JsonPropertyPath": "Sections.PinConfigurations.29.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.29.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN8"
+        },
+        {
+          "PinNumber": "30",
+          "ComboBoxControlName": "comboBox_PinFunc30",
+          "JsonPropertyPath": "Sections.PinConfigurations.30.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.30.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN9"
+        },
+        {
+          "PinNumber": "31",
+          "ComboBoxControlName": "comboBox_PinFunc31",
+          "JsonPropertyPath": "Sections.PinConfigurations.31.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.31.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN10"
+        },
+        {
+          "PinNumber": "32",
+          "ComboBoxControlName": "comboBox_PinFunc32",
+          "JsonPropertyPath": "Sections.PinConfigurations.32.SelectedFunction",
+          "AvailableFunctionsPath": "Sections.PinConfigurations.32.AvailableFunctions",
+          "DefaultSelection": "ADC1_AN11"
+        }
+      ]
+    },
+    "PinCategories": {
+      "PowerPins": ["9", "10", "17", "18", "19", "20"],
+      "AnalogPins": ["11", "12", "13", "14", "15", "16", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"],
+      "DigitalPins": ["1", "2", "3", "4", "5", "6", "7", "8"],
+      "CommunicationPins": {
+        "UART": ["7", "8"],
+        "SPI": ["13", "14"],
+        "I2C": ["51", "52"]
+      }
+    },
+    "ValidationRules": {
+      "RequiredPins": ["9", "10", "17", "18"],
+      "MutuallyExclusiveFunctions": [
+        {
+          "Description": "ADC and Digital GPIO cannot be used simultaneously on analog pins",
+          "PinGroups": [
+            {
+              "Pins": ["11", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32"],
+              "ConflictingFunctions": ["GPIO", "ADC1_*"]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
